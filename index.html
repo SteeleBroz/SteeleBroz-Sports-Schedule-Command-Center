@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SteeleBroz Game Week Command Center</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { box-sizing: border-box; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .tab-active { color: #3B82F6; border-bottom: 2px solid #3B82F6; }
+    .tab-inactive { color: #888; border-bottom: 2px solid transparent; }
+    .card-enter { animation: cardIn 0.3s ease forwards; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    input, textarea, select { font-family: 'DM Sans', sans-serif; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-black text-white font-body overflow-hidden flex flex-col"><!-- Setup Modal -->
+  <div id="setupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8">
+    <div class="text-center mb-8">
+     <h1 class="font-bold text-2xl mb-2">Command Center</h1>
+     <p class="text-neutral-400 text-sm">Share your game week schedule</p>
+    </div><!-- Create New Setup -->
+    <div id="createSetup" class="space-y-4 mb-6">
+     <p class="text-xs text-neutral-500 font-medium text-center mb-4">First time here?</p><button id="createBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus-circle" class="w-4 h-4"></i> Create New Schedule </button>
+     <p class="text-xs text-neutral-600 text-center">You'll get a unique code to share with family</p>
+    </div>
+    <div class="flex items-center gap-3 my-6">
+     <div class="flex-1 h-px bg-neutral-700"></div><span class="text-xs text-neutral-500">or</span>
+     <div class="flex-1 h-px bg-neutral-700"></div>
+    </div><!-- Join Existing Setup -->
+    <div id="joinSetup" class="space-y-4">
+     <p class="text-xs text-neutral-500 font-medium text-center mb-4">Already have a code?</p><input id="codeInput" type="text" placeholder="Enter setup code" maxlength="6" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition uppercase tracking-widest text-center font-mono font-bold"> <button id="joinBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="log-in" class="w-4 h-4"></i> Join Schedule </button>
+     <p id="joinStatus" class="text-xs text-center hidden"></p>
+    </div>
+   </div>
+  </div><!-- Code Display Modal -->
+  <div id="codeDisplayModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8 text-center">
+    <h2 class="font-bold text-2xl mb-2">Your Setup Code</h2>
+    <p class="text-neutral-400 text-sm mb-8">Share this with family to sync their devices</p>
+    <div class="bg-blue-600/20 border border-blue-500/50 rounded-2xl p-6 mb-6">
+     <p id="displayCode" class="font-mono font-bold text-3xl tracking-widest text-blue-400"></p>
+    </div><button id="copyCodeBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="startUsingBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Start Using App</button>
+    <p id="copyStatus" class="text-xs text-green-400 mt-2 hidden">Copied!</p>
+   </div>
+  </div><!-- Edit Event Modal -->
+  <div id="editEventModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8">
+    <h2 class="font-bold text-2xl mb-6">Edit Event</h2>
+    <div class="space-y-4">
+     <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Athlete</label> <input id="editChild" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+     </div>
+     <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Sport</label> <input id="editSport" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+     </div>
+     <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Type</label> <select id="editType" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select>
+     </div>
+     <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Who is Taking</label> <input id="editChaperone" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+     </div>
+     <div class="grid grid-cols-2 gap-3">
+      <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Date</label> <input id="editDate" type="date" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+      </div>
+      <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Time</label> <input id="editTime" type="time" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+      </div>
+     </div>
+     <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Location</label> <input id="editLocation" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+     </div>
+    </div>
+    <div class="flex gap-3 mt-6"><button id="editEventCancelBtn" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Cancel</button> <button id="editEventSaveBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="check" class="w-4 h-4"></i> Save </button>
+    </div>
+   </div>
+  </div><!-- Welcome Modal -->
+  <div id="welcomeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+    <div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-8 py-6 flex items-center justify-between">
+     <h2 class="font-bold text-2xl">How to Use Command Center</h2><button id="closeWelcomeBtn" class="text-neutral-500 hover:text-white transition"> <i data-lucide="x" class="w-6 h-6"></i> </button>
+    </div>
+    <div class="px-8 py-6 space-y-6">
+     <div class="bg-blue-600/10 border border-blue-500/30 rounded-2xl p-5">
+      <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-blue-400"></i> What is this?</h3>
+      <p class="text-sm text-neutral-300">Command Center keeps your family coordinated. Track all your athlete's practices, games, and tournaments in one place. Share the schedule code with family members so everyone knows where to be and when.</p>
+     </div>
+     <div class="space-y-4">
+      <h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="list-check" class="w-5 h-5 text-blue-400"></i> Getting Started</h3>
+      <div class="bg-neutral-800/50 rounded-xl p-4">
+       <div class="flex gap-3 mb-2">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+        <div>
+         <p class="font-medium text-white text-sm">Create or Join a Schedule</p>
+         <p class="text-xs text-neutral-400 mt-1">Either create a new schedule to get a code, or join an existing one using a code someone shared with you.</p>
+        </div>
+       </div>
+      </div>
+      <div class="bg-neutral-800/50 rounded-xl p-4">
+       <div class="flex gap-3 mb-2">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">2</span>
+        <div>
+         <p class="font-medium text-white text-sm">Add Events in Control Tab</p>
+         <p class="text-xs text-neutral-400 mt-1">Go to the <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Control</span> tab and add practices, games, tournaments, or other events. Tell us who's going, when, where, and who's taking them.</p>
+        </div>
+       </div>
+      </div>
+      <div class="bg-neutral-800/50 rounded-xl p-4">
+       <div class="flex gap-3 mb-2">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">3</span>
+        <div>
+         <p class="font-medium text-white text-sm">View Your Schedule</p>
+         <p class="text-xs text-neutral-400 mt-1">The <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Schedule</span> tab shows this week's events organized by day. Use the arrow buttons to see next week or go back.</p>
+        </div>
+       </div>
+      </div>
+      <div class="bg-neutral-800/50 rounded-xl p-4">
+       <div class="flex gap-3 mb-2">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">4</span>
+        <div>
+         <p class="font-medium text-white text-sm">See Everything in Season Tab</p>
+         <p class="text-xs text-neutral-400 mt-1">The <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Season</span> tab shows all events for the whole season in a table format so you can see the big picture.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="space-y-4">
+      <h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-blue-400"></i> Pro Tips</h3>
+      <ul class="space-y-2 text-sm text-neutral-300">
+       <li class="flex gap-2"><span class="text-blue-400">•</span> <span>You can edit or delete any event by clicking the pencil or trash icons</span></li>
+       <li class="flex gap-2"><span class="text-blue-400">•</span> <span>Share your code with coaches, grandparents, and siblings to keep everyone in sync</span></li>
+       <li class="flex gap-2"><span class="text-blue-400">•</span> <span>Use the Pack List to remember everything you need for the week</span></li>
+       <li class="flex gap-2"><span class="text-blue-400">•</span> <span>Add weekly notes to communicate important reminders to everyone</span></li>
+       <li class="flex gap-2"><span class="text-blue-400">•</span> <span>Filter by athlete to focus on one kid's schedule</span></li>
+      </ul>
+     </div><button id="closeWelcomeMainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition">Got It, Let's Go</button>
+    </div>
+   </div>
+  </div><!-- View Setup Code Modal -->
+  <div id="viewCodeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8 text-center">
+    <h2 class="font-bold text-2xl mb-2">Your Setup Code</h2>
+    <p class="text-neutral-400 text-sm mb-8">Share this code with family to connect</p>
+    <div class="bg-blue-600/20 border border-blue-500/50 rounded-2xl p-6 mb-6">
+     <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-blue-400"></p>
+    </div><button id="copyViewCodeBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="closeViewCodeBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Close</button>
+    <p id="copyViewStatus" class="text-xs text-green-400 mt-2 hidden">Copied!</p>
+    <div class="mt-6 pt-6 border-t border-neutral-800">
+     <p class="text-xs text-neutral-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-neutral-800/50 hover:bg-neutral-700 text-neutral-300 hover:text-white text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button>
+    </div>
+   </div>
+  </div><!-- App Setup Modal -->
+  <div id="appSetupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+   <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-8 py-6 flex items-center justify-between">
+     <h2 class="font-bold text-2xl">App Setup Instructions</h2><button id="closeAppSetupBtn" class="text-neutral-500 hover:text-white transition"> <i data-lucide="x" class="w-6 h-6"></i> </button>
+    </div>
+    <div class="px-8 py-6 space-y-6"><!-- iPhone/iPad -->
+     <div class="border border-neutral-800 rounded-2xl overflow-hidden"><button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition">
+       <div class="flex items-center gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-blue-400"></i> <span class="font-medium text-white">iPhone / iPad</span>
+       </div><i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> </button>
+      <div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300">
+       <p><span class="font-bold text-white">1.</span> Open Safari</p>
+       <p><span class="font-bold text-white">2.</span> Go to your game week schedule</p>
+       <p><span class="font-bold text-white">3.</span> Tap the Share icon at the bottom</p>
+       <p><span class="font-bold text-white">4.</span> Select "Add to Home Screen"</p>
+       <p><span class="font-bold text-white">5.</span> Tap "Add" in the top right</p>
+      </div>
+     </div><!-- Android -->
+     <div class="border border-neutral-800 rounded-2xl overflow-hidden"><button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition">
+       <div class="flex items-center gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-green-400"></i> <span class="font-medium text-white">Android</span>
+       </div><i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> </button>
+      <div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300">
+       <p><span class="font-bold text-white">1.</span> Open Chrome or your browser</p>
+       <p><span class="font-bold text-white">2.</span> Go to your game week schedule</p>
+       <p><span class="font-bold text-white">3.</span> Tap the menu (3 dots) in top right</p>
+       <p><span class="font-bold text-white">4.</span> Select "Add to Home Screen"</p>
+       <p><span class="font-bold text-white">5.</span> Tap "Install"</p>
+      </div>
+     </div><!-- Mac/Desktop -->
+     <div class="border border-neutral-800 rounded-2xl overflow-hidden"><button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition">
+       <div class="flex items-center gap-3"><i data-lucide="monitor" class="w-5 h-5 text-purple-400"></i> <span class="font-medium text-white">Mac / Desktop</span>
+       </div><i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> </button>
+      <div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300">
+       <p><span class="font-bold text-white">1.</span> Open your browser (Chrome, Safari, Edge)</p>
+       <p><span class="font-bold text-white">2.</span> Go to your game week schedule</p>
+       <p><span class="font-bold text-white">3.</span> Look for the "Install" icon in the address bar</p>
+       <p><span class="font-bold text-white">4.</span> Click it and confirm installation</p>
+       <p class="text-xs text-neutral-500 mt-2">The app will open as its own window on your desktop</p>
+      </div>
+     </div><!-- Windows -->
+     <div class="border border-neutral-800 rounded-2xl overflow-hidden"><button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition">
+       <div class="flex items-center gap-3"><i data-lucide="monitor" class="w-5 h-5 text-blue-300"></i> <span class="font-medium text-white">Windows</span>
+       </div><i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> </button>
+      <div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300">
+       <p><span class="font-bold text-white">1.</span> Open Edge or Chrome</p>
+       <p><span class="font-bold text-white">2.</span> Go to your game week schedule</p>
+       <p><span class="font-bold text-white">3.</span> Click the Install icon in the address bar (or menu)</p>
+       <p><span class="font-bold text-white">4.</span> Click "Install" to confirm</p>
+       <p class="text-xs text-neutral-500 mt-2">Look for it in your Start Menu or taskbar after installation</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Main App -->
+  <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar -->
+   <header class="sticky top-0 z-40 bg-black border-b border-neutral-800 px-5 pt-4 pb-4 flex-shrink-0">
+    <div class="flex items-start justify-between mb-4">
+     <div class="flex flex-col items-start justify-start"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-8 mb-2">
+      <p class="text-neutral-500 text-xs font-medium tracking-widest uppercase">For Parents In The Trenches</p>
+     </div><select id="kidFilter" class="bg-neutral-900 border border-neutral-700 text-white text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 h-fit"> <option value="all">All Athletes</option> </select>
+    </div><!-- Week Nav -->
+    <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-neutral-800 transition"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button>
+     <div class="text-center">
+      <p id="weekLabel" class="text-sm font-medium text-white"></p>
+      <p id="weekSub" class="text-xs text-neutral-500 mt-0.5"></p>
+     </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-neutral-800 transition"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button>
+    </div><!-- Day Chips -->
+    <div id="dayChips" class="flex gap-2 mt-3 overflow-x-auto pb-1"></div>
+   </header><!-- Restore Buttons Row -->
+   <div id="restoreButtons" class="hidden fixed bottom-5 right-5 z-40 flex flex-col gap-2">
+    <button id="restoreAppSetupBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1 shadow-lg"> <i data-lucide="smartphone" class="w-3 h-3"></i> App Setup </button> <button id="restoreSettingsBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1 shadow-lg"> <i data-lucide="settings" class="w-3 h-3"></i> Setup Code </button> <button id="helpBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1 shadow-lg"> <i data-lucide="help-circle" class="w-3 h-3"></i> Help </button>
+   </div><!-- Tabs -->
+   <nav class="flex border-b border-neutral-800 bg-black flex-shrink-0"><button class="screen-tab tab-active flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="weekly">Schedule</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="control">Control</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="season">Season</button>
+   </nav><!-- Content Area -->
+   <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule -->
+    <section id="screen-weekly" class="px-5 py-6">
+     <div id="installPrompt" class="bg-gradient-to-r from-blue-600/20 to-blue-500/10 border border-blue-500/30 rounded-2xl p-5 mb-6">
+      <div class="flex items-start gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5"></i>
+       <div class="flex-1">
+        <h3 class="text-sm font-bold text-white mb-1">Save to Home Screen</h3>
+        <p class="text-xs text-neutral-300 mb-3">Access your game week schedule anytime, right from your phone or computer.</p><button id="openAppSetupBtn" class="text-blue-400 text-xs hover:text-blue-300 transition font-medium flex items-center gap-1"> <i data-lucide="arrow-right" class="w-3 h-3"></i> View Setup Instructions </button> <button id="dismissInstall" class="mt-3 text-xs text-neutral-500 hover:text-neutral-400 transition">Dismiss</button>
+       </div>
+      </div>
+     </div>
+     <div id="weeklyCards" class="space-y-4"></div>
+     <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-neutral-600 mx-auto mb-3"></i>
+      <p class="text-neutral-500 text-sm">No events this week</p>
+      <p class="text-neutral-600 text-xs mt-1">Add events in the Control tab</p>
+     </div>
+    </section><!-- SCREEN 2: Control -->
+    <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event -->
+     <div class="mb-8">
+      <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-blue-500"></i> ADD EVENT</h2>
+      <div class="bg-neutral-900 rounded-2xl p-5 space-y-4 border border-neutral-800">
+       <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition">
+        </div>
+        <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition">
+        </div>
+       </div>
+       <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Event Type</label> <select id="inputType" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select>
+       </div>
+       <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Who is Taking</label> <input id="inputChaperone" type="text" placeholder="Mom, Dad, Grandpa..." class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition">
+       </div>
+       <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Date</label> <input id="inputDate" type="date" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+        </div>
+        <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Time</label> <input id="inputTime" type="time" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
+        </div>
+       </div>
+       <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition">
+       </div><button id="addEventBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-3.5 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus" class="w-4 h-4"></i> Add to Schedule </button>
+       <div id="addStatus" class="text-center text-xs hidden"></div>
+      </div>
+     </div><!-- Weekly Notes -->
+     <div class="mb-8">
+      <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i> WEEKLY NOTES</h2><textarea id="weeklyNotes" rows="4" placeholder="Anything for this week..." class="w-full bg-neutral-900 border border-neutral-800 rounded-2xl px-5 py-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 resize-none transition"></textarea>
+     </div><!-- Packing List -->
+     <div class="mb-8">
+      <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-blue-500"></i> PACK LIST</h2>
+      <div id="packList" class="bg-neutral-900 rounded-2xl p-5 border border-neutral-800 space-y-3"></div>
+      <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="Add new item..." class="flex-1 bg-black border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> <button id="addPackBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button>
+      </div>
+     </div><!-- Athlete Quote -->
+     <div class="mb-8">
+      <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="quote" class="w-4 h-4 text-blue-500"></i> ATHLETE INSIGHT</h2>
+      <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+       <p class="text-white text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p>
+       <p class="text-neutral-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-blue-500 text-xs mt-4 flex items-center gap-1 hover:text-blue-400 transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button>
+       <div id="storyContent" class="hidden mt-3 pt-3 border-t border-neutral-800">
+        <p class="text-neutral-400 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p>
+        <p class="text-neutral-600 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- SCREEN 3: Season -->
+    <section id="screen-season" class="px-5 py-6 hidden">
+     <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="database" class="w-4 h-4 text-blue-500"></i> SEASON EVENTS</h2>
+     <div class="overflow-x-auto -mx-5 px-5">
+      <table id="seasonTable" class="w-full min-w-[700px]">
+       <thead>
+        <tr class="border-b border-neutral-800">
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Athlete</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Sport</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Date</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Day</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Time</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Location</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Taking</th>
+         <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Type</th>
+         <th class="text-xs text-neutral-500 font-medium text-center py-3 px-2 w-10"></th>
+        </tr>
+       </thead>
+       <tbody id="seasonBody" class="text-sm"></tbody>
+      </table>
+     </div>
+     <div id="emptySeason" class="hidden text-center py-12">
+      <p class="text-neutral-500 text-sm">No events yet</p>
+     </div>
+    </section>
+   </div>
+  </div>
+  <script>
+    const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const SHORT_DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const DEFAULT_PACK_ITEMS = ['Cleats','Helmet','Water bottle','Uniform','Snacks','Mouthguard'];
+
+    const WEEKLY_STORIES = [
+      {
+        quote: '"I\'ve failed over and over and over again in my life. And that is why I succeed."',
+        author: 'Michael Jordan',
+        story: 'Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.',
+        source: '"Driven from Within" by Michael Jordan'
+      },
+      {
+        quote: '"The only way to do great work is to love what you do."',
+        author: 'Steve Jobs',
+        story: 'Jobs was adopted and often felt like an outsider. He poured that energy into building products that connected with millions. His passion for excellence came from a deep belief that work is more than just a job—it\'s a way to leave your mark.',
+        source: 'Stanford Commencement Speech, 2005'
+      },
+      {
+        quote: '"Champions keep playing until they get it right."',
+        author: 'Billie Jean King',
+        story: 'King faced constant pressure as a female athlete in a male-dominated world. She didn\'t just compete—she transformed the sport through sheer determination and skill. She won 39 Grand Slam titles by refusing to quit when things got hard.',
+        source: '"All In" by Billie Jean King'
+      },
+      {
+        quote: '"The body achieves what the mind believes."',
+        author: 'Arnold Schwarzenegger',
+        story: 'Schwarzenegger grew up poor in Austria with limited opportunities. He visualized his future as a champion bodybuilder before he ever stepped on stage. Through relentless training and unwavering belief, he turned that mental image into reality.',
+        source: 'Biography and interviews'
+      },
+      {
+        quote: '"Excellence is not a skill, it\'s an attitude."',
+        author: 'Ralph Marston',
+        story: 'Great performers understand that excellence starts between the ears. It\'s not about being naturally talented—it\'s about showing up every day with a commitment to being better than yesterday. Small consistent improvements compound into extraordinary results.',
+        source: 'The Daily Motivator'
+      },
+      {
+        quote: '"You miss 100% of the shots you don\'t take."',
+        author: 'Wayne Gretzky',
+        story: 'Gretzky wasn\'t the biggest, strongest, or fastest skater. But he had the courage to skate to where the puck was going, not where it had been. That fearless mindset—combined with relentless effort—made him the greatest hockey player of all time.',
+        source: 'Sports biography'
+      },
+      {
+        quote: '"The only limit to our realization of tomorrow is our doubts of today."',
+        author: 'Franklin D. Roosevelt',
+        story: 'Roosevelt overcame polio that left him paralyzed from the waist down. Rather than accept defeat, he became President and led a nation through its darkest times. His refusal to accept limitations inspired millions to push past their own boundaries.',
+        source: 'Presidential speeches'
+      }
+    ];
+
+    let allEvents = [];
+    let currentWeekStart = getMonday(new Date());
+    let activeScreen = 'weekly';
+    let selectedFilter = 'all';
+    let packLists = {};
+    let packChecked = {};
+    let weeklyNotes = {};
+    let currentUserId = null;
+    let setupCode = null;
+    let currentEditingEventId = null;
+
+    const defaultConfig = {
+      app_title: 'STEELEBROZ',
+      weekly_notes: '',
+      background_color: '#000000',
+      surface_color: '#171717',
+      text_color: '#ffffff',
+      accent_color: '#3B82F6',
+      secondary_color: '#737373'
+    };
+
+    function getMonday(d) {
+      const date = new Date(d);
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      date.setDate(diff);
+      date.setHours(0,0,0,0);
+      return date;
+    }
+
+    function formatDate(d) {
+      return d.toISOString().split('T')[0];
+    }
+
+    function parseDate(s) {
+      const [y,m,d] = s.split('-').map(Number);
+      return new Date(y, m-1, d);
+    }
+
+    function formatDisplay(d) {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${months[d.getMonth()]} ${d.getDate()}`;
+    }
+
+    function formatTime12(t) {
+      if (!t) return '';
+      const [h,m] = t.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hr = h % 12 || 12;
+      return `${hr}:${m.toString().padStart(2,'0')} ${ampm}`;
+    }
+
+    // Week navigation
+    function updateWeekDisplay() {
+      const end = new Date(currentWeekStart);
+      end.setDate(end.getDate() + 6);
+      document.getElementById('weekLabel').textContent = `${formatDisplay(currentWeekStart)} – ${formatDisplay(end)}`;
+      document.getElementById('weekSub').textContent = `Week of ${currentWeekStart.getFullYear()}`;
+      renderDayChips();
+      renderWeekly();
+      updateWeeklyNotes();
+      updatePackList();
+      renderPackList();
+      renderWeeklyStory();
+    }
+
+    function renderDayChips() {
+      const container = document.getElementById('dayChips');
+      container.innerHTML = '';
+      const today = formatDate(new Date());
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(currentWeekStart);
+        d.setDate(d.getDate() + i);
+        const ds = formatDate(d);
+        const isToday = ds === today;
+        const evCount = allEvents.filter(e => e.event_date === ds && (selectedFilter === 'all' || e.child_name === selectedFilter)).length;
+        const chip = document.createElement('button');
+        chip.className = `flex flex-col items-center min-w-[44px] py-2 px-2 rounded-xl transition text-xs font-medium ${isToday ? 'bg-blue-600 text-white' : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'}`;
+        chip.innerHTML = `<span class="text-[10px] uppercase">${SHORT_DAYS[d.getDay()]}</span><span class="text-sm font-bold mt-0.5">${d.getDate()}</span>${evCount > 0 ? `<span class="w-1.5 h-1.5 rounded-full mt-1 ${isToday ? 'bg-white' : 'bg-blue-500'}"></span>` : ''}`;
+        container.appendChild(chip);
+      }
+    }
+
+    // Render weekly cards
+    function renderWeekly() {
+      const container = document.getElementById('weeklyCards');
+      const empty = document.getElementById('emptyWeek');
+      container.innerHTML = '';
+      let hasEvents = false;
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(currentWeekStart);
+        d.setDate(d.getDate() + i);
+        const ds = formatDate(d);
+        const dayEvents = allEvents.filter(e => 
+          e.event_date === ds && 
+          (!currentUserId || e.user_id === currentUserId) &&
+          (selectedFilter === 'all' || e.child_name === selectedFilter)
+        );
+        if (dayEvents.length === 0) continue;
+        hasEvents = true;
+
+        const card = document.createElement('div');
+        card.className = 'card-enter';
+        const isToday = ds === formatDate(new Date());
+
+        let eventsHtml = dayEvents.map(ev => {
+          const typeColor = ev.event_type === 'Game' ? 'bg-blue-600' : ev.event_type === 'Tournament' ? 'bg-amber-500' : 'bg-neutral-600';
+          return `<div class="flex items-center justify-between py-3 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-neutral-800' : ''}">
+            <div class="flex items-center gap-3 flex-1">
+              <div class="w-8 h-8 rounded-lg ${typeColor} flex items-center justify-center text-white text-xs font-bold">${ev.child_name ? ev.child_name.charAt(0).toUpperCase() : '?'}</div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-white">${ev.child_name || 'Unknown'}</p>
+                <p class="text-xs text-neutral-500">${ev.sport ? ev.sport : ''} ${ev.event_type ? '· ' + ev.event_type : ''} ${ev.location ? '· ' + ev.location : ''} ${ev.chaperone ? '· ' + ev.chaperone : ''}</p>
+              </div>
+            </div>
+            <span class="text-xs text-neutral-400 font-medium flex-shrink-0 mr-3">${formatTime12(ev.event_time)}</span>
+            <div class="flex items-center gap-2 ml-2">
+              <button class="edit-event-btn text-blue-500 hover:text-blue-400 transition p-1.5 bg-blue-600/20 rounded-lg" data-event-id="${ev.__backendId}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+              <button class="del-event-btn text-red-500 hover:text-red-400 transition p-1.5 bg-red-600/20 rounded-lg" data-event-id="${ev.__backendId}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </div>`;
+        }).join('');
+
+        card.innerHTML = `<div class="bg-neutral-900 rounded-2xl p-5 border ${isToday ? 'border-blue-600' : 'border-neutral-800'}">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-xs tracking-tight">${DAYS[d.getDay()].toUpperCase()} — ${formatDisplay(d).toUpperCase()}</h3>
+            ${isToday ? '<span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">TODAY</span>' : ''}
+          </div>
+          ${eventsHtml}
+        </div>`;
+        container.appendChild(card);
+      }
+
+      setTimeout(() => {
+        container.querySelectorAll('.edit-event-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const eventId = btn.dataset.eventId;
+            openEditModal(eventId);
+          });
+        });
+        container.querySelectorAll('.del-event-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const eventId = btn.dataset.eventId;
+            const ev = allEvents.find(e => e.__backendId === eventId);
+            if (!ev) return;
+            btn.innerHTML = '<span class="animate-pulse">...</span>';
+            btn.disabled = true;
+            const result = await window.dataSdk.delete(ev);
+            if (result.isError) {
+              btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
+              btn.disabled = false;
+            }
+            lucide.createIcons();
+          });
+        });
+      }, 0);
+
+      empty.classList.toggle('hidden', hasEvents);
+    }
+
+    // Render season table
+    function renderSeason() {
+      const body = document.getElementById('seasonBody');
+      const empty = document.getElementById('emptySeason');
+      body.innerHTML = '';
+
+      const filtered = allEvents.filter(e => 
+        (!currentUserId || e.user_id === currentUserId) &&
+        (selectedFilter === 'all' || e.child_name === selectedFilter)
+      );
+      const sorted = [...filtered].sort((a,b) => (a.event_date || '').localeCompare(b.event_date || ''));
+
+      if (sorted.length === 0) {
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      sorted.forEach(ev => {
+        const d = ev.event_date ? parseDate(ev.event_date) : null;
+        const row = document.createElement('tr');
+        row.className = 'border-b border-neutral-800 hover:bg-neutral-900 transition';
+        row.innerHTML = `
+          <td class="py-3 px-2 text-white font-medium">${ev.child_name || '—'}</td>
+          <td class="py-3 px-2 text-neutral-400">${ev.sport || '—'}</td>
+          <td class="py-3 px-2 text-neutral-400">${ev.event_date || '—'}</td>
+          <td class="py-3 px-2 text-neutral-400">${d ? SHORT_DAYS[d.getDay()] : '—'}</td>
+          <td class="py-3 px-2 text-neutral-400">${formatTime12(ev.event_time)}</td>
+          <td class="py-3 px-2 text-neutral-400">${ev.location || '—'}</td>
+          <td class="py-3 px-2 text-neutral-400">${ev.chaperone || '—'}</td>
+          <td class="py-3 px-2"><span class="text-xs px-2 py-1 rounded-lg ${ev.event_type === 'Game' ? 'bg-blue-600/20 text-blue-400' : ev.event_type === 'Tournament' ? 'bg-amber-500/20 text-amber-400' : 'bg-neutral-700/50 text-neutral-300'} font-medium">${ev.event_type || '—'}</span></td>
+          <td class="py-3 px-2 text-center"><button class="season-edit-btn text-blue-500 hover:text-blue-400 transition p-1.5 bg-blue-600/20 rounded-lg mr-1" data-id="${ev.__backendId}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-500 hover:text-red-400 transition p-1.5 bg-red-600/20 rounded-lg" data-id="${ev.__backendId}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button></td>
+        `;
+        body.appendChild(row);
+      });
+      lucide.createIcons();
+
+      body.querySelectorAll('.season-edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const eventId = btn.dataset.id;
+          openEditModal(eventId);
+        });
+      });
+
+      body.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const ev = allEvents.find(e => e.__backendId === id);
+          if (!ev) return;
+          btn.innerHTML = '<span class="text-xs">...</span>';
+          const result = await window.dataSdk.delete(ev);
+          if (result.isError) {
+            btn.innerHTML = '<span class="text-xs text-red-500">Error</span>';
+          }
+        });
+      });
+    }
+
+    // Pack list
+    function renderPackList() {
+      const container = document.getElementById('packList');
+      container.innerHTML = '';
+      const weekKey = formatDate(currentWeekStart);
+      const weekPackItems = packLists[weekKey] || [...DEFAULT_PACK_ITEMS];
+      const weekChecks = packChecked[weekKey] || {};
+      
+      weekPackItems.forEach((item, idx) => {
+        const checked = weekChecks[item] || false;
+        const div = document.createElement('label');
+        div.className = 'flex items-center justify-between gap-3 cursor-pointer group py-2';
+        div.innerHTML = `
+          <div class="flex items-center gap-3 flex-1">
+            <div class="w-5 h-5 rounded-md border ${checked ? 'bg-blue-600 border-blue-600' : 'border-neutral-600 group-hover:border-neutral-400'} flex items-center justify-center transition">
+              ${checked ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
+            </div>
+            <span class="${checked ? 'text-neutral-500 line-through' : 'text-neutral-300'} text-sm transition">${item}</span>
+          </div>
+          <button class="del-pack-btn text-neutral-600 hover:text-red-500 transition p-1" data-index="${idx}" type="button">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        `;
+        const checkArea = div.querySelector('div:first-child');
+        checkArea.addEventListener('click', (e) => {
+          e.preventDefault();
+          const weekKey = formatDate(currentWeekStart);
+          if (!packChecked[weekKey]) packChecked[weekKey] = {};
+          packChecked[weekKey][item] = !packChecked[weekKey][item];
+          renderPackList();
+        });
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll('.del-pack-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const idx = parseInt(btn.dataset.index);
+          const weekKey = formatDate(currentWeekStart);
+          const weekPackItems = packLists[weekKey] || [...DEFAULT_PACK_ITEMS];
+          const itemToRemove = weekPackItems[idx];
+          weekPackItems.splice(idx, 1);
+          packLists[weekKey] = weekPackItems;
+          if (packChecked[weekKey] && packChecked[weekKey][itemToRemove]) {
+            delete packChecked[weekKey][itemToRemove];
+          }
+          renderPackList();
+        });
+      });
+
+      lucide.createIcons();
+    }
+
+    function updatePackList() {
+      const weekKey = formatDate(currentWeekStart);
+      if (!packLists[weekKey]) {
+        packLists[weekKey] = [...DEFAULT_PACK_ITEMS];
+      }
+    }
+
+    function updateWeeklyNotes() {
+      const weekKey = formatDate(currentWeekStart);
+      const notesInput = document.getElementById('weeklyNotes');
+      notesInput.value = weeklyNotes[weekKey] || '';
+    }
+
+    function saveWeeklyNotes(text) {
+      const weekKey = formatDate(currentWeekStart);
+      weeklyNotes[weekKey] = text;
+    }
+
+    function renderWeeklyStory() {
+      const epoch = new Date(2024, 0, 1);
+      const weekNumber = Math.floor((currentWeekStart.getTime() - epoch.getTime()) / (7 * 24 * 60 * 60 * 1000));
+      const storyIndex = weekNumber % WEEKLY_STORIES.length;
+      const currentStory = WEEKLY_STORIES[storyIndex];
+      
+      const quoteSection = document.querySelector('[id="storyContent"]').parentElement;
+      const quoteEl = quoteSection.querySelector('p:first-of-type');
+      const authorEl = quoteSection.querySelector('p:nth-of-type(2)');
+      const storyText = document.querySelector('#storyContent p:first-of-type');
+      const sourceText = document.querySelector('#storyContent p:last-of-type');
+      
+      if (quoteEl) quoteEl.textContent = currentStory.quote;
+      if (authorEl) authorEl.textContent = `— ${currentStory.author}`;
+      if (storyText) storyText.textContent = currentStory.story;
+      if (sourceText) sourceText.textContent = `Source: ${currentStory.source}`;
+    }
+
+    function updateKidFilter() {
+      const select = document.getElementById('kidFilter');
+      const names = [...new Set(allEvents
+        .filter(e => e.user_id === currentUserId && e.child_name)
+        .map(e => e.child_name))];
+      const current = select.value;
+      select.innerHTML = '<option value="all">All Athletes</option>';
+      names.sort().forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n;
+        opt.textContent = n;
+        select.appendChild(opt);
+      });
+      if (names.includes(current) || current === 'all') select.value = current;
+    }
+
+    // Tab switching
+    document.querySelectorAll('.screen-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const screen = tab.dataset.screen;
+        activeScreen = screen;
+        document.querySelectorAll('.screen-tab').forEach(t => t.className = t.className.replace('tab-active','tab-inactive'));
+        tab.className = tab.className.replace('tab-inactive','tab-active');
+        document.getElementById('screen-weekly').classList.toggle('hidden', screen !== 'weekly');
+        document.getElementById('screen-control').classList.toggle('hidden', screen !== 'control');
+        document.getElementById('screen-season').classList.toggle('hidden', screen !== 'season');
+        if (screen === 'weekly') {
+          renderWeekly();
+          renderDayChips();
+        } else if (screen === 'season') {
+          renderSeason();
+        }
+      });
+    });
+
+    // Week nav
+    document.getElementById('prevWeek').addEventListener('click', () => {
+      currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+      updateWeekDisplay();
+    });
+    document.getElementById('nextWeek').addEventListener('click', () => {
+      currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+      updateWeekDisplay();
+    });
+
+    // Kid filter
+    document.getElementById('kidFilter').addEventListener('change', (e) => {
+      selectedFilter = e.target.value;
+      renderWeekly();
+      renderDayChips();
+      if (activeScreen === 'season') renderSeason();
+    });
+
+    // Story toggle
+    document.getElementById('storyToggle').addEventListener('click', () => {
+      const content = document.getElementById('storyContent');
+      const btn = document.getElementById('storyToggle');
+      content.classList.toggle('hidden');
+      btn.innerHTML = content.classList.contains('hidden')
+        ? '<i data-lucide="book-open" class="w-3 h-3"></i> Read Story'
+        : '<i data-lucide="book-open" class="w-3 h-3"></i> Close Story';
+      lucide.createIcons();
+    });
+
+    // Add pack item
+    document.getElementById('addPackBtn').addEventListener('click', () => {
+      const input = document.getElementById('newPackItem');
+      const item = input.value.trim();
+      if (!item) return;
+      const weekKey = formatDate(currentWeekStart);
+      const weekPackItems = packLists[weekKey] || [...DEFAULT_PACK_ITEMS];
+      if (!weekPackItems.includes(item)) {
+        weekPackItems.push(item);
+        packLists[weekKey] = weekPackItems;
+        renderPackList();
+      }
+      input.value = '';
+    });
+
+    document.getElementById('newPackItem').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('addPackBtn').click();
+      }
+    });
+
+    // Add event
+    document.getElementById('addEventBtn').addEventListener('click', async () => {
+      const child = document.getElementById('inputChild').value.trim();
+      const date = document.getElementById('inputDate').value;
+      const time = document.getElementById('inputTime').value;
+      const loc = document.getElementById('inputLocation').value.trim();
+      const type = document.getElementById('inputType').value;
+      const status = document.getElementById('addStatus');
+
+      if (!child || !date) {
+        status.textContent = 'Athlete name and date are required';
+        status.className = 'text-center text-xs text-red-400 mt-2';
+        status.classList.remove('hidden');
+        return;
+      }
+
+      const userEventCount = allEvents.filter(e => e.user_id === currentUserId).length;
+      if (userEventCount >= 999) {
+        status.textContent = 'Maximum 999 events reached. Delete some first.';
+        status.className = 'text-center text-xs text-amber-400 mt-2';
+        status.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('addEventBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="animate-pulse">Adding...</span>';
+
+      const chaperone = document.getElementById('inputChaperone').value.trim();
+
+        const result = await window.dataSdk.create({
+        child_name: child || '',
+        event_date: date || '',
+        event_time: time || '',
+        location: loc || '',
+        event_type: type || 'Practice',
+        chaperone: chaperone || '',
+        sport: document.getElementById('inputSport').value.trim() || '',
+        user_id: currentUserId || ''
+      });
+
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="plus" class="w-4 h-4"></i> Add to Schedule';
+      lucide.createIcons();
+
+      if (result.isOk) {
+        status.textContent = 'Event added ✓';
+        status.className = 'text-center text-xs text-green-400 mt-2';
+        document.getElementById('inputChild').value = '';
+        document.getElementById('inputChaperone').value = '';
+        document.getElementById('inputLocation').value = '';
+      } else {
+        status.textContent = 'Failed to add event. Try again.';
+        status.className = 'text-center text-xs text-red-400 mt-2';
+      }
+      status.classList.remove('hidden');
+      setTimeout(() => status.classList.add('hidden'), 2500);
+    });
+
+    // Edit event modal functions
+    function openEditModal(eventId) {
+      const event = allEvents.find(e => e.__backendId === eventId);
+      if (!event) return;
+      
+      currentEditingEventId = eventId;
+      document.getElementById('editChild').value = event.child_name || '';
+      document.getElementById('editSport').value = event.sport || '';
+      document.getElementById('editType').value = event.event_type || 'Practice';
+      document.getElementById('editChaperone').value = event.chaperone || '';
+      document.getElementById('editDate').value = event.event_date || '';
+      document.getElementById('editTime').value = event.event_time || '';
+      document.getElementById('editLocation').value = event.location || '';
+      
+      document.getElementById('editEventModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editEventModal').classList.add('hidden');
+      currentEditingEventId = null;
+    }
+
+    document.getElementById('editEventCancelBtn').addEventListener('click', closeEditModal);
+
+    document.getElementById('editEventSaveBtn').addEventListener('click', async () => {
+      if (!currentEditingEventId) return;
+      
+      const event = allEvents.find(e => e.__backendId === currentEditingEventId);
+      if (!event) return;
+      
+      const saveBtn = document.getElementById('editEventSaveBtn');
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="animate-pulse">Saving...</span>';
+      
+      const updatedEvent = {
+        ...event,
+        child_name: document.getElementById('editChild').value.trim(),
+        sport: document.getElementById('editSport').value.trim(),
+        event_type: document.getElementById('editType').value,
+        chaperone: document.getElementById('editChaperone').value.trim(),
+        event_date: document.getElementById('editDate').value,
+        event_time: document.getElementById('editTime').value,
+        location: document.getElementById('editLocation').value.trim()
+      };
+      
+      const result = await window.dataSdk.update(updatedEvent);
+      
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
+      lucide.createIcons();
+      
+      if (result.isOk) {
+        closeEditModal();
+      }
+    });
+
+    // Data handler
+    const dataHandler = {
+      onDataChanged(data) {
+        allEvents = data;
+        const filteredEvents = data.filter(e => e.user_id === currentUserId);
+        if (filteredEvents.length > 0 || currentUserId) {
+          updateKidFilter();
+          renderWeekly();
+          renderDayChips();
+          if (activeScreen === 'season') renderSeason();
+        }
+      }
+    };
+
+    // Element SDK
+    function applyConfig(config) {
+      const bg = config.background_color || defaultConfig.background_color;
+      const text = config.text_color || defaultConfig.text_color;
+      const accent = config.accent_color || defaultConfig.accent_color;
+
+      document.body.style.backgroundColor = bg;
+      document.body.style.color = text;
+      document.querySelectorAll('header, nav').forEach(el => el.style.backgroundColor = bg);
+
+      document.querySelectorAll('.tab-active').forEach(el => {
+        el.style.color = accent;
+        el.style.borderBottomColor = accent;
+      });
+    }
+
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => { applyConfig(config); },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+          { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
+          { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => { config.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); } }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family || 'DM Sans',
+          set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size || 14,
+          set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+        }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['app_title', config.app_title || defaultConfig.app_title],
+        ['weekly_notes', config.weekly_notes || defaultConfig.weekly_notes]
+      ])
+    });
+
+    // Notes sync
+    document.getElementById('weeklyNotes').addEventListener('input', (e) => {
+      saveWeeklyNotes(e.target.value);
+      window.elementSdk.setConfig({ weekly_notes: e.target.value });
+    });
+
+    // Init data SDK
+    (async () => {
+      const result = await window.dataSdk.init(dataHandler);
+      if (result.isError) console.error('Data SDK init failed');
+    })();
+
+    // Install prompt - device buttons
+    document.querySelectorAll('.device-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const steps = btn.nextElementSibling;
+        if (!steps) return;
+        const allSteps = document.querySelectorAll('.device-steps');
+        allSteps.forEach(s => {
+          if (s !== steps) s.classList.add('hidden');
+        });
+        steps.classList.toggle('hidden');
+        const icon = btn.querySelector('i:last-child');
+        if (icon) {
+          icon.style.transform = steps.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+      });
+    });
+
+    // App setup modal controls
+    document.getElementById('openAppSetupBtn').addEventListener('click', () => {
+      document.getElementById('appSetupModal').classList.remove('hidden');
+    });
+
+    document.getElementById('closeAppSetupBtn').addEventListener('click', () => {
+      document.getElementById('appSetupModal').classList.add('hidden');
+    });
+
+    document.getElementById('restoreAppSetupBtn').addEventListener('click', () => {
+      document.getElementById('appSetupModal').classList.remove('hidden');
+    });
+
+    // Welcome modal controls
+    document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
+      document.getElementById('welcomeModal').classList.add('hidden');
+      document.getElementById('displayCode').textContent = setupCode;
+      document.getElementById('codeDisplayModal').classList.remove('hidden');
+      document.getElementById('restoreButtons').classList.remove('hidden');
+    });
+
+    document.getElementById('closeWelcomeMainBtn').addEventListener('click', () => {
+      document.getElementById('welcomeModal').classList.add('hidden');
+      document.getElementById('displayCode').textContent = setupCode;
+      document.getElementById('codeDisplayModal').classList.remove('hidden');
+      document.getElementById('restoreButtons').classList.remove('hidden');
+    });
+
+    document.getElementById('helpBtn').addEventListener('click', () => {
+      document.getElementById('welcomeModal').classList.remove('hidden');
+    });
+
+    // Install prompt
+    document.getElementById('dismissInstall').addEventListener('click', () => {
+      const prompt = document.getElementById('installPrompt');
+      const restore = document.getElementById('restoreButtons');
+      prompt.style.display = 'none';
+      restore.classList.remove('hidden');
+      localStorage.setItem('installPromptDismissed', 'true');
+    });
+
+    document.getElementById('restoreSettingsBtn').addEventListener('click', () => {
+      document.getElementById('viewCodeModal').classList.remove('hidden');
+      document.getElementById('viewCode').textContent = setupCode || 'No code';
+    });
+
+    document.getElementById('closeViewCodeBtn').addEventListener('click', () => {
+      document.getElementById('viewCodeModal').classList.add('hidden');
+    });
+
+    document.getElementById('newScheduleBtn').addEventListener('click', () => {
+      localStorage.removeItem('commandCenterUserId');
+      localStorage.removeItem('commandCenterSetupCode');
+      allEvents = [];
+      setupCode = null;
+      currentUserId = null;
+      
+      document.getElementById('viewCodeModal').classList.add('hidden');
+      location.reload();
+    });
+
+    document.getElementById('copyViewCodeBtn').addEventListener('click', () => {
+      const textArea = document.createElement('textarea');
+      textArea.value = setupCode;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '0';
+      textArea.style.top = '0';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+      document.body.removeChild(textArea);
+      
+      const status = document.getElementById('copyViewStatus');
+      status.classList.remove('hidden');
+      setTimeout(() => status.classList.add('hidden'), 2000);
+    });
+
+    if (localStorage.getItem('installPromptDismissed')) {
+      document.getElementById('installPrompt').style.display = 'none';
+      document.getElementById('restoreButtons').classList.remove('hidden');
+    }
+
+    // Init UI
+    updateWeekDisplay();
+    renderPackList();
+    lucide.createIcons();
+
+    function generateSetupCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    // Create new setup
+    document.getElementById('createBtn').addEventListener('click', () => {
+      const newCode = generateSetupCode();
+      setupCode = newCode;
+      currentUserId = newCode;
+      
+      localStorage.setItem('commandCenterSetupCode', setupCode);
+      localStorage.setItem('commandCenterUserId', currentUserId);
+      
+      document.getElementById('setupModal').classList.add('hidden');
+      document.getElementById('welcomeModal').classList.remove('hidden');
+      document.getElementById('displayCode').textContent = setupCode;
+      
+      lucide.createIcons();
+    });
+
+    // Copy code handler
+    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+      const textArea = document.createElement('textarea');
+      textArea.value = setupCode;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '0';
+      textArea.style.top = '0';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+      document.body.removeChild(textArea);
+      
+      const status = document.getElementById('copyStatus');
+      status.classList.remove('hidden');
+      setTimeout(() => status.classList.add('hidden'), 2000);
+    });
+
+    // Start using handler
+    document.getElementById('startUsingBtn').addEventListener('click', () => {
+      document.getElementById('codeDisplayModal').classList.add('hidden');
+      updateWeekDisplay();
+      renderPackList();
+      lucide.createIcons();
+    });
+
+    // Join existing setup
+    document.getElementById('joinBtn').addEventListener('click', () => {
+      const code = document.getElementById('codeInput').value.trim().toUpperCase();
+      const status = document.getElementById('joinStatus');
+      
+      if (!code || code.length !== 6) {
+        status.textContent = 'Please enter a valid 6-character code';
+        status.className = 'text-xs text-center text-red-400';
+        status.classList.remove('hidden');
+        return;
+      }
+      
+      setupCode = code;
+      currentUserId = code;
+      
+      localStorage.setItem('commandCenterSetupCode', setupCode);
+      localStorage.setItem('commandCenterUserId', currentUserId);
+      
+      status.textContent = 'Connected! ✓';
+      status.className = 'text-xs text-center text-green-400';
+      status.classList.remove('hidden');
+      
+      setTimeout(() => {
+        document.getElementById('setupModal').classList.add('hidden');
+        updateWeekDisplay();
+        renderPackList();
+        lucide.createIcons();
+      }, 1000);
+    });
+
+    // Allow Enter key in code input
+    document.getElementById('codeInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('joinBtn').click();
+      }
+    });
+
+    // Auto-generate unique user session ID
+    (function initSession() {
+      let storedUserId = localStorage.getItem('commandCenterUserId');
+      let storedCode = localStorage.getItem('commandCenterSetupCode');
+      
+      if (!storedUserId) {
+        currentUserId = null;
+        setupCode = null;
+        document.getElementById('setupModal').classList.remove('hidden');
+      } else {
+        currentUserId = storedUserId;
+        setupCode = storedCode;
+        document.getElementById('setupModal').classList.add('hidden');
+        // Show welcome modal on first use
+        if (!localStorage.getItem('welcomeShown')) {
+          document.getElementById('welcomeModal').classList.remove('hidden');
+          localStorage.setItem('welcomeShown', 'true');
+        }
+      }
+    })();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e272de8608d7432',t:'MTc3NDUzODg0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
