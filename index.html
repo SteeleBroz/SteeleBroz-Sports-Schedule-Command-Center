@@ -6,8 +6,7 @@
   <title>SteeleBroz Game Week Command Center</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
   <style>
     html, body { height: 100%; margin: 0; }
@@ -315,6 +314,16 @@
    </div>
   </div>
   <script>
+    // ==========================================
+    // SUPABASE DIRECT CONNECTION
+    // ==========================================
+    const SUPABASE_URL = 'https://mdelkultmvadmbkjlpkx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZWxrdWx0bXZhZG1ia2pscGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDY1MjYsImV4cCI6MjA5MDEyMjUyNn0.F9RcEGQA9mirNrgIAS5T655Um2043siSHLup1SVjx2A';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ==========================================
+    // CONSTANTS
+    // ==========================================
     const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const SHORT_DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const DEFAULT_PACK_ITEMS = ['Cleats','Helmet','Water bottle','Uniform','Snacks','Mouthguard'];
@@ -364,6 +373,9 @@
       }
     ];
 
+    // ==========================================
+    // STATE
+    // ==========================================
     let allEvents = [];
     let currentWeekStart = getMonday(new Date());
     let activeScreen = 'weekly';
@@ -385,6 +397,9 @@
       secondary_color: '#737373'
     };
 
+    // ==========================================
+    // UTILITY FUNCTIONS
+    // ==========================================
     function getMonday(d) {
       const date = new Date(d);
       const day = date.getDay();
@@ -416,7 +431,113 @@
       return `${hr}:${m.toString().padStart(2,'0')} ${ampm}`;
     }
 
-    // Week navigation
+    function generateBackendId() {
+      return Date.now().toString() + Math.random().toString(36).substr(2, 10);
+    }
+
+    // ==========================================
+    // SUPABASE DATA FUNCTIONS (replaces data_sdk.js)
+    // ==========================================
+    async function loadEvents() {
+      if (!currentUserId) return;
+      const { data, error } = await supabase
+        .from('steelebroz_events')
+        .select('*')
+        .eq('setup_code', currentUserId)
+        .order('event_date', { ascending: true });
+
+      if (error) {
+        console.error('Failed to load events:', error);
+        return;
+      }
+
+      // Map DB rows to the format the UI expects
+      allEvents = (data || []).map(row => ({
+        __backendId: row.backend_id,
+        child_name: row.child_name || '',
+        event_date: row.event_date || '',
+        event_time: row.event_time || '',
+        location: row.location || '',
+        event_type: row.event_type || 'Practice',
+        chaperone: row.chaperone || '',
+        sport: row.sport || '',
+        user_id: row.setup_code || ''
+      }));
+
+      updateKidFilter();
+      renderWeekly();
+      renderDayChips();
+      if (activeScreen === 'season') renderSeason();
+    }
+
+    async function createEvent(eventData) {
+      const backendId = generateBackendId();
+      const { data, error } = await supabase
+        .from('steelebroz_events')
+        .insert({
+          backend_id: backendId,
+          setup_code: currentUserId,
+          child_name: eventData.child_name || '',
+          event_date: eventData.event_date || '',
+          event_time: eventData.event_time || '',
+          location: eventData.location || '',
+          event_type: eventData.event_type || 'Practice',
+          chaperone: eventData.chaperone || '',
+          sport: eventData.sport || ''
+        })
+        .select();
+
+      if (error) {
+        console.error('Failed to create event:', error);
+        return { isOk: false, isError: true };
+      }
+
+      await loadEvents();
+      return { isOk: true, isError: false };
+    }
+
+    async function updateEvent(eventData) {
+      const { data, error } = await supabase
+        .from('steelebroz_events')
+        .update({
+          child_name: eventData.child_name || '',
+          event_date: eventData.event_date || '',
+          event_time: eventData.event_time || '',
+          location: eventData.location || '',
+          event_type: eventData.event_type || 'Practice',
+          chaperone: eventData.chaperone || '',
+          sport: eventData.sport || '',
+          updated_at: new Date().toISOString()
+        })
+        .eq('backend_id', eventData.__backendId);
+
+      if (error) {
+        console.error('Failed to update event:', error);
+        return { isOk: false, isError: true };
+      }
+
+      await loadEvents();
+      return { isOk: true, isError: false };
+    }
+
+    async function deleteEvent(eventData) {
+      const { data, error } = await supabase
+        .from('steelebroz_events')
+        .delete()
+        .eq('backend_id', eventData.__backendId);
+
+      if (error) {
+        console.error('Failed to delete event:', error);
+        return { isOk: false, isError: true };
+      }
+
+      await loadEvents();
+      return { isOk: true, isError: false };
+    }
+
+    // ==========================================
+    // WEEK NAVIGATION
+    // ==========================================
     function updateWeekDisplay() {
       const end = new Date(currentWeekStart);
       end.setDate(end.getDate() + 6);
@@ -447,7 +568,9 @@
       }
     }
 
-    // Render weekly cards
+    // ==========================================
+    // RENDER WEEKLY CARDS
+    // ==========================================
     function renderWeekly() {
       const container = document.getElementById('weeklyCards');
       const empty = document.getElementById('emptyWeek');
@@ -514,7 +637,7 @@
             if (!ev) return;
             btn.innerHTML = '<span class="animate-pulse">...</span>';
             btn.disabled = true;
-            const result = await window.dataSdk.delete(ev);
+            const result = await deleteEvent(ev);
             if (result.isError) {
               btn.innerHTML = '<i data-lucide="trash-2" class="w-4 h-4"></i>';
               btn.disabled = false;
@@ -527,7 +650,9 @@
       empty.classList.toggle('hidden', hasEvents);
     }
 
-    // Render season table
+    // ==========================================
+    // RENDER SEASON TABLE
+    // ==========================================
     function renderSeason() {
       const body = document.getElementById('seasonBody');
       const empty = document.getElementById('emptySeason');
@@ -577,7 +702,7 @@
           const ev = allEvents.find(e => e.__backendId === id);
           if (!ev) return;
           btn.innerHTML = '<span class="text-xs">...</span>';
-          const result = await window.dataSdk.delete(ev);
+          const result = await deleteEvent(ev);
           if (result.isError) {
             btn.innerHTML = '<span class="text-xs text-red-500">Error</span>';
           }
@@ -585,7 +710,9 @@
       });
     }
 
-    // Pack list
+    // ==========================================
+    // PACK LIST
+    // ==========================================
     function renderPackList() {
       const container = document.getElementById('packList');
       container.innerHTML = '';
@@ -690,7 +817,9 @@
       if (names.includes(current) || current === 'all') select.value = current;
     }
 
-    // Tab switching
+    // ==========================================
+    // TAB SWITCHING
+    // ==========================================
     document.querySelectorAll('.screen-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         const screen = tab.dataset.screen;
@@ -709,7 +838,9 @@
       });
     });
 
-    // Week nav
+    // ==========================================
+    // WEEK NAVIGATION
+    // ==========================================
     document.getElementById('prevWeek').addEventListener('click', () => {
       currentWeekStart.setDate(currentWeekStart.getDate() - 7);
       updateWeekDisplay();
@@ -738,7 +869,9 @@
       lucide.createIcons();
     });
 
-    // Add pack item
+    // ==========================================
+    // ADD PACK ITEM
+    // ==========================================
     document.getElementById('addPackBtn').addEventListener('click', () => {
       const input = document.getElementById('newPackItem');
       const item = input.value.trim();
@@ -759,7 +892,9 @@
       }
     });
 
-    // Add event
+    // ==========================================
+    // ADD EVENT
+    // ==========================================
     document.getElementById('addEventBtn').addEventListener('click', async () => {
       const child = document.getElementById('inputChild').value.trim();
       const date = document.getElementById('inputDate').value;
@@ -789,7 +924,7 @@
 
       const chaperone = document.getElementById('inputChaperone').value.trim();
 
-        const result = await window.dataSdk.create({
+      const result = await createEvent({
         child_name: child || '',
         event_date: date || '',
         event_time: time || '',
@@ -818,7 +953,9 @@
       setTimeout(() => status.classList.add('hidden'), 2500);
     });
 
-    // Edit event modal functions
+    // ==========================================
+    // EDIT EVENT MODAL
+    // ==========================================
     function openEditModal(eventId) {
       const event = allEvents.find(e => e.__backendId === eventId);
       if (!event) return;
@@ -863,7 +1000,7 @@
         location: document.getElementById('editLocation').value.trim()
       };
       
-      const result = await window.dataSdk.update(updatedEvent);
+      const result = await updateEvent(updatedEvent);
       
       saveBtn.disabled = false;
       saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Save';
@@ -874,76 +1011,16 @@
       }
     });
 
-    // Data handler
-    const dataHandler = {
-      onDataChanged(data) {
-        allEvents = data;
-        const filteredEvents = data.filter(e => e.user_id === currentUserId);
-        if (filteredEvents.length > 0 || currentUserId) {
-          updateKidFilter();
-          renderWeekly();
-          renderDayChips();
-          if (activeScreen === 'season') renderSeason();
-        }
-      }
-    };
-
-    // Element SDK
-    function applyConfig(config) {
-      const bg = config.background_color || defaultConfig.background_color;
-      const text = config.text_color || defaultConfig.text_color;
-      const accent = config.accent_color || defaultConfig.accent_color;
-
-      document.body.style.backgroundColor = bg;
-      document.body.style.color = text;
-      document.querySelectorAll('header, nav').forEach(el => el.style.backgroundColor = bg);
-
-      document.querySelectorAll('.tab-active').forEach(el => {
-        el.style.color = accent;
-        el.style.borderBottomColor = accent;
-      });
-    }
-
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (config) => { applyConfig(config); },
-      mapToCapabilities: (config) => ({
-        recolorables: [
-          { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-          { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-          { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-          { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
-          { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => { config.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); } }
-        ],
-        borderables: [],
-        fontEditable: {
-          get: () => config.font_family || defaultConfig.font_family || 'DM Sans',
-          set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-        },
-        fontSizeable: {
-          get: () => config.font_size || defaultConfig.font_size || 14,
-          set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
-        }
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['app_title', config.app_title || defaultConfig.app_title],
-        ['weekly_notes', config.weekly_notes || defaultConfig.weekly_notes]
-      ])
-    });
-
-    // Notes sync
+    // ==========================================
+    // NOTES SYNC
+    // ==========================================
     document.getElementById('weeklyNotes').addEventListener('input', (e) => {
       saveWeeklyNotes(e.target.value);
-      window.elementSdk.setConfig({ weekly_notes: e.target.value });
     });
 
-    // Init data SDK
-    (async () => {
-      const result = await window.dataSdk.init(dataHandler);
-      if (result.isError) console.error('Data SDK init failed');
-    })();
-
-    // Install prompt - device buttons
+    // ==========================================
+    // INSTALL PROMPT & DEVICE BUTTONS
+    // ==========================================
     document.querySelectorAll('.device-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const steps = btn.nextElementSibling;
@@ -1053,6 +1130,9 @@
     renderPackList();
     lucide.createIcons();
 
+    // ==========================================
+    // SETUP CODE GENERATION & SESSION
+    // ==========================================
     function generateSetupCode() {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let code = '';
@@ -1075,6 +1155,7 @@
       document.getElementById('welcomeModal').classList.remove('hidden');
       document.getElementById('displayCode').textContent = setupCode;
       
+      loadEvents();
       lucide.createIcons();
     });
 
@@ -1133,6 +1214,7 @@
       
       setTimeout(() => {
         document.getElementById('setupModal').classList.add('hidden');
+        loadEvents();
         updateWeekDisplay();
         renderPackList();
         lucide.createIcons();
@@ -1159,6 +1241,8 @@
         currentUserId = storedUserId;
         setupCode = storedCode;
         document.getElementById('setupModal').classList.add('hidden');
+        // Load events from Supabase
+        loadEvents();
         // Show welcome modal on first use
         if (!localStorage.getItem('welcomeShown')) {
           document.getElementById('welcomeModal').classList.remove('hidden');
@@ -1167,5 +1251,5 @@
       }
     })();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e272de8608d7432',t:'MTc3NDUzODg0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </body>
 </html>
