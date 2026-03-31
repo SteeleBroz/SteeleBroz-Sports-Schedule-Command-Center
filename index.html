@@ -319,7 +319,7 @@
     // ==========================================
     const SUPABASE_URL = 'https://mdelkultmvadmbkjlpkx.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZWxrdWx0bXZhZG1ia2pscGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDY1MjYsImV4cCI6MjA5MDEyMjUyNn0.F9RcEGQA9mirNrgIAS5T655Um2043siSHLup1SVjx2A';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ==========================================
     // CONSTANTS
@@ -440,7 +440,7 @@
     // ==========================================
     async function loadEvents() {
       if (!currentUserId) return;
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('steelebroz_events')
         .select('*')
         .eq('setup_code', currentUserId)
@@ -472,7 +472,7 @@
 
     async function createEvent(eventData) {
       const backendId = generateBackendId();
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('steelebroz_events')
         .insert({
           backend_id: backendId,
@@ -497,7 +497,7 @@
     }
 
     async function updateEvent(eventData) {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('steelebroz_events')
         .update({
           child_name: eventData.child_name || '',
@@ -521,7 +521,7 @@
     }
 
     async function deleteEvent(eventData) {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('steelebroz_events')
         .delete()
         .eq('backend_id', eventData.__backendId);
