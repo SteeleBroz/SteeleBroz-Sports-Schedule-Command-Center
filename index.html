@@ -116,12 +116,12 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 
 <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
 <div class="flex gap-3">
-<div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="brain" class="w-4 h-4 text-green-500"></i>
+<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="camera" class="w-4 h-4 text-[#0069FF]"></i>
 </div>
 <div>
-<p class="font-medium text-gray-900 text-sm mb-1">🤖 AI Extract (Recommended)</p>
-<p class="text-xs text-gray-500">Take a photo → Enter athlete name → Copy our prompt → Paste in ChatGPT or Gemini → Import with pre-filled names → Done!</p>
+<p class="font-medium text-gray-900 text-sm mb-1">📸 Photo Import (Recommended)</p>
+<p class="text-xs text-gray-500">Snap a photo → Copy our prompt → Paste in ChatGPT or Gemini → Import your schedule. Done!</p>
 </div>
 </div>
 </div>
@@ -132,20 +132,8 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <i data-lucide="edit" class="w-4 h-4 text-[#0069FF]"></i>
 </div>
 <div>
-<p class="font-medium text-gray-900 text-sm mb-1">✏️ Manual Input</p>
-<p class="text-xs text-gray-500">Build your schedule directly in the app with an easy grid. Add rows, fill out details, and import when ready. Perfect for smaller schedules.</p>
-</div>
-</div>
-</div>
-
-<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
-<div class="flex gap-3">
-<div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="file-text" class="w-4 h-4 text-purple-500"></i>
-</div>
-<div>
-<p class="font-medium text-gray-900 text-sm mb-1">📁 Upload CSV</p>
-<p class="text-xs text-gray-500">Download our template → Fill it out in Excel or Google Sheets → Upload the file → Review and import. Great for coaches and advanced users.</p>
+<p class="font-medium text-gray-900 text-sm mb-1">✏️ Add One by One</p>
+<p class="text-xs text-gray-500">Enter events manually with an easy grid. Add rows, fill out details, and import when ready. Best for a few quick additions.</p>
 </div>
 </div>
 </div>
@@ -156,8 +144,8 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <i data-lucide="repeat" class="w-4 h-4 text-orange-500"></i>
 </div>
 <div>
-<p class="font-medium text-gray-900 text-sm mb-1">⚡ Recurring Practice</p>
-<p class="text-xs text-gray-500">Coach says "practice is Tuesdays & Thursdays at 5:30" but no detailed schedule? Generate an entire season of practices instantly!</p>
+<p class="font-medium text-gray-900 text-sm mb-1">🔁 Recurring Schedule</p>
+<p class="text-xs text-gray-500">Coach says "practice is Tuesdays & Thursdays at 5:30"? Just tell us the details and we'll build your whole season.</p>
 </div>
 </div>
 </div>
@@ -194,8 +182,8 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="space-y-4">
 <h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-[#0069FF]"></i> Pro Tips</h3>
 <ul class="space-y-2 text-sm text-gray-600">
-<li class="flex gap-2"><span class="text-green-500">•</span> <span><strong>Start with AI Extract</strong> - fastest way to import a full season from photos</span></li>
-<li class="flex gap-2"><span class="text-orange-500">•</span> <span><strong>Use Recurring Practice</strong> - generate entire seasons when coach only gives you "Tuesdays at 5:30"</span></li>
+<li class="flex gap-2"><span class="text-green-500">•</span> <span><strong>Start with Photo Import</strong> - fastest way to import a full season from photos</span></li>
+<li class="flex gap-2"><span class="text-orange-500">•</span> <span><strong>Use Recurring Schedule</strong> - generate entire seasons when coach only gives you "Tuesdays at 5:30"</span></li>
 <li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Edit or delete events using pencil/trash icons in Schedule or Season tabs</span></li>
 <li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Share your 6-character code with coaches, grandparents, and siblings</span></li>
 <li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Use the Pack List and Weekly Notes to stay organized each week</span></li>
@@ -209,32 +197,59 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div id="importScheduleModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
 <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+<div>
 <h2 class="font-semibold text-2xl text-gray-900">Import Schedule</h2>
+<p class="text-sm text-gray-500 mt-0.5">Add your season schedule</p>
+</div>
 <button id="closeImportBtn" class="text-gray-400 hover:text-gray-700 transition">
 <i data-lucide="x" class="w-6 h-6"></i>
 </button>
 </div>
 <div class="px-8 py-6 space-y-6">
-<!-- ChatGPT Extract -->
+
+<!-- Photo Import (Recommended) -->
 <div class="border border-gray-200 rounded-2xl overflow-hidden">
 <button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="chatgpt">
 <div class="flex items-center gap-3">
-<i data-lucide="brain" class="w-5 h-5 text-green-500"></i>
-<span class="font-medium text-gray-900">AI Extract</span>
+<i data-lucide="camera" class="w-5 h-5 text-[#0069FF]"></i>
+<div class="text-left">
+<span class="font-medium text-gray-900">Photo Import</span>
+<span class="text-xs text-gray-500 block">Snap a photo, import your season</span>
 </div>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">Recommended</span>
 <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
-</button>
-<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
-<p class="text-gray-900 font-medium">📸 Step 1: Take a clear photo of your schedule</p>
-<p class="text-gray-900 font-medium">👤 Step 2: Importing for which athlete? (Optional)</p>
-<input id="athleteNamePrefill" type="text" placeholder="e.g., Stryker, Maverick..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mb-4">
-<p class="text-xs text-gray-500 mb-4">Leave blank for multi-kid schedules. This will auto-fill any missing athlete names.</p>
-<p class="text-gray-900 font-medium">🤖 Step 3: Copy this prompt and use with ChatGPT or Gemini</p>
-<div class="bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-xs">
-<p class="text-[#0069FF] mb-2">Copy this prompt:</p>
-<p class="text-gray-800">"EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.<br><br>FORMAT: Return CSV with these exact headers:<br>child_name,sport,event_type,chaperone,event_date,event_time,location<br><br>RULES:<br>1. EXTRACT EVERY DATE/TIME - don't skip anything<br>2. If location missing → leave blank, still include event<br>3. If unclear → guess: Practice, Game, or Tournament<br>4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'<br>5. Look for ANY time format: 5:30, 6:00 PM, 18:00<br>6. Include partial information - blank fields better than missing events<br><br>EXAMPLE:<br>Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select<br>Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex<br><br>CRITICAL: Extract times even when buried in descriptions!"</p>
 </div>
-<div class="flex gap-3">
+</button>
+<div class="import-content hidden bg-white px-5 py-5 border-t border-gray-200 space-y-5 text-sm text-gray-600">
+
+<!-- Step 1 -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">📸</div>
+<div>
+<p class="text-gray-900 font-semibold text-sm">Take a Photo</p>
+<p class="text-gray-500 text-xs mt-0.5">Snap a clear photo of your game schedule, practice calendar, or any document from the coach.</p>
+</div>
+</div>
+
+<!-- Step 2 -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">👤</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm">Which Athlete? (Optional)</p>
+<input id="athleteNamePrefill" type="text" placeholder="e.g., Stryker, Maverick..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
+<p class="text-xs text-gray-400 mt-1.5">Leave blank if the schedule has multiple kids listed.</p>
+</div>
+</div>
+
+<!-- Step 3 -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">🤖</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm">Send to AI</p>
+<p class="text-gray-500 text-xs mt-0.5">Copy our magic prompt, open ChatGPT or Gemini, paste the prompt, and attach your photo. The AI will read your schedule for you.</p>
+<div class="flex flex-wrap gap-2 mt-3">
 <button id="copyPromptBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
 <i data-lucide="copy" class="w-4 h-4"></i> Copy Prompt
 </button>
@@ -245,9 +260,40 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <i data-lucide="external-link" class="w-4 h-4"></i> Gemini
 </button>
 </div>
-<p class="text-gray-900 font-medium">📋 Step 4: Paste ChatGPT results here:</p>
-<textarea id="chatgptResults" rows="6" placeholder="Paste the CSV results from ChatGPT here..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none font-mono text-xs"></textarea>
-<button id="parseResultsBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition">Parse Results</button>
+<button id="togglePromptBtn" class="text-xs text-gray-400 hover:text-gray-600 mt-2 flex items-center gap-1 transition">
+<i data-lucide="code" class="w-3 h-3"></i> View prompt
+</button>
+<div id="promptTextContainer" class="hidden mt-2 bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-xs text-gray-700 whitespace-pre-wrap break-words max-h-48 overflow-y-auto">EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.
+
+FORMAT: Return CSV with these exact headers:
+child_name,sport,event_type,chaperone,event_date,event_time,location
+
+RULES:
+1. EXTRACT EVERY DATE/TIME - don't skip anything
+2. If location missing → leave blank, still include event
+3. If unclear → guess: Practice, Game, or Tournament
+4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'
+5. Look for ANY time format: 5:30, 6:00 PM, 18:00
+6. Include partial information - blank fields better than missing events
+7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
+
+EXAMPLE:
+Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
+Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex
+
+CRITICAL: Extract times even when buried in descriptions!</div>
+</div>
+</div>
+
+<!-- Step 4 -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">📋</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm">Paste Results</p>
+<textarea id="chatgptResults" rows="5" placeholder="Paste what ChatGPT gave you here..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none text-xs mt-2"></textarea>
+<button id="parseResultsBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition mt-2">Parse Results</button>
+</div>
+</div>
 
 <!-- Parsed Data Grid -->
 <div id="parsedDataSection" class="hidden mt-6">
@@ -291,17 +337,126 @@ Complete Your Schedule Data
 </div>
 </div>
 
-<!-- Manual Input -->
+<!-- Recurring Schedule -->
 <div class="border border-gray-200 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="manual">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="recurring">
 <div class="flex items-center gap-3">
-<i data-lucide="edit" class="w-5 h-5 text-[#0069FF]"></i>
-<span class="font-medium text-gray-900">Manual Input</span>
+<i data-lucide="repeat" class="w-5 h-5 text-orange-500"></i>
+<div class="text-left">
+<span class="font-medium text-gray-900">Recurring Schedule</span>
+<span class="text-xs text-gray-500 block">Perfect when coach gives you days &amp; times</span>
+</div>
 </div>
 <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
 </button>
-<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
-<p class="text-gray-900 font-medium">Build your schedule directly in the app:</p>
+<div class="import-content hidden bg-white px-5 py-5 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-600 text-sm">Coach said "practice is Tuesdays and Thursdays at 5:30"? Just tell us the details and we'll build your whole season.</p>
+
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label>
+<input id="recurringAthlete" type="text" placeholder="e.g., Cannon" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label>
+<input id="recurringSport" type="text" placeholder="e.g., Baseball" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+</div>
+
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Practice Days</label>
+<div class="flex gap-2 flex-wrap">
+<label class="cursor-pointer">
+<input type="checkbox" id="daySun" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Sun</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="dayMon" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Mon</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="dayTue" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Tue</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="dayWed" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Wed</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="dayThu" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Thu</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="dayFri" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Fri</span>
+</label>
+<label class="cursor-pointer">
+<input type="checkbox" id="daySat" class="sr-only peer">
+<span class="inline-flex items-center justify-center min-w-[44px] h-[40px] px-3 rounded-full text-xs font-semibold border border-gray-200 bg-gray-100 text-gray-500 peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500 transition select-none">Sat</span>
+</label>
+</div>
+</div>
+
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label>
+<input id="recurringTime" type="time" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label>
+<input id="recurringLocation" type="text" placeholder="e.g., Main Field" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+</div>
+
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season Start</label>
+<input id="recurringStart" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season End</label>
+<input id="recurringEnd" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+</div>
+</div>
+
+<div>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Days Off (Optional)</label>
+<input id="recurringSkip" type="text" placeholder="e.g., Spring Break, holidays..." class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+<p class="text-xs text-gray-400 mt-1">Enter dates your athlete won't have practice (YYYY-MM-DD, separated by commas)</p>
+</div>
+
+<div class="flex gap-3">
+<button id="previewRecurringBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-lg transition">
+<i data-lucide="eye" class="w-4 h-4 inline mr-2"></i> Preview
+</button>
+<button id="generateRecurringBtn" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition hidden">
+<i data-lucide="plus-circle" class="w-4 h-4 inline mr-2"></i> Generate Schedule
+</button>
+</div>
+
+<div id="recurringPreview" class="hidden mt-4 bg-gray-50 border border-gray-200 rounded-lg p-3">
+<p class="text-gray-900 font-medium text-sm mb-2">Preview:</p>
+<p id="recurringPreviewText" class="text-gray-600 text-xs"></p>
+</div>
+
+<div id="recurringStatus" class="text-center text-xs mt-3 hidden"></div>
+</div>
+</div>
+
+<!-- Add One by One -->
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="manual">
+<div class="flex items-center gap-3">
+<i data-lucide="edit" class="w-5 h-5 text-gray-400"></i>
+<div class="text-left">
+<span class="font-medium text-gray-900">Add One by One</span>
+<span class="text-xs text-gray-500 block">Enter events manually</span>
+</div>
+</div>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+</button>
+<div class="import-content hidden bg-white px-5 py-5 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-500 text-sm">Add events one at a time. Best for a few quick additions.</p>
 
 <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
 <div class="flex items-center justify-between mb-4">
@@ -346,168 +501,6 @@ Schedule Builder
 
 <div id="manualImportStatus" class="text-center text-xs mt-3 hidden"></div>
 </div>
-</div>
-</div>
-
-<!-- Upload CSV -->
-<div class="border border-gray-200 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="upload">
-<div class="flex items-center gap-3">
-<i data-lucide="upload" class="w-5 h-5 text-purple-500"></i>
-<span class="font-medium text-gray-900">Upload CSV</span>
-</div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
-</button>
-<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
-<p class="text-gray-900 font-medium">Upload a CSV file with your schedule:</p>
-
-<div class="space-y-4">
-<!-- Template Download -->
-<div class="flex gap-3">
-<button id="downloadTemplateBtn" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
-<i data-lucide="download" class="w-4 h-4"></i> Download Template
-</button>
-<div class="flex-1 text-xs text-gray-500 py-2">
-Need a template? Download our CSV format and fill it out in Excel or Google Sheets.
-</div>
-</div>
-
-<!-- File Drop Zone -->
-<div id="csvDropZone" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 transition cursor-pointer text-center">
-<div class="flex flex-col items-center gap-3">
-<div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
-<i data-lucide="upload" class="w-6 h-6 text-purple-500"></i>
-</div>
-<div>
-<p class="text-gray-900 font-medium text-sm">Drop your CSV file here</p>
-<p class="text-gray-500 text-xs">or click to browse files</p>
-</div>
-<p class="text-gray-400 text-xs">Supports .csv files up to 5MB</p>
-</div>
-<input type="file" id="csvFileInput" accept=".csv" class="hidden">
-</div>
-
-<!-- File Info -->
-<div id="csvFileInfo" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-3">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<i data-lucide="file-text" class="w-4 h-4 text-purple-500"></i>
-<span id="csvFileName" class="text-gray-900 text-xs font-medium"></span>
-<span id="csvFileSize" class="text-gray-500 text-xs"></span>
-</div>
-<button id="removeCsvBtn" class="text-red-500 hover:text-red-400 transition">
-<i data-lucide="x" class="w-4 h-4"></i>
-</button>
-</div>
-</div>
-
-<!-- Parse Button -->
-<button id="parseCsvBtn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-lg transition hidden">Parse CSV File</button>
-</div>
-</div>
-</div>
-
-<!-- Recurring Practice -->
-<div class="border border-gray-200 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="recurring">
-<div class="flex items-center gap-3">
-<i data-lucide="repeat" class="w-5 h-5 text-orange-500"></i>
-<span class="font-medium text-gray-900">Recurring Practice</span>
-</div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
-</button>
-<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
-<p class="text-gray-900 font-medium">⚡ Generate recurring practice schedule</p>
-<p class="text-xs text-gray-500 mb-4">Perfect for coaches who say "practice is Tuesdays and Thursdays at 5:30" but don't give you a detailed schedule.</p>
-
-<div class="grid grid-cols-2 gap-3">
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label>
-<input id="recurringAthlete" type="text" placeholder="e.g., Cannon" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label>
-<input id="recurringSport" type="text" placeholder="e.g., Baseball" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-</div>
-
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Practice Days</label>
-<div class="flex gap-2 flex-wrap">
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="daySun" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Sun</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="dayMon" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Mon</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="dayTue" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Tue</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="dayWed" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Wed</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="dayThu" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Thu</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="dayFri" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Fri</span>
-</label>
-<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
-<input type="checkbox" id="daySat" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-gray-700">Sat</span>
-</label>
-</div>
-</div>
-
-<div class="grid grid-cols-2 gap-3">
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label>
-<input id="recurringTime" type="time" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label>
-<input id="recurringLocation" type="text" placeholder="e.g., Main Field" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-</div>
-
-<div class="grid grid-cols-2 gap-3">
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season Start</label>
-<input id="recurringStart" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season End</label>
-<input id="recurringEnd" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-</div>
-</div>
-
-<div>
-<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Skip Dates (Optional)</label>
-<input id="recurringSkip" type="text" placeholder="e.g., 2026-04-15, 2026-05-27" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
-<p class="text-xs text-gray-400 mt-1">Enter dates to skip (holidays, breaks). Use YYYY-MM-DD format, separated by commas.</p>
-</div>
-
-<div class="flex gap-3">
-<button id="previewRecurringBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-lg transition">
-<i data-lucide="eye" class="w-4 h-4 inline mr-2"></i> Preview
-</button>
-<button id="generateRecurringBtn" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition hidden">
-<i data-lucide="plus-circle" class="w-4 h-4 inline mr-2"></i> Generate Schedule
-</button>
-</div>
-
-<div id="recurringPreview" class="hidden mt-4 bg-gray-50 border border-gray-200 rounded-lg p-3">
-<p class="text-gray-900 font-medium text-sm mb-2">Preview:</p>
-<p id="recurringPreviewText" class="text-gray-600 text-xs"></p>
-</div>
-
-<div id="recurringStatus" class="text-center text-xs mt-3 hidden"></div>
 </div>
 </div>
 </div>
@@ -1654,16 +1647,17 @@ child_name,sport,event_type,chaperone,event_date,event_time,location
 
 RULES:
 1. EXTRACT EVERY DATE/TIME you find - don't skip anything
-2. If location is missing → leave blank, still include the event  
+2. If location is missing → leave blank, still include the event
 3. If event type is unclear → guess: "Practice", "Game", or "Tournament"
 4. If no athlete name → use "Athlete" or team name
 5. If no sport specified → use team/context clues
 6. Extract from ANY format: calendars, lists, tables, paragraphs
-7. Include partial information - blank fields are better than missing events
+7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
+8. Include partial information - blank fields are better than missing events
 
 COMMON PATTERNS TO CATCH:
 - "vs [Opponent]" = Game
-- "@ [Location]" = Game  
+- "@ [Location]" = Game
 - "Practice" or "Training" = Practice
 - Tournament names = Tournament
 - Times in ANY format: "6:00 PM", "18:00", "5:30", "5:30 PM"
@@ -1686,10 +1680,10 @@ navigator.clipboard.writeText(prompt).then(() => {
 const btn = document.getElementById('copyPromptBtn');
 const originalText = btn.innerHTML;
 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
-btn.className = btn.className.replace('bg-blue-600 hover:bg-blue-500', 'bg-green-600');
+btn.className = btn.className.replace('bg-[#0069FF] hover:bg-[#0052CC]', 'bg-green-600 hover:bg-green-500');
 setTimeout(() => {
 btn.innerHTML = originalText;
-btn.className = btn.className.replace('bg-green-600', 'bg-blue-600 hover:bg-blue-500');
+btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-[#0069FF] hover:bg-[#0052CC]');
 lucide.createIcons();
 }, 2000);
 lucide.createIcons();
@@ -1706,11 +1700,20 @@ document.getElementById('openGeminiBtn').addEventListener('click', () => {
 window.open('https://gemini.google.com', '_blank');
 });
 
+// Toggle prompt visibility
+document.getElementById('togglePromptBtn').addEventListener('click', () => {
+const container = document.getElementById('promptTextContainer');
+const btn = document.getElementById('togglePromptBtn');
+container.classList.toggle('hidden');
+btn.innerHTML = container.classList.contains('hidden')
+? '<i data-lucide="code" class="w-3 h-3"></i> View prompt'
+: '<i data-lucide="code" class="w-3 h-3"></i> Hide prompt';
+lucide.createIcons();
+});
+
 // Global variables to store events
 let parsedEvents = [];
 let manualEvents = [];
-let csvEvents = [];
-let csvFileData = null;
 let recurringEvents = [];
 
 // CSV Parser functionality
@@ -2152,154 +2155,6 @@ initManualInput();
 });
 
 // CSV Upload Functionality
-function downloadCSVTemplate() {
-const template = `event_date,location,child_name,sport,event_type,event_time,chaperone
-2026-04-15,Westfield Park,Stryker,Baseball,Practice,18:00,Mom
-2026-04-17,Home Field,Maverick,Soccer,Game,16:30,Dad
-2026-04-20,Sports Complex,Cannon,Basketball,Tournament,09:00,Grandpa`;
-
-const blob = new Blob([template], { type: 'text/csv' });
-const url = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = 'steelebroz-schedule-template.csv';
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-window.URL.revokeObjectURL(url);
-}
-
-function parseCSVFile(csvText) {
-const lines = csvText.trim().split('\n');
-const events = [];
-
-// Skip header line if present
-const startIndex = lines[0].toLowerCase().includes('event_date') || 
-                  lines[0].toLowerCase().includes('date') ? 1 : 0;
-
-for (let i = startIndex; i < lines.length; i++) {
-const line = lines[i].trim();
-if (!line) continue;
-
-const columns = line.split(',').map(s => s.trim().replace(/^"|"$/g, '')); // Handle quoted CSV
-if (columns.length >= 2) {
-events.push({
-event_date: columns[0] || '',
-location: columns[1] || '',
-child_name: columns[2] || '',
-sport: columns[3] || '',
-event_type: columns[4] || 'Practice',
-event_time: columns[5] || '',
-chaperone: columns[6] || ''
-});
-}
-}
-return events;
-}
-
-function handleFileSelect(file) {
-if (!file.name.toLowerCase().endsWith('.csv')) {
-alert('Please select a CSV file');
-return;
-}
-
-if (file.size > 5 * 1024 * 1024) { // 5MB limit
-alert('File size must be less than 5MB');
-return;
-}
-
-csvFileData = file;
-const fileNameEl = document.getElementById('csvFileName');
-const fileSizeEl = document.getElementById('csvFileSize');
-const fileInfoEl = document.getElementById('csvFileInfo');
-const parseBtnEl = document.getElementById('parseCsvBtn');
-
-if (fileNameEl) fileNameEl.textContent = file.name;
-if (fileSizeEl) fileSizeEl.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
-if (fileInfoEl) fileInfoEl.classList.remove('hidden');
-if (parseBtnEl) parseBtnEl.classList.remove('hidden');
-}
-
-// CSV Event Listeners - with proper error checking
-const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
-if (downloadTemplateBtn) {
-downloadTemplateBtn.addEventListener('click', downloadCSVTemplate);
-}
-
-const dropZone = document.getElementById('csvDropZone');
-const fileInput = document.getElementById('csvFileInput');
-
-if (dropZone && fileInput) {
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', (e) => {
-e.preventDefault();
-dropZone.classList.add('border-purple-500', 'bg-purple-600/10');
-});
-
-dropZone.addEventListener('dragleave', (e) => {
-e.preventDefault();
-dropZone.classList.remove('border-purple-500', 'bg-purple-600/10');
-});
-
-dropZone.addEventListener('drop', (e) => {
-e.preventDefault();
-dropZone.classList.remove('border-purple-500', 'bg-purple-600/10');
-const files = e.dataTransfer.files;
-if (files.length > 0) handleFileSelect(files[0]);
-});
-
-fileInput.addEventListener('change', (e) => {
-if (e.target.files.length > 0) handleFileSelect(e.target.files[0]);
-});
-}
-
-const removeCsvBtn = document.getElementById('removeCsvBtn');
-if (removeCsvBtn) {
-removeCsvBtn.addEventListener('click', () => {
-csvFileData = null;
-if (fileInput) fileInput.value = '';
-const fileInfoEl = document.getElementById('csvFileInfo');
-const parseBtnEl = document.getElementById('parseCsvBtn');
-if (fileInfoEl) fileInfoEl.classList.add('hidden');
-if (parseBtnEl) parseBtnEl.classList.add('hidden');
-});
-}
-
-const parseCsvBtn = document.getElementById('parseCsvBtn');
-if (parseCsvBtn) {
-parseCsvBtn.addEventListener('click', async () => {
-if (!csvFileData) return;
-
-parseCsvBtn.innerHTML = '<span class="animate-pulse">Parsing...</span>';
-parseCsvBtn.disabled = true;
-
-try {
-const text = await csvFileData.text();
-csvEvents = parseCSVFile(text);
-
-if (csvEvents.length === 0) {
-throw new Error('No valid events found in CSV');
-}
-
-// For now, just show success - we can add grid later
-parseCsvBtn.innerHTML = `✓ Parsed ${csvEvents.length} events`;
-parseCsvBtn.className = parseCsvBtn.className.replace('bg-purple-600 hover:bg-purple-500', 'bg-green-600');
-
-} catch (error) {
-parseCsvBtn.innerHTML = 'Parse failed - check format';
-parseCsvBtn.className = parseCsvBtn.className.replace('bg-purple-600 hover:bg-purple-500', 'bg-red-600');
-console.error('CSV parse error:', error);
-}
-
-setTimeout(() => {
-parseCsvBtn.innerHTML = 'Parse CSV File';
-parseCsvBtn.className = parseCsvBtn.className.replace('bg-green-600', 'bg-purple-600 hover:bg-purple-500').replace('bg-red-600', 'bg-purple-600 hover:bg-purple-500');
-parseCsvBtn.disabled = false;
-}, 2000);
-});
-}
-
 // Recurring Practice functionality
 document.getElementById('previewRecurringBtn').addEventListener('click', () => {
 const athlete = document.getElementById('recurringAthlete').value.trim();
