@@ -5,280 +5,282 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SteeleBroz Game Week Command Center</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{body:['Inter','system-ui','-apple-system','sans-serif']}}}}</script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 html, body { height: 100%; margin: 0; }
 * { box-sizing: border-box; }
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
-.tab-active { color: #3B82F6; border-bottom: 2px solid #3B82F6; }
-.tab-inactive { color: #888; border-bottom: 2px solid transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+.tab-active { color: #0069FF; border-bottom: 2px solid #0069FF; }
+.tab-inactive { color: #9CA3AF; border-bottom: 2px solid transparent; }
 .card-enter { animation: cardIn 0.3s ease forwards; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-input, textarea, select { font-family: 'DM Sans', sans-serif; }
+input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 </style>
 <style>body { box-sizing: border-box; }</style>
 </head>
-<body class="h-full bg-black text-white font-body overflow-hidden flex flex-col"><!-- Setup Modal -->
-<div id="setupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8">
+<body class="h-full bg-[#FAFBFC] text-gray-900 font-body overflow-hidden flex flex-col"><!-- Setup Modal -->
+<div id="setupModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 shadow-lg">
 <div class="text-center mb-8">
-<h1 class="font-bold text-2xl mb-2">Command Center</h1>
-<p class="text-neutral-400 text-sm">Share your game week schedule</p>
+<h1 class="font-semibold text-2xl mb-2 text-gray-900">Command Center</h1>
+<p class="text-gray-500 text-sm">Share your game week schedule</p>
 </div><!-- Create New Setup -->
 <div id="createSetup" class="space-y-4 mb-6">
-<p class="text-xs text-neutral-500 font-medium text-center mb-4">First time here?</p><button id="createBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus-circle" class="w-4 h-4"></i> Create New Schedule </button>
-<p class="text-xs text-neutral-600 text-center">You'll get a unique code to share with family</p>
+<p class="text-xs text-gray-500 font-medium text-center mb-4">First time here?</p><button id="createBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus-circle" class="w-4 h-4"></i> Create New Schedule </button>
+<p class="text-xs text-gray-400 text-center">You'll get a unique code to share with family</p>
 </div>
 <div class="flex items-center gap-3 my-6">
-<div class="flex-1 h-px bg-neutral-700"></div><span class="text-xs text-neutral-500">or</span>
-<div class="flex-1 h-px bg-neutral-700"></div>
+<div class="flex-1 h-px bg-gray-200"></div><span class="text-xs text-gray-400">or</span>
+<div class="flex-1 h-px bg-gray-200"></div>
 </div><!-- Join Existing Setup -->
 <div id="joinSetup" class="space-y-4">
-<p class="text-xs text-neutral-500 font-medium text-center mb-4">Already have a code?</p><input id="codeInput" type="text" placeholder="Enter setup code" maxlength="6" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition uppercase tracking-widest text-center font-mono font-bold"> <button id="joinBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="log-in" class="w-4 h-4"></i> Join Schedule </button>
+<p class="text-xs text-gray-500 font-medium text-center mb-4">Already have a code?</p><input id="codeInput" type="text" placeholder="Enter setup code" maxlength="6" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition uppercase tracking-widest text-center font-mono font-bold"> <button id="joinBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="log-in" class="w-4 h-4"></i> Join Schedule </button>
 <p id="joinStatus" class="text-xs text-center hidden"></p>
 </div>
 </div>
 </div><!-- Code Display Modal -->
-<div id="codeDisplayModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8 text-center">
-<h2 class="font-bold text-2xl mb-2">Your Setup Code</h2>
-<p class="text-neutral-400 text-sm mb-8">Share this with family to sync their devices</p>
-<div class="bg-blue-600/20 border border-blue-500/50 rounded-2xl p-6 mb-6">
-<p id="displayCode" class="font-mono font-bold text-3xl tracking-widest text-blue-400"></p>
-</div><button id="copyCodeBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="startUsingBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Start Using App</button> <p id="copyStatus" class="text-xs text-green-400 mt-2 hidden">Copied!</p>
+<div id="codeDisplayModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg">
+<h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2>
+<p class="text-gray-500 text-sm mb-8">Share this with family to sync their devices</p>
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-6">
+<p id="displayCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p>
+</div><button id="copyCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="startUsingBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Start Using App</button> <p id="copyStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p>
 </div>
 </div><!-- Edit Event Modal -->
-<div id="editEventModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8">
-<h2 class="font-bold text-2xl mb-6">Edit Event</h2>
+<div id="editEventModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 shadow-lg">
+<h2 class="font-semibold text-2xl mb-6 text-gray-900">Edit Event</h2>
 <div class="space-y-4">
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Athlete</label> <input id="editChild" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Sport</label> <input id="editSport" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Type</label> <select id="editType" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div>
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Who is Taking</label> <input id="editChaperone" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="editChild" type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="editSport" type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Type</label> <select id="editType" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Who is Taking</label> <input id="editChaperone" type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div class="grid grid-cols-2 gap-3">
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Date</label> <input id="editDate" type="date" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Time</label> <input id="editTime" type="time" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="editDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="editTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 </div>
-<div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Location</label> <input id="editLocation" type="text" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div>
+<div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="editLocation" type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 </div>
-<div class="flex gap-3 mt-6"><button id="editEventCancelBtn" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Cancel</button> <button id="editEventSaveBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> </div>
+<div class="flex gap-3 mt-6"><button id="editEventCancelBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Cancel</button> <button id="editEventSaveBtn" class="flex-1 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="check" class="w-4 h-4"></i> Save </button> </div>
 </div>
 </div><!-- Welcome Modal -->
-<div id="welcomeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
-<div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-8 py-6 flex items-center justify-between">
-<h2 class="font-bold text-2xl">How to Use Command Center</h2><button id="closeWelcomeBtn" class="text-neutral-500 hover:text-white transition"> <i data-lucide="x" class="w-6 h-6"></i> </button>
+<div id="welcomeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-lg">
+<div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+<h2 class="font-semibold text-2xl text-gray-900">How to Use Command Center</h2><button id="closeWelcomeBtn" class="text-gray-400 hover:text-gray-700 transition"> <i data-lucide="x" class="w-6 h-6"></i> </button>
 </div>
 <div class="px-8 py-6 space-y-6">
-<div class="bg-blue-600/10 border border-blue-500/30 rounded-2xl p-5">
-<h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-blue-400"></i> What is this?</h3> 
-<p class="text-sm text-neutral-300">Command Center keeps your family coordinated. Track all your athletes' practices, games, and tournaments in one place. Share the schedule code with family members so everyone knows where to be and when. Import entire seasons in minutes instead of hours!</p> 
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5">
+<h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-[#0069FF]"></i> What is this?</h3>
+<p class="text-sm text-gray-600">Command Center keeps your family coordinated. Track all your athletes' practices, games, and tournaments in one place. Share the schedule code with family members so everyone knows where to be and when. Import entire seasons in minutes instead of hours!</p>
 </div> 
 
-<div class="space-y-4"> 
-<h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="rocket" class="w-5 h-5 text-green-400"></i> Quick Start Guide</h3> 
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3 mb-2"> 
-<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">1</span> 
-<div> 
-<p class="font-medium text-white text-sm">Create or Join a Schedule</p> 
-<p class="text-xs text-neutral-400 mt-1">Either create a new schedule to get a 6-character code, or join an existing one using a code someone shared with you.</p> 
-</div> 
-</div> 
-</div> 
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3 mb-2"> 
-<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">2</span> 
-<div> 
-<p class="font-medium text-white text-sm">Import Your Season Schedule</p> 
-<p class="text-xs text-neutral-400 mt-1">Go to <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Control</span> → <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-green-400">Import Schedule</span> to add your entire season at once using AI, manual input, or CSV upload.</p> 
-</div> 
-</div> 
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="rocket" class="w-5 h-5 text-green-500"></i> Quick Start Guide</h3>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">Create or Join a Schedule</p>
+<p class="text-xs text-gray-500 mt-1">Either create a new schedule to get a 6-character code, or join an existing one using a code someone shared with you.</p>
 </div>
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3 mb-2"> 
-<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">3</span> 
-<div> 
-<p class="font-medium text-white text-sm">View & Navigate Your Schedule</p> 
-<p class="text-xs text-neutral-400 mt-1">The <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Schedule</span> tab shows this week's events. Use arrows to navigate weeks and filter by athlete. <span class="font-mono bg-neutral-900 px-1.5 py-0.5 rounded text-blue-400">Season</span> tab shows everything in table format.</p> 
-</div> 
-</div> 
-</div> 
+</div>
+</div>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">2</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">Import Your Season Schedule</p>
+<p class="text-xs text-gray-500 mt-1">Go to <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">Control</span> → <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-green-600">Import Schedule</span> to add your entire season at once using AI, manual input, or CSV upload.</p>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">3</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">View & Navigate Your Schedule</p>
+<p class="text-xs text-gray-500 mt-1">The <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">Schedule</span> tab shows this week's events. Use arrows to navigate weeks and filter by athlete. <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">Season</span> tab shows everything in table format.</p>
+</div>
+</div>
+</div>
 </div> 
 
-<div class="space-y-4"> 
-<h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5 text-green-400"></i> Import Methods</h3> 
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5 text-green-500"></i> Import Methods</h3>
 
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3"> 
-<div class="w-8 h-8 rounded-lg bg-green-600/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="brain" class="w-4 h-4 text-green-400"></i>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="brain" class="w-4 h-4 text-green-500"></i>
 </div>
-<div> 
-<p class="font-medium text-white text-sm mb-1">🤖 AI Extract (Recommended)</p> 
-<p class="text-xs text-neutral-400">Take a photo → Enter athlete name → Copy our prompt → Paste in ChatGPT or Gemini → Import with pre-filled names → Done!</p> 
-</div> 
-</div> 
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">🤖 AI Extract (Recommended)</p>
+<p class="text-xs text-gray-500">Take a photo → Enter athlete name → Copy our prompt → Paste in ChatGPT or Gemini → Import with pre-filled names → Done!</p>
 </div>
-
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3"> 
-<div class="w-8 h-8 rounded-lg bg-blue-600/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="edit" class="w-4 h-4 text-blue-400"></i>
 </div>
-<div> 
-<p class="font-medium text-white text-sm mb-1">✏️ Manual Input</p> 
-<p class="text-xs text-neutral-400">Build your schedule directly in the app with an easy grid. Add rows, fill out details, and import when ready. Perfect for smaller schedules.</p> 
-</div> 
-</div> 
 </div>
 
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3"> 
-<div class="w-8 h-8 rounded-lg bg-purple-600/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="edit" class="w-4 h-4 text-[#0069FF]"></i>
 </div>
-<div> 
-<p class="font-medium text-white text-sm mb-1">📁 Upload CSV</p> 
-<p class="text-xs text-neutral-400">Download our template → Fill it out in Excel or Google Sheets → Upload the file → Review and import. Great for coaches and advanced users.</p> 
-</div> 
-</div> 
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">✏️ Manual Input</p>
+<p class="text-xs text-gray-500">Build your schedule directly in the app with an easy grid. Add rows, fill out details, and import when ready. Perfect for smaller schedules.</p>
 </div>
-
-<div class="bg-neutral-800/50 rounded-xl p-4"> 
-<div class="flex gap-3"> 
-<div class="w-8 h-8 rounded-lg bg-orange-600/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-<i data-lucide="repeat" class="w-4 h-4 text-orange-400"></i>
 </div>
-<div> 
-<p class="font-medium text-white text-sm mb-1">⚡ Recurring Practice</p> 
-<p class="text-xs text-neutral-400">Coach says "practice is Tuesdays & Thursdays at 5:30" but no detailed schedule? Generate an entire season of practices instantly!</p> 
-</div> 
-</div> 
 </div>
 
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="file-text" class="w-4 h-4 text-purple-500"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">📁 Upload CSV</p>
+<p class="text-xs text-gray-500">Download our template → Fill it out in Excel or Google Sheets → Upload the file → Review and import. Great for coaches and advanced users.</p>
+</div>
+</div>
 </div>
 
-<div class="space-y-4"> 
-<h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-blue-400"></i> Daily Features</h3> 
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="repeat" class="w-4 h-4 text-orange-500"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">⚡ Recurring Practice</p>
+<p class="text-xs text-gray-500">Coach says "practice is Tuesdays & Thursdays at 5:30" but no detailed schedule? Generate an entire season of practices instantly!</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-[#0069FF]"></i> Daily Features</h3>
 
 <div class="grid grid-cols-2 gap-3">
-<div class="bg-neutral-800/50 rounded-lg p-3"> 
-<p class="font-medium text-white text-xs mb-1 flex items-center gap-2"><i data-lucide="check-square" class="w-3 h-3 text-blue-400"></i> Pack Lists</p> 
-<p class="text-xs text-neutral-400">Weekly packing reminders with checkboxes</p> 
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="check-square" class="w-3 h-3 text-[#0069FF]"></i> Pack Lists</p>
+<p class="text-xs text-gray-500">Weekly packing reminders with checkboxes</p>
 </div>
 
-<div class="bg-neutral-800/50 rounded-lg p-3"> 
-<p class="font-medium text-white text-xs mb-1 flex items-center gap-2"><i data-lucide="file-text" class="w-3 h-3 text-blue-400"></i> Weekly Notes</p> 
-<p class="text-xs text-neutral-400">Share important reminders with family</p> 
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="file-text" class="w-3 h-3 text-[#0069FF]"></i> Weekly Notes</p>
+<p class="text-xs text-gray-500">Share important reminders with family</p>
 </div>
 
-<div class="bg-neutral-800/50 rounded-lg p-3"> 
-<p class="font-medium text-white text-xs mb-1 flex items-center gap-2"><i data-lucide="quote" class="w-3 h-3 text-blue-400"></i> Athlete Insights</p> 
-<p class="text-xs text-neutral-400">Weekly motivational quotes and stories</p> 
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="quote" class="w-3 h-3 text-[#0069FF]"></i> Athlete Insights</p>
+<p class="text-xs text-gray-500">Weekly motivational quotes and stories</p>
 </div>
 
-<div class="bg-neutral-800/50 rounded-lg p-3"> 
-<p class="font-medium text-white text-xs mb-1 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3 text-blue-400"></i> Kid Filtering</p> 
-<p class="text-xs text-neutral-400">Focus on one athlete's schedule at a time</p> 
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3 text-[#0069FF]"></i> Kid Filtering</p>
+<p class="text-xs text-gray-500">Focus on one athlete's schedule at a time</p>
 </div>
 </div>
 
 </div>
 
-<div class="space-y-4"> 
-<h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-blue-400"></i> Pro Tips</h3> 
-<ul class="space-y-2 text-sm text-neutral-300"> 
-<li class="flex gap-2"><span class="text-green-400">•</span> <span><strong>Start with AI Extract</strong> - fastest way to import a full season from photos</span></li>
-<li class="flex gap-2"><span class="text-orange-400">•</span> <span><strong>Use Recurring Practice</strong> - generate entire seasons when coach only gives you "Tuesdays at 5:30"</span></li> 
-<li class="flex gap-2"><span class="text-blue-400">•</span> <span>Edit or delete events using pencil/trash icons in Schedule or Season tabs</span></li> 
-<li class="flex gap-2"><span class="text-blue-400">•</span> <span>Share your 6-character code with coaches, grandparents, and siblings</span></li> 
-<li class="flex gap-2"><span class="text-blue-400">•</span> <span>Use the Pack List and Weekly Notes to stay organized each week</span></li> 
-<li class="flex gap-2"><span class="text-blue-400">•</span> <span>Filter by athlete when you have multiple kids to manage</span></li> 
-<li class="flex gap-2"><span class="text-blue-400">•</span> <span>Navigate weeks with arrow buttons to see future games and practices</span></li>
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-[#0069FF]"></i> Pro Tips</h3>
+<ul class="space-y-2 text-sm text-gray-600">
+<li class="flex gap-2"><span class="text-green-500">•</span> <span><strong>Start with AI Extract</strong> - fastest way to import a full season from photos</span></li>
+<li class="flex gap-2"><span class="text-orange-500">•</span> <span><strong>Use Recurring Practice</strong> - generate entire seasons when coach only gives you "Tuesdays at 5:30"</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Edit or delete events using pencil/trash icons in Schedule or Season tabs</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Share your 6-character code with coaches, grandparents, and siblings</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Use the Pack List and Weekly Notes to stay organized each week</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Filter by athlete when you have multiple kids to manage</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Navigate weeks with arrow buttons to see future games and practices</span></li>
 </ul>
 </div>
 
-<button id="closeWelcomeMainBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition">Got It, Let's Go</button> 
-</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-8 text-center"> <h2 class="font-bold text-2xl mb-2">Your Setup Code</h2> <p class="text-neutral-400 text-sm mb-8">Share this code with family to connect</p> <div class="bg-blue-600/20 border border-blue-500/50 rounded-2xl p-6 mb-6"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-blue-400"></p> </div><button id="copyViewCodeBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="closeViewCodeBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-400 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-neutral-800"> <p class="text-xs text-neutral-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-neutral-800/50 hover:bg-neutral-700 text-neutral-300 hover:text-white text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
-<div id="importScheduleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-<div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-8 py-6 flex items-center justify-between">
-<h2 class="font-bold text-2xl">Import Schedule</h2>
-<button id="closeImportBtn" class="text-neutral-500 hover:text-white transition">
+<button id="closeWelcomeMainBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Got It, Let's Go</button> 
+</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg"> <h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2> <p class="text-gray-500 text-sm mb-8">Share this code with family to connect</p> <div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-6"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p> </div><button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
+<div id="importScheduleModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
+<div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+<h2 class="font-semibold text-2xl text-gray-900">Import Schedule</h2>
+<button id="closeImportBtn" class="text-gray-400 hover:text-gray-700 transition">
 <i data-lucide="x" class="w-6 h-6"></i>
 </button>
 </div>
 <div class="px-8 py-6 space-y-6">
 <!-- ChatGPT Extract -->
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition" data-method="chatgpt">
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="chatgpt">
 <div class="flex items-center gap-3">
-<i data-lucide="brain" class="w-5 h-5 text-green-400"></i>
-<span class="font-medium text-white">AI Extract</span>
+<i data-lucide="brain" class="w-5 h-5 text-green-500"></i>
+<span class="font-medium text-gray-900">AI Extract</span>
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
 </button>
-<div class="import-content hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-4 text-sm text-neutral-300">
-<p class="text-white font-medium">📸 Step 1: Take a clear photo of your schedule</p>
-<p class="text-white font-medium">👤 Step 2: Importing for which athlete? (Optional)</p>
-<input id="athleteNamePrefill" type="text" placeholder="e.g., Stryker, Maverick..." class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-blue-500 text-sm mb-4">
-<p class="text-xs text-neutral-400 mb-4">Leave blank for multi-kid schedules. This will auto-fill any missing athlete names.</p>
-<p class="text-white font-medium">🤖 Step 3: Copy this prompt and use with ChatGPT or Gemini</p>
-<div class="bg-neutral-800 rounded-lg p-3 font-mono text-xs">
-<p class="text-blue-400 mb-2">Copy this prompt:</p>
-<p class="text-white">"EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.<br><br>FORMAT: Return CSV with these exact headers:<br>child_name,sport,event_type,chaperone,event_date,event_time,location<br><br>RULES:<br>1. EXTRACT EVERY DATE/TIME - don't skip anything<br>2. If location missing → leave blank, still include event<br>3. If unclear → guess: Practice, Game, or Tournament<br>4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'<br>5. Look for ANY time format: 5:30, 6:00 PM, 18:00<br>6. Include partial information - blank fields better than missing events<br><br>EXAMPLE:<br>Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select<br>Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex<br><br>CRITICAL: Extract times even when buried in descriptions!"</p>
+<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-900 font-medium">📸 Step 1: Take a clear photo of your schedule</p>
+<p class="text-gray-900 font-medium">👤 Step 2: Importing for which athlete? (Optional)</p>
+<input id="athleteNamePrefill" type="text" placeholder="e.g., Stryker, Maverick..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mb-4">
+<p class="text-xs text-gray-500 mb-4">Leave blank for multi-kid schedules. This will auto-fill any missing athlete names.</p>
+<p class="text-gray-900 font-medium">🤖 Step 3: Copy this prompt and use with ChatGPT or Gemini</p>
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-xs">
+<p class="text-[#0069FF] mb-2">Copy this prompt:</p>
+<p class="text-gray-800">"EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.<br><br>FORMAT: Return CSV with these exact headers:<br>child_name,sport,event_type,chaperone,event_date,event_time,location<br><br>RULES:<br>1. EXTRACT EVERY DATE/TIME - don't skip anything<br>2. If location missing → leave blank, still include event<br>3. If unclear → guess: Practice, Game, or Tournament<br>4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'<br>5. Look for ANY time format: 5:30, 6:00 PM, 18:00<br>6. Include partial information - blank fields better than missing events<br><br>EXAMPLE:<br>Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select<br>Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex<br><br>CRITICAL: Extract times even when buried in descriptions!"</p>
 </div>
 <div class="flex gap-3">
-<button id="copyPromptBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-4 py-2 rounded-lg transition flex items-center gap-2">
+<button id="copyPromptBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
 <i data-lucide="copy" class="w-4 h-4"></i> Copy Prompt
 </button>
-<button id="openChatGPTBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-bold px-4 py-2 rounded-lg transition flex items-center gap-2">
+<button id="openChatGPTBtn" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
 <i data-lucide="external-link" class="w-4 h-4"></i> ChatGPT
 </button>
-<button id="openGeminiBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-bold px-4 py-2 rounded-lg transition flex items-center gap-2">
+<button id="openGeminiBtn" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
 <i data-lucide="external-link" class="w-4 h-4"></i> Gemini
 </button>
 </div>
-<p class="text-white font-medium">📋 Step 4: Paste ChatGPT results here:</p>
-<textarea id="chatgptResults" rows="6" placeholder="Paste the CSV results from ChatGPT here..." class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-blue-500 resize-none font-mono text-xs"></textarea>
-<button id="parseResultsBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition">Parse Results</button>
+<p class="text-gray-900 font-medium">📋 Step 4: Paste ChatGPT results here:</p>
+<textarea id="chatgptResults" rows="6" placeholder="Paste the CSV results from ChatGPT here..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none font-mono text-xs"></textarea>
+<button id="parseResultsBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition">Parse Results</button>
 
 <!-- Parsed Data Grid -->
 <div id="parsedDataSection" class="hidden mt-6">
-<div class="bg-neutral-800 rounded-lg p-4">
-<h3 class="text-white font-bold text-sm mb-4 flex items-center gap-2">
-<i data-lucide="table" class="w-4 h-4 text-green-400"></i>
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+<h3 class="text-gray-900 font-semibold text-sm mb-4 flex items-center gap-2">
+<i data-lucide="table" class="w-4 h-4 text-green-500"></i>
 Complete Your Schedule Data
 </h3>
-<p class="text-neutral-400 text-xs mb-4">Fill in the missing information for each event:</p>
+<p class="text-gray-500 text-xs mb-4">Fill in the missing information for each event:</p>
 
 <!-- Data Grid Container -->
 <div class="overflow-x-auto">
 <table class="w-full text-xs">
 <thead>
-<tr class="border-b border-neutral-700">
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Date</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Location</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Child Name</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Sport</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Event Type</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Time</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Who's Taking</th>
+<tr class="border-b border-gray-200">
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Date</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Location</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Child Name</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Sport</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Event Type</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Time</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Who's Taking</th>
 </tr>
 </thead>
-<tbody id="parsedDataGrid" class="text-white">
+<tbody id="parsedDataGrid" class="text-gray-900">
 <!-- Dynamic rows will be inserted here -->
 </tbody>
 </table>
 </div>
 
 <div class="flex gap-3 mt-4">
-<button id="clearParsedBtn" class="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-2 rounded-lg transition text-sm">Clear</button>
-<button id="importParsedBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
+<button id="clearParsedBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-2 rounded-lg transition text-sm">Clear</button>
+<button id="importParsedBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
 <i data-lucide="download" class="w-4 h-4"></i> Import All Events
 </button>
 </div>
@@ -290,28 +292,28 @@ Complete Your Schedule Data
 </div>
 
 <!-- Manual Input -->
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition" data-method="manual">
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="manual">
 <div class="flex items-center gap-3">
-<i data-lucide="edit" class="w-5 h-5 text-blue-400"></i>
-<span class="font-medium text-white">Manual Input</span>
+<i data-lucide="edit" class="w-5 h-5 text-[#0069FF]"></i>
+<span class="font-medium text-gray-900">Manual Input</span>
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
 </button>
-<div class="import-content hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-4 text-sm text-neutral-300">
-<p class="text-white font-medium">Build your schedule directly in the app:</p>
+<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-900 font-medium">Build your schedule directly in the app:</p>
 
-<div class="bg-neutral-800 rounded-lg p-4">
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
 <div class="flex items-center justify-between mb-4">
-<h3 class="text-white font-bold text-sm flex items-center gap-2">
-<i data-lucide="calendar-plus" class="w-4 h-4 text-blue-400"></i>
+<h3 class="text-gray-900 font-semibold text-sm flex items-center gap-2">
+<i data-lucide="calendar-plus" class="w-4 h-4 text-[#0069FF]"></i>
 Schedule Builder
 </h3>
 <div class="flex gap-2">
-<button id="addManualRowBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-lg transition flex items-center gap-1">
+<button id="addManualRowBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-xs font-semibold px-3 py-1 rounded-lg transition flex items-center gap-1">
 <i data-lucide="plus" class="w-3 h-3"></i> Add Row
 </button>
-<button id="clearManualBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-xs font-bold px-3 py-1 rounded-lg transition">Clear All</button>
+<button id="clearManualBtn" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-3 py-1 rounded-lg transition">Clear All</button>
 </div>
 </div>
 
@@ -319,25 +321,25 @@ Schedule Builder
 <div class="overflow-x-auto">
 <table class="w-full text-xs">
 <thead>
-<tr class="border-b border-neutral-700">
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Date</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Location</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Child Name</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Sport</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Event Type</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Time</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium">Who's Taking</th>
-<th class="text-left py-2 px-2 text-neutral-400 font-medium w-8"></th>
+<tr class="border-b border-gray-200">
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Date</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Location</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Child Name</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Sport</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Event Type</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Time</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium">Who's Taking</th>
+<th class="text-left py-2 px-2 text-gray-500 font-medium w-8"></th>
 </tr>
 </thead>
-<tbody id="manualInputGrid" class="text-white">
+<tbody id="manualInputGrid" class="text-gray-900">
 <!-- Dynamic rows will be inserted here -->
 </tbody>
 </table>
 </div>
 
 <div class="flex gap-3 mt-4">
-<button id="importManualBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
+<button id="importManualBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
 <i data-lucide="download" class="w-4 h-4"></i> Import All Events
 </button>
 </div>
@@ -348,50 +350,50 @@ Schedule Builder
 </div>
 
 <!-- Upload CSV -->
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition" data-method="upload">
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="upload">
 <div class="flex items-center gap-3">
-<i data-lucide="upload" class="w-5 h-5 text-purple-400"></i>
-<span class="font-medium text-white">Upload CSV</span>
+<i data-lucide="upload" class="w-5 h-5 text-purple-500"></i>
+<span class="font-medium text-gray-900">Upload CSV</span>
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
 </button>
-<div class="import-content hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-4 text-sm text-neutral-300">
-<p class="text-white font-medium">Upload a CSV file with your schedule:</p>
+<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-900 font-medium">Upload a CSV file with your schedule:</p>
 
 <div class="space-y-4">
 <!-- Template Download -->
 <div class="flex gap-3">
-<button id="downloadTemplateBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition flex items-center gap-2">
+<button id="downloadTemplateBtn" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2">
 <i data-lucide="download" class="w-4 h-4"></i> Download Template
 </button>
-<div class="flex-1 text-xs text-neutral-400 py-2">
+<div class="flex-1 text-xs text-gray-500 py-2">
 Need a template? Download our CSV format and fill it out in Excel or Google Sheets.
 </div>
 </div>
 
 <!-- File Drop Zone -->
-<div id="csvDropZone" class="border-2 border-dashed border-neutral-600 rounded-2xl p-8 bg-neutral-800/50 hover:border-neutral-500 hover:bg-neutral-800/70 transition cursor-pointer text-center">
+<div id="csvDropZone" class="border-2 border-dashed border-gray-300 rounded-2xl p-8 bg-gray-50 hover:border-gray-400 hover:bg-gray-100 transition cursor-pointer text-center">
 <div class="flex flex-col items-center gap-3">
-<div class="w-12 h-12 rounded-full bg-purple-600/20 flex items-center justify-center">
-<i data-lucide="upload" class="w-6 h-6 text-purple-400"></i>
+<div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
+<i data-lucide="upload" class="w-6 h-6 text-purple-500"></i>
 </div>
 <div>
-<p class="text-white font-medium text-sm">Drop your CSV file here</p>
-<p class="text-neutral-400 text-xs">or click to browse files</p>
+<p class="text-gray-900 font-medium text-sm">Drop your CSV file here</p>
+<p class="text-gray-500 text-xs">or click to browse files</p>
 </div>
-<p class="text-neutral-500 text-xs">Supports .csv files up to 5MB</p>
+<p class="text-gray-400 text-xs">Supports .csv files up to 5MB</p>
 </div>
 <input type="file" id="csvFileInput" accept=".csv" class="hidden">
 </div>
 
 <!-- File Info -->
-<div id="csvFileInfo" class="hidden bg-neutral-800 rounded-lg p-3">
+<div id="csvFileInfo" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-3">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
-<span id="csvFileName" class="text-white text-xs font-medium"></span>
-<span id="csvFileSize" class="text-neutral-400 text-xs"></span>
+<i data-lucide="file-text" class="w-4 h-4 text-purple-500"></i>
+<span id="csvFileName" class="text-gray-900 text-xs font-medium"></span>
+<span id="csvFileSize" class="text-gray-500 text-xs"></span>
 </div>
 <button id="removeCsvBtn" class="text-red-500 hover:text-red-400 transition">
 <i data-lucide="x" class="w-4 h-4"></i>
@@ -400,109 +402,109 @@ Need a template? Download our CSV format and fill it out in Excel or Google Shee
 </div>
 
 <!-- Parse Button -->
-<button id="parseCsvBtn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition hidden">Parse CSV File</button>
+<button id="parseCsvBtn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 rounded-lg transition hidden">Parse CSV File</button>
 </div>
 </div>
 </div>
 
 <!-- Recurring Practice -->
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="import-method-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition" data-method="recurring">
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="import-method-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition" data-method="recurring">
 <div class="flex items-center gap-3">
-<i data-lucide="repeat" class="w-5 h-5 text-orange-400"></i>
-<span class="font-medium text-white">Recurring Practice</span>
+<i data-lucide="repeat" class="w-5 h-5 text-orange-500"></i>
+<span class="font-medium text-gray-900">Recurring Practice</span>
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
 </button>
-<div class="import-content hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-4 text-sm text-neutral-300">
-<p class="text-white font-medium">⚡ Generate recurring practice schedule</p>
-<p class="text-xs text-neutral-400 mb-4">Perfect for coaches who say "practice is Tuesdays and Thursdays at 5:30" but don't give you a detailed schedule.</p>
+<div class="import-content hidden bg-white px-5 py-4 border-t border-gray-200 space-y-4 text-sm text-gray-600">
+<p class="text-gray-900 font-medium">⚡ Generate recurring practice schedule</p>
+<p class="text-xs text-gray-500 mb-4">Perfect for coaches who say "practice is Tuesdays and Thursdays at 5:30" but don't give you a detailed schedule.</p>
 
 <div class="grid grid-cols-2 gap-3">
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Athlete</label>
-<input id="recurringAthlete" type="text" placeholder="e.g., Cannon" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label>
+<input id="recurringAthlete" type="text" placeholder="e.g., Cannon" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Sport</label>
-<input id="recurringSport" type="text" placeholder="e.g., Baseball" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label>
+<input id="recurringSport" type="text" placeholder="e.g., Baseball" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 </div>
 
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Practice Days</label>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Practice Days</label>
 <div class="flex gap-2 flex-wrap">
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="daySun" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Sun</span>
+<span class="text-xs text-gray-700">Sun</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="dayMon" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Mon</span>
+<span class="text-xs text-gray-700">Mon</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="dayTue" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Tue</span>
+<span class="text-xs text-gray-700">Tue</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="dayWed" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Wed</span>
+<span class="text-xs text-gray-700">Wed</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="dayThu" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Thu</span>
+<span class="text-xs text-gray-700">Thu</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="dayFri" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Fri</span>
+<span class="text-xs text-gray-700">Fri</span>
 </label>
-<label class="flex items-center gap-1 bg-neutral-800 px-2 py-1 rounded cursor-pointer hover:bg-neutral-700 transition">
+<label class="flex items-center gap-1 bg-gray-50 border border-gray-200 px-2 py-1 rounded cursor-pointer hover:bg-gray-100 transition">
 <input type="checkbox" id="daySat" class="text-orange-500 focus:ring-orange-500 focus:ring-2 rounded">
-<span class="text-xs text-white">Sat</span>
+<span class="text-xs text-gray-700">Sat</span>
 </label>
 </div>
 </div>
 
 <div class="grid grid-cols-2 gap-3">
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Time</label>
-<input id="recurringTime" type="time" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label>
+<input id="recurringTime" type="time" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Location</label>
-<input id="recurringLocation" type="text" placeholder="e.g., Main Field" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label>
+<input id="recurringLocation" type="text" placeholder="e.g., Main Field" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 </div>
 
 <div class="grid grid-cols-2 gap-3">
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Season Start</label>
-<input id="recurringStart" type="date" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season Start</label>
+<input id="recurringStart" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Season End</label>
-<input id="recurringEnd" type="date" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-orange-500 text-sm">
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Season End</label>
+<input id="recurringEnd" type="date" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
 </div>
 </div>
 
 <div>
-<label class="text-xs text-neutral-400 block mb-1.5 font-medium">Skip Dates (Optional)</label>
-<input id="recurringSkip" type="text" placeholder="e.g., 2026-04-15, 2026-05-27" class="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-orange-500 text-sm">
-<p class="text-xs text-neutral-500 mt-1">Enter dates to skip (holidays, breaks). Use YYYY-MM-DD format, separated by commas.</p>
+<label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Skip Dates (Optional)</label>
+<input id="recurringSkip" type="text" placeholder="e.g., 2026-04-15, 2026-05-27" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-sm">
+<p class="text-xs text-gray-400 mt-1">Enter dates to skip (holidays, breaks). Use YYYY-MM-DD format, separated by commas.</p>
 </div>
 
 <div class="flex gap-3">
-<button id="previewRecurringBtn" class="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-2 px-4 rounded-lg transition">
+<button id="previewRecurringBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-lg transition">
 <i data-lucide="eye" class="w-4 h-4 inline mr-2"></i> Preview
 </button>
-<button id="generateRecurringBtn" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded-lg transition hidden">
+<button id="generateRecurringBtn" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg transition hidden">
 <i data-lucide="plus-circle" class="w-4 h-4 inline mr-2"></i> Generate Schedule
 </button>
 </div>
 
-<div id="recurringPreview" class="hidden mt-4 bg-neutral-800 rounded-lg p-3">
-<p class="text-white font-medium text-sm mb-2">Preview:</p>
-<p id="recurringPreviewText" class="text-neutral-300 text-xs"></p>
+<div id="recurringPreview" class="hidden mt-4 bg-gray-50 border border-gray-200 rounded-lg p-3">
+<p class="text-gray-900 font-medium text-sm mb-2">Preview:</p>
+<p id="recurringPreviewText" class="text-gray-600 text-xs"></p>
 </div>
 
 <div id="recurringStatus" class="text-center text-xs mt-3 hidden"></div>
@@ -513,117 +515,117 @@ Need a template? Download our CSV format and fill it out in Excel or Google Shee
 </div>
 
 <!-- App Setup Modal --> 
-<div id="appSetupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> 
-<div class="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"> 
-<div class="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-8 py-6 flex items-center justify-between"> 
-<h2 class="font-bold text-2xl">App Setup Instructions</h2>
-<button id="closeAppSetupBtn" class="text-neutral-500 hover:text-white transition"> 
-<i data-lucide="x" class="w-6 h-6"></i> 
-</button> 
-</div> 
+<div id="appSetupModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
+<div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+<h2 class="font-semibold text-2xl text-gray-900">App Setup Instructions</h2>
+<button id="closeAppSetupBtn" class="text-gray-400 hover:text-gray-700 transition">
+<i data-lucide="x" class="w-6 h-6"></i>
+</button>
+</div>
 <div class="px-8 py-6 space-y-6">
-<div class="bg-blue-600/10 border border-blue-500/30 rounded-2xl p-5 mb-6">
-<h3 class="font-bold text-white mb-2 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-blue-400"></i> Install as App</h3> 
-<p class="text-sm text-neutral-300">Install this on your device for instant access. No app store needed - it works like a native app right from your browser!</p> 
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5 mb-6">
+<h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-[#0069FF]"></i> Install as App</h3>
+<p class="text-sm text-gray-600">Install this on your device for instant access. No app store needed - it works like a native app right from your browser!</p>
 </div>
 
 <!-- iPhone/iPad --> 
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition"> 
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
 <div class="flex items-center gap-3">
 <i data-lucide="smartphone" class="w-5 h-5 text-blue-400"></i> 
-<span class="font-medium text-white">iPhone / iPad</span> 
+<span class="font-medium text-gray-900">iPhone / iPad</span> 
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> 
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
 </button> 
-<div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300"> 
-<p><span class="font-bold text-white">1.</span> Open Safari and visit this schedule</p> 
-<p><span class="font-bold text-white">2.</span> Tap the Share icon at the bottom center</p> 
-<p><span class="font-bold text-white">3.</span> Select "Add to Home Screen"</p> 
-<p><span class="font-bold text-white">4.</span> Tap "Add" in the top right corner</p> 
-<p class="text-xs text-neutral-500 mt-2">The app icon will appear on your home screen like any other app!</p>
+<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
+<p><span class="font-bold text-gray-900">1.</span> Open Safari and visit this schedule</p> 
+<p><span class="font-bold text-gray-900">2.</span> Tap the Share icon at the bottom center</p> 
+<p><span class="font-bold text-gray-900">3.</span> Select "Add to Home Screen"</p> 
+<p><span class="font-bold text-gray-900">4.</span> Tap "Add" in the top right corner</p> 
+<p class="text-xs text-gray-400 mt-2">The app icon will appear on your home screen like any other app!</p>
 </div> 
 </div>
 
 <!-- Android --> 
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition"> 
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
 <div class="flex items-center gap-3">
 <i data-lucide="smartphone" class="w-5 h-5 text-green-400"></i> 
-<span class="font-medium text-white">Android</span> 
+<span class="font-medium text-gray-900">Android</span> 
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> 
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
 </button> 
-<div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300"> 
-<p><span class="font-bold text-white">1.</span> Open Chrome browser and visit this schedule</p>
-<p><span class="font-bold text-white">2.</span> Tap the menu (3 dots) in top right corner</p> 
-<p><span class="font-bold text-white">3.</span> Select "Add to Home Screen" or "Install app"</p> 
-<p><span class="font-bold text-white">4.</span> Tap "Install" or "Add"</p> 
-<p class="text-xs text-neutral-500 mt-2">The app will be added to your home screen and app drawer!</p>
+<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
+<p><span class="font-bold text-gray-900">1.</span> Open Chrome browser and visit this schedule</p>
+<p><span class="font-bold text-gray-900">2.</span> Tap the menu (3 dots) in top right corner</p> 
+<p><span class="font-bold text-gray-900">3.</span> Select "Add to Home Screen" or "Install app"</p> 
+<p><span class="font-bold text-gray-900">4.</span> Tap "Install" or "Add"</p> 
+<p class="text-xs text-gray-400 mt-2">The app will be added to your home screen and app drawer!</p>
 </div> 
 </div>
 
 <!-- Mac/Desktop --> 
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition"> 
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
 <div class="flex items-center gap-3">
 <i data-lucide="monitor" class="w-5 h-5 text-purple-400"></i> 
-<span class="font-medium text-white">Mac / Desktop</span> 
+<span class="font-medium text-gray-900">Mac / Desktop</span> 
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> 
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
 </button> 
-<div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300"> 
-<p><span class="font-bold text-white">1.</span> Open your browser (Chrome, Safari, or Edge)</p> 
-<p><span class="font-bold text-white">2.</span> Visit this schedule page</p> 
-<p><span class="font-bold text-white">3.</span> Look for the "Install" icon in the address bar</p> 
-<p><span class="font-bold text-white">4.</span> Click it and confirm installation</p> 
-<p class="text-xs text-neutral-500 mt-2">The app will open as its own window on your desktop and dock!</p>
+<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
+<p><span class="font-bold text-gray-900">1.</span> Open your browser (Chrome, Safari, or Edge)</p> 
+<p><span class="font-bold text-gray-900">2.</span> Visit this schedule page</p> 
+<p><span class="font-bold text-gray-900">3.</span> Look for the "Install" icon in the address bar</p> 
+<p><span class="font-bold text-gray-900">4.</span> Click it and confirm installation</p> 
+<p class="text-xs text-gray-400 mt-2">The app will open as its own window on your desktop and dock!</p>
 </div> 
 </div>
 
 <!-- Windows --> 
-<div class="border border-neutral-800 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-neutral-800 hover:bg-neutral-700 px-5 py-4 flex items-center justify-between transition"> 
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
 <div class="flex items-center gap-3">
 <i data-lucide="monitor" class="w-5 h-5 text-blue-300"></i> 
-<span class="font-medium text-white">Windows</span> 
+<span class="font-medium text-gray-900">Windows</span> 
 </div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-neutral-500"></i> 
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
 </button> 
-<div class="device-steps hidden bg-neutral-900 px-5 py-4 border-t border-neutral-800 space-y-3 text-sm text-neutral-300"> 
-<p><span class="font-bold text-white">1.</span> Open Edge or Chrome browser</p> 
-<p><span class="font-bold text-white">2.</span> Visit this schedule page</p> 
-<p><span class="font-bold text-white">3.</span> Click the Install icon in the address bar</p> 
-<p><span class="font-bold text-white">4.</span> Click "Install" to confirm</p> 
-<p class="text-xs text-neutral-500 mt-2">Find it in your Start Menu or taskbar after installation!</p>
+<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
+<p><span class="font-bold text-gray-900">1.</span> Open Edge or Chrome browser</p> 
+<p><span class="font-bold text-gray-900">2.</span> Visit this schedule page</p> 
+<p><span class="font-bold text-gray-900">3.</span> Click the Install icon in the address bar</p> 
+<p><span class="font-bold text-gray-900">4.</span> Click "Install" to confirm</p> 
+<p class="text-xs text-gray-400 mt-2">Find it in your Start Menu or taskbar after installation!</p>
 </div> 
 </div> 
 
 </div>
-<div class="sticky bottom-0 bg-neutral-900 border-t border-neutral-800 px-8 py-6"> 
+<div class="sticky bottom-0 bg-white border-t border-gray-200 px-8 py-6">
 <div class="flex gap-3">
-<button id="skipAppSetupBtn" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 rounded-xl transition">Skip For Now</button>
-<button id="continueAppSetupBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition">Continue</button>
+<button id="skipAppSetupBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Skip For Now</button>
+<button id="continueAppSetupBtn" class="flex-1 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Continue</button>
 </div>
 </div>
 </div> 
-</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-black border-b border-neutral-800 px-5 pt-4 pb-4 flex-shrink-0"> <div class="flex items-start justify-between mb-4"> <div class="flex flex-col items-start justify-start"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-8 mb-2"> <p class="text-neutral-500 text-xs font-medium tracking-widest uppercase">For Parents In The Trenches</p> </div><select id="kidFilter" class="bg-neutral-900 border border-neutral-700 text-white text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-neutral-800 transition"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-white"></p> <p id="weekSub" class="text-xs text-neutral-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-neutral-800 transition"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> </div><!-- Day Chips --> 
+</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-4 pb-4 flex-shrink-0"> <div class="flex items-start justify-between mb-4"> <div class="flex flex-col items-start justify-start"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-8 mb-2"> <p class="text-gray-400 text-xs font-medium tracking-widest uppercase">For Parents In The Trenches</p> </div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-3">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
-<button id="weekendViewBtn" class="hidden bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium px-3 py-2 rounded-lg transition flex items-center gap-1">
+<button id="weekendViewBtn" class="hidden bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-2 rounded-lg transition flex items-center gap-1">
 <i data-lucide="calendar-days" class="w-3 h-3"></i>
 Weekend
 </button>
-<button id="backToWeekBtn" class="hidden bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-medium px-3 py-2 rounded-lg transition flex items-center gap-1">
+<button id="backToWeekBtn" class="hidden bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-medium px-3 py-2 rounded-lg transition flex items-center gap-1">
 <i data-lucide="calendar" class="w-3 h-3"></i>
 Week View
 </button>
 </div>
-</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-neutral-800 border-t border-neutral-700"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-neutral-300 transition-colors duration-200"> <span class="text-neutral-400 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-neutral-500"></i> </a> <span class="text-neutral-600 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-neutral-300 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-neutral-500"></i> <span class="text-neutral-400 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-neutral-700 hover:bg-neutral-600 text-white text-sm font-bold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-neutral-900 border-t border-neutral-700 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-neutral-600 rounded-full mx-auto mb-6"></div> <h3 class="text-white font-bold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-bold">App Setup</div> <div class="text-xs text-blue-200">Install to home screen</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-bold">Setup Code</div> <div class="text-xs text-neutral-400">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-bold">Help</div> <div class="text-xs text-neutral-400">App instructions & guide</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-bold">Parent Resource Hub</div> <div class="text-xs text-green-200">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-neutral-800 hover:bg-neutral-700 text-white font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-neutral-800 bg-black flex-shrink-0"><button class="screen-tab tab-active flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="weekly">Schedule</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="control">Control</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-bold tracking-wider uppercase text-center transition" data-screen="season">Season</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6"> <div id="installPrompt" class="bg-gradient-to-r from-blue-600/20 to-blue-500/10 border border-blue-500/30 rounded-2xl p-5 mb-6"> <div class="flex items-start gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5"></i> <div class="flex-1"> <h3 class="text-sm font-bold text-white mb-1">Save to Home Screen</h3> <p class="text-xs text-neutral-300 mb-3">Access your game week schedule anytime, right from your phone or computer.</p><button id="openAppSetupBtn" class="text-blue-400 text-xs hover:text-blue-300 transition font-medium flex items-center gap-1"> <i data-lucide="arrow-right" class="w-3 h-3"></i> View Setup Instructions </button> <button id="dismissInstall" class="mt-3 text-xs text-neutral-500 hover:text-neutral-400 transition">Dismiss</button> </div> </div> </div> <div id="weeklyCards" class="space-y-4"></div> <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-neutral-600 mx-auto mb-3"></i> <p class="text-neutral-500 text-sm">No events this week</p> <p class="text-neutral-600 text-xs mt-1">Add events in the Control tab</p> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-blue-500"></i> ADD EVENT</h2> <div class="bg-neutral-900 rounded-2xl p-5 space-y-4 border border-neutral-800"> <div class="grid grid-cols-2 gap-3"> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> </div> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> </div> </div><div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Event Type</label> <select id="inputType" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Who is Taking</label> <input id="inputChaperone" type="text" placeholder="Mom, Dad, Grandpa..." class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Date</label> <input id="inputDate" type="date" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Time</label> <input id="inputTime" type="time" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"> </div> </div> <div><label class="text-xs text-neutral-400 block mb-1.5 font-medium">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-black border border-neutral-700 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> </div><div class="flex gap-3">
-<button id="addEventBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-3.5 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus" class="w-4 h-4"></i> Add Event </button>
-<button id="importScheduleBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold text-sm py-3.5 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="upload" class="w-4 h-4"></i> Import Schedule </button>
-</div> <div id="addStatus" class="text-center text-xs hidden"></div> </div> </div><!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i> WEEKLY NOTES</h2><textarea id="weeklyNotes" rows="4" placeholder="Anything for this week..." class="w-full bg-neutral-900 border border-neutral-800 rounded-2xl px-5 py-4 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 resize-none transition"></textarea> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4 text-blue-500"></i> PACK LIST</h2> <div id="packList" class="bg-neutral-900 rounded-2xl p-5 border border-neutral-800 space-y-3"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="Add new item..." class="flex-1 bg-black border border-neutral-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition"> <button id="addPackBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="quote" class="w-4 h-4 text-blue-500"></i> ATHLETE INSIGHT</h2> <div class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800"> <p class="text-white text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-neutral-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-blue-500 text-xs mt-4 flex items-center gap-1 hover:text-blue-400 transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-neutral-800"> <p class="text-neutral-400 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-neutral-600 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 3: Season --> <section id="screen-season" class="px-5 py-6 hidden"> <h2 class="font-bold text-sm tracking-tight mb-4 flex items-center gap-2"><i data-lucide="database" class="w-4 h-4 text-blue-500"></i> SEASON EVENTS</h2> <div class="overflow-x-auto -mx-5 px-5"> <table id="seasonTable" class="w-full min-w-[700px]"> <thead> <tr class="border-b border-neutral-800"> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Athlete</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Sport</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Date</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Day</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Time</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Location</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Taking</th> <th class="text-xs text-neutral-500 font-medium text-left py-3 px-2">Type</th> <th class="text-xs text-neutral-500 font-medium text-center py-3 px-2 w-10"></th> </tr> </thead> <tbody id="seasonBody" class="text-sm"></tbody> </table> </div> <div id="emptySeason" class="hidden text-center py-12"> <p class="text-neutral-500 text-sm">No events yet</p> </div> </section> </div> </div>
+</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Setup</div> <div class="text-xs text-blue-100">Install to home screen</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">App instructions & guide</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-3 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">Schedule</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">Control</button> <button class="screen-tab tab-inactive flex-1 py-3 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">Season</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6"> <div id="installPrompt" class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5 mb-6"> <div class="flex items-start gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-[#0069FF] flex-shrink-0 mt-0.5"></i> <div class="flex-1"> <h3 class="text-sm font-semibold text-gray-900 mb-1">Save to Home Screen</h3> <p class="text-xs text-gray-600 mb-3">Access your game week schedule anytime, right from your phone or computer.</p><button id="openAppSetupBtn" class="text-[#0069FF] text-xs hover:text-[#0052CC] transition font-medium flex items-center gap-1"> <i data-lucide="arrow-right" class="w-3 h-3"></i> View Setup Instructions </button> <button id="dismissInstall" class="mt-3 text-xs text-gray-400 hover:text-gray-600 transition">Dismiss</button> </div> </div> </div> <div id="weeklyCards" class="space-y-4"></div> <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-gray-300 mx-auto mb-3"></i> <p class="text-gray-500 text-sm">No events this week</p> <p class="text-gray-400 text-xs mt-1">Add events in the Control tab</p> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="plus-circle" class="w-4 h-4 text-[#0069FF]"></i> ADD EVENT</h2> <div class="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-sm"> <div class="grid grid-cols-2 gap-3"> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div><div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="inputType" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Who is Taking</label> <input id="inputChaperone" type="text" placeholder="Mom, Dad, Grandpa..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="inputDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="inputTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div> <div><label class="text-xs text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div class="flex gap-3">
+<button id="addEventBtn" class="flex-1 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm py-3.5 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="plus" class="w-4 h-4"></i> Add Event </button>
+<button id="importScheduleBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold text-sm py-3.5 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="upload" class="w-4 h-4"></i> Import Schedule </button>
+</div> <div id="addStatus" class="text-center text-xs hidden"></div> </div> </div><!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="file-text" class="w-4 h-4 text-[#0069FF]"></i> WEEKLY NOTES</h2><textarea id="weeklyNotes" rows="4" placeholder="Anything for this week..." class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none transition shadow-sm"></textarea> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="check-square" class="w-4 h-4 text-[#0069FF]"></i> PACK LIST</h2> <div id="packList" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="Add new item..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addPackBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="quote" class="w-4 h-4 text-[#0069FF]"></i> ATHLETE INSIGHT</h2> <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"> <p class="text-gray-900 text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-gray-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-[#0069FF] text-xs mt-4 flex items-center gap-1 hover:text-[#0052CC] transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-gray-200"> <p class="text-gray-500 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-gray-400 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 3: Season --> <section id="screen-season" class="px-5 py-6 hidden"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="database" class="w-4 h-4 text-[#0069FF]"></i> SEASON EVENTS</h2> <div class="overflow-x-auto -mx-5 px-5"> <table id="seasonTable" class="w-full min-w-[700px] bg-white rounded-2xl border border-gray-200 shadow-sm"> <thead> <tr class="border-b border-gray-200"> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Athlete</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Sport</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Date</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Day</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Time</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Location</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Taking</th> <th class="text-xs text-gray-500 font-medium text-left py-3 px-2">Type</th> <th class="text-xs text-gray-500 font-medium text-center py-3 px-2 w-10"></th> </tr> </thead> <tbody id="seasonBody" class="text-sm"></tbody> </table> </div> <div id="emptySeason" class="hidden text-center py-12"> <p class="text-gray-500 text-sm">No events yet</p> </div> </section> </div> </div>
 <script>
 // Supabase multi-tenant storage system
 window.dataSdk = {
@@ -822,11 +824,11 @@ let weekendView = false; // true when showing weekend-only view
 const defaultConfig = {
 app_title: 'STEELEBROZ',
 weekly_notes: '',
-background_color: '#000000',
-surface_color: '#171717',
-text_color: '#ffffff',
-accent_color: '#3B82F6',
-secondary_color: '#737373'
+background_color: '#FAFBFC',
+surface_color: '#FFFFFF',
+text_color: '#111827',
+accent_color: '#0069FF',
+secondary_color: '#6B7280'
 };
 
 function getMonday(d) {
@@ -911,13 +913,13 @@ let chipClass = 'flex flex-col items-center min-w-[44px] py-2 px-2 rounded-xl tr
 if (isSelected) {
 chipClass += 'bg-green-600 text-white'; // Selected state (green)
 } else if (isToday) {
-chipClass += 'bg-blue-600 text-white'; // Today state (blue)
+chipClass += 'bg-[#0069FF] text-white'; // Today state (blue)
 } else {
-chipClass += 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-white'; // Default state
+chipClass += 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'; // Default state
 }
 
 chip.className = chipClass;
-chip.innerHTML = `<span class="text-[10px] uppercase">${SHORT_DAYS[d.getDay()]}</span><span class="text-sm font-bold mt-0.5">${d.getDate()}</span>${evCount > 0 ? `<span class="w-1.5 h-1.5 rounded-full mt-1 ${isSelected || isToday ? 'bg-white' : 'bg-blue-500'}"></span>` : ''}`;
+chip.innerHTML = `<span class="text-[10px] uppercase">${SHORT_DAYS[d.getDay()]}</span><span class="text-sm font-bold mt-0.5">${d.getDate()}</span>${evCount > 0 ? `<span class="w-1.5 h-1.5 rounded-full mt-1 ${isSelected || isToday ? 'bg-white' : 'bg-[#0069FF]'}"></span>` : ''}`;
 
 // 🆕 STEP 4: Updated click handler to set selection and re-render both chips and events
 chip.addEventListener('click', () => {
@@ -1006,27 +1008,30 @@ card.className = 'card-enter';
 const isToday = ds === formatDate(new Date());
 
 let eventsHtml = dayEvents.map(ev => {
-const typeColor = ev.event_type === 'Game' ? 'bg-blue-600' : ev.event_type === 'Tournament' ? 'bg-amber-500' : 'bg-neutral-600';
-return `<div class="flex items-center justify-between py-3 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-neutral-800' : ''}">
+const sportName = (ev.sport || '').toLowerCase();
+const sportColor = sportName.includes('baseball') ? '#F59E0B' : sportName.includes('soccer') ? '#10B981' : sportName.includes('basketball') ? '#F97316' : sportName.includes('football') ? '#8B5CF6' : sportName.includes('hockey') ? '#06B6D4' : sportName.includes('tennis') ? '#EC4899' : sportName.includes('swim') ? '#3B82F6' : '#6B7280';
+const typeBadge = ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FEF3C7] text-[#B45309]' : ev.event_type === 'Practice' ? 'bg-[#E5E7EB] text-[#374151]' : 'bg-[#F3F4F6] text-[#6B7280]';
+return `<div class="flex items-center justify-between py-3 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-gray-100' : ''}">
 <div class="flex items-center gap-3 flex-1">
-<div class="w-8 h-8 rounded-lg ${typeColor} flex items-center justify-center text-white text-xs font-bold">${ev.child_name ? ev.child_name.charAt(0).toUpperCase() : '?'}</div>
+<div class="w-1 h-8 rounded-full" style="background:${sportColor}"></div>
 <div class="flex-1">
-<p class="text-sm font-medium text-white">${ev.child_name || 'Unknown'}</p>
-<p class="text-xs text-neutral-500">${ev.sport ? ev.sport : ''} ${ev.event_type ? '· ' + ev.event_type : ''} ${ev.location ? '· ' + ev.location : ''} ${ev.chaperone ? '· ' + ev.chaperone : ''}</p>
+<p class="text-sm font-semibold text-gray-900">${ev.child_name || 'Unknown'}</p>
+<p class="text-xs text-gray-500">${ev.sport ? ev.sport : ''} ${ev.location ? '· ' + ev.location : ''} ${ev.chaperone ? '· ' + ev.chaperone : ''}</p>
 </div>
 </div>
-<span class="text-xs text-neutral-400 font-medium flex-shrink-0 mr-3">${formatTime12(ev.event_time)}</span>
+<span class="text-xs px-2 py-0.5 rounded-lg ${typeBadge} font-medium mr-2">${ev.event_type || ''}</span>
+<span class="text-xs text-gray-500 font-medium flex-shrink-0 mr-3">${formatTime12(ev.event_time)}</span>
 <div class="flex items-center gap-2 ml-2">
-<button class="edit-event-btn text-blue-500 hover:text-blue-400 transition p-1.5 bg-blue-600/20 rounded-lg" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-<button class="del-event-btn text-red-500 hover:text-red-400 transition p-1.5 bg-red-600/20 rounded-lg" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+<button class="edit-event-btn text-[#0069FF] hover:text-[#0052CC] transition p-1.5 bg-blue-50 rounded-lg" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+<button class="del-event-btn text-red-600 hover:text-red-500 transition p-1.5 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
 </div>
 </div>`;
 }).join('');
 
-card.innerHTML = `<div class="bg-neutral-900 rounded-2xl p-5 border ${isToday ? 'border-blue-600' : 'border-neutral-800'}">
+card.innerHTML = `<div class="bg-white rounded-2xl p-6 border ${isToday ? 'border-[#0069FF]' : 'border-gray-200'} shadow-sm">
 <div class="flex items-center justify-between mb-3">
-<h3 class="font-bold text-xs tracking-tight">${DAYS[d.getDay()].toUpperCase()} — ${formatDisplay(d).toUpperCase()}</h3>
-${isToday ? '<span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">TODAY</span>' : ''}
+<h3 class="font-semibold text-xs tracking-tight text-gray-500 uppercase">${DAYS[d.getDay()].toUpperCase()} — ${formatDisplay(d).toUpperCase()}</h3>
+${isToday ? '<span class="text-[10px] bg-[#0069FF] text-white px-2 py-0.5 rounded-full font-semibold">TODAY</span>' : ''}
 </div>
 ${eventsHtml}
 </div>`;
@@ -1087,17 +1092,17 @@ empty.classList.add('hidden');
 sorted.forEach(ev => {
 const d = ev.event_date ? parseDate(ev.event_date) : null;
 const row = document.createElement('tr');
-row.className = 'border-b border-neutral-800 hover:bg-neutral-900 transition';
+row.className = 'border-b border-gray-100 hover:bg-gray-50 transition';
 row.innerHTML = `
-<td class="py-3 px-2 text-white font-medium">${ev.child_name || '—'}</td>
-<td class="py-3 px-2 text-neutral-400">${ev.sport || '—'}</td>
-<td class="py-3 px-2 text-neutral-400">${ev.event_date || '—'}</td>
-<td class="py-3 px-2 text-neutral-400">${d ? SHORT_DAYS[d.getDay()] : '—'}</td>
-<td class="py-3 px-2 text-neutral-400">${formatTime12(ev.event_time)}</td>
-<td class="py-3 px-2 text-neutral-400">${ev.location || '—'}</td>
-<td class="py-3 px-2 text-neutral-400">${ev.chaperone || '—'}</td>
-<td class="py-3 px-2"><span class="text-xs px-2 py-1 rounded-lg ${ev.event_type === 'Game' ? 'bg-blue-600/20 text-blue-400' : ev.event_type === 'Tournament' ? 'bg-amber-500/20 text-amber-400' : 'bg-neutral-700/50 text-neutral-300'} font-medium">${ev.event_type || '—'}</span></td>
-<td class="py-3 px-2 text-center"><button class="season-edit-btn text-blue-500 hover:text-blue-400 transition p-1.5 bg-blue-600/20 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-500 hover:text-red-400 transition p-1.5 bg-red-600/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button></td>
+<td class="py-3 px-2 text-gray-900 font-medium">${ev.child_name || '—'}</td>
+<td class="py-3 px-2 text-gray-500">${ev.sport || '—'}</td>
+<td class="py-3 px-2 text-gray-500">${ev.event_date || '—'}</td>
+<td class="py-3 px-2 text-gray-500">${d ? SHORT_DAYS[d.getDay()] : '—'}</td>
+<td class="py-3 px-2 text-gray-500">${formatTime12(ev.event_time)}</td>
+<td class="py-3 px-2 text-gray-500">${ev.location || '—'}</td>
+<td class="py-3 px-2 text-gray-500">${ev.chaperone || '—'}</td>
+<td class="py-3 px-2"><span class="text-xs px-2 py-1 rounded-lg ${ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FEF3C7] text-[#B45309]' : 'bg-[#E5E7EB] text-[#374151]'} font-medium">${ev.event_type || '—'}</span></td>
+<td class="py-3 px-2 text-center"><button class="season-edit-btn text-[#0069FF] hover:text-[#0052CC] transition p-1.5 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-600 hover:text-red-500 transition p-1.5 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button></td>
 `;
 body.appendChild(row);
 });
@@ -1141,12 +1146,12 @@ const div = document.createElement('label');
 div.className = 'flex items-center justify-between gap-3 cursor-pointer group py-2';
 div.innerHTML = `
 <div class="flex items-center gap-3 flex-1">
-<div class="w-5 h-5 rounded-md border ${checked ? 'bg-blue-600 border-blue-600' : 'border-neutral-600 group-hover:border-neutral-400'} flex items-center justify-center transition">
+<div class="w-5 h-5 rounded-md border ${checked ? 'bg-[#0069FF] border-[#0069FF]' : 'border-gray-300 group-hover:border-gray-400'} flex items-center justify-center transition">
 ${checked ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
 </div>
-<span class="${checked ? 'text-neutral-500 line-through' : 'text-neutral-300'} text-sm transition">${item}</span>
+<span class="${checked ? 'text-gray-400 line-through' : 'text-gray-700'} text-sm transition">${item}</span>
 </div>
-<button class="del-pack-btn text-neutral-600 hover:text-red-500 transition p-1" data-index="${idx}" type="button">
+<button class="del-pack-btn text-gray-400 hover:text-red-500 transition p-1" data-index="${idx}" type="button">
 <i data-lucide="x" class="w-4 h-4"></i>
 </button>
 `;
@@ -1737,20 +1742,20 @@ gridBody.innerHTML = '';
 
 events.forEach((event, index) => {
 const row = document.createElement('tr');
-row.className = 'border-b border-neutral-700 hover:bg-neutral-700/30';
+row.className = 'border-b border-gray-200 hover:bg-gray-50';
 row.innerHTML = `
-<td class="py-2 px-2 text-green-400 font-mono text-xs">${event.event_date}</td>
-<td class="py-2 px-2 text-blue-400 font-mono text-xs max-w-32 truncate" title="${event.location}">${event.location}</td>
+<td class="py-2 px-2 text-green-600 font-mono text-xs">${event.event_date}</td>
+<td class="py-2 px-2 text-[#0069FF] font-mono text-xs max-w-32 truncate" title="${event.location}">${event.location}</td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.child_name}" placeholder="Name" data-field="child_name" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.sport}" placeholder="Sport" data-field="sport" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<select class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<select class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
         data-field="event_type" data-index="${index}">
 <option value="Practice" ${event.event_type === 'Practice' ? 'selected' : ''}>Practice</option>
 <option value="Game" ${event.event_type === 'Game' ? 'selected' : ''}>Game</option>
@@ -1759,11 +1764,11 @@ row.innerHTML = `
 </select>
 </td>
 <td class="py-2 px-2">
-<input type="time" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="time" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${convertTimeTo24Hour(event.event_time)}" data-field="event_time" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.chaperone}" placeholder="Who" data-field="chaperone" data-index="${index}">
 </td>
 `;
@@ -1907,26 +1912,26 @@ lucide.createIcons();
 // Manual Input Grid Functions
 function generateManualRow(index, event = {}) {
 const row = document.createElement('tr');
-row.className = 'border-b border-neutral-700 hover:bg-neutral-700/30';
+row.className = 'border-b border-gray-200 hover:bg-gray-50';
 row.innerHTML = `
 <td class="py-2 px-2">
-<input type="date" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-28 text-white focus:outline-none focus:border-blue-500" 
+<input type="date" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-28 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.event_date || ''}" data-field="event_date" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-32 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-32 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        placeholder="Location" value="${event.location || ''}" data-field="location" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        placeholder="Name" value="${event.child_name || ''}" data-field="child_name" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        placeholder="Sport" value="${event.sport || ''}" data-field="sport" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<select class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<select class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
         data-field="event_type" data-index="${index}">
 <option value="Practice" ${event.event_type === 'Practice' ? 'selected' : ''}>Practice</option>
 <option value="Game" ${event.event_type === 'Game' ? 'selected' : ''}>Game</option>
@@ -1935,11 +1940,11 @@ row.innerHTML = `
 </select>
 </td>
 <td class="py-2 px-2">
-<input type="time" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="time" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.event_time || ''}" data-field="event_time" data-index="${index}">
 </td>
 <td class="py-2 px-2">
-<input type="text" class="bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs w-20 text-white focus:outline-none focus:border-blue-500" 
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        placeholder="Who" value="${event.chaperone || ''}" data-field="chaperone" data-index="${index}">
 </td>
 <td class="py-2 px-2">
