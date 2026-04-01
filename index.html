@@ -609,7 +609,7 @@ Need a template? Download our CSV format and fill it out in Excel or Google Shee
 </div>
 </div>
 </div> 
-</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 brightness-0"><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
+</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 brightness-0"><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
@@ -618,7 +618,7 @@ Wknd
 </button>
 <button id="backToWeekBtn" class="hidden bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1">
 <i data-lucide="calendar" class="w-3 h-3"></i>
-Week View
+Week
 </button>
 </div>
 </div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Setup</div> <div class="text-xs text-blue-100">Install to home screen</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">App instructions & guide</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6"> <div id="installPrompt" class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5 mb-6"> <div class="flex items-start gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-[#0069FF] flex-shrink-0 mt-0.5"></i> <div class="flex-1"> <h3 class="text-sm font-semibold text-gray-900 mb-1">Save to Home Screen</h3> <p class="text-xs text-gray-600 mb-3">Access your game week schedule anytime, right from your phone or computer.</p><button id="openAppSetupBtn" class="text-[#0069FF] text-xs hover:text-[#0052CC] transition font-medium flex items-center gap-1"> <i data-lucide="arrow-right" class="w-3 h-3"></i> View Setup Instructions </button> <button id="dismissInstall" class="mt-3 text-base text-gray-400 hover:text-gray-600 transition py-2">Dismiss</button> </div> </div> </div> <div id="weeklyCards" class="space-y-3"></div> <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-gray-300 mx-auto mb-3"></i> <p class="text-gray-400 text-base">No events this week</p> <p class="text-gray-400 text-sm mt-1">Add events in the Add Event tab</p> </div>
@@ -797,7 +797,7 @@ window.elementSdk = {
 
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const SHORT_DAYS = ['S','M','T','W','T','F','S'];
-const DEFAULT_PACK_ITEMS = ['Cleats','Helmet','Water bottle','Uniform','Snacks','Mouthguard'];
+const DEFAULT_PACK_ITEMS = [];
 
 const WEEKLY_STORIES = [
 { quote: '"I\'ve failed over and over and over again in my life. And that is why I succeed."', author: 'Michael Jordan', story: 'Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.', source: '"Driven from Within" by Michael Jordan' },
@@ -825,6 +825,29 @@ let selectedDate = null; // '2024-03-25' format when a day is selected
 
 // 🆕 Weekend view for grandparents (Saturday + Sunday only)
 let weekendView = false; // true when showing weekend-only view
+
+// Address detection heuristic for clickable map links
+function looksLikeAddress(text) {
+if (!text || text.length < 8) return false;
+// Has a street number followed by letters
+if (/^\d+\s+[A-Za-z]/.test(text.trim())) return true;
+// Contains common street suffixes
+if (/\b(St|Ave|Blvd|Dr|Rd|Lane|Ln|Ct|Way|Pkwy|Hwy|Circle|Cir|Trail|Trl|Place|Pl)\b/i.test(text)) return true;
+// Contains keywords like Park, Field, Complex, Center, Stadium
+if (/\b(Park|Field|Complex|Center|Centre|Stadium|Arena|Gym|Facility|School|Academy)\b/i.test(text) && text.length > 12) return true;
+// Longer text with a comma (city, state pattern)
+if (text.length > 15 && text.includes(',')) return true;
+return false;
+}
+
+function renderLocation(location) {
+if (!location) return '';
+if (looksLikeAddress(location)) {
+  const encoded = encodeURIComponent(location);
+  return ' · <a href="https://maps.apple.com/?q=' + encoded + '" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">📍 ' + location + '</a>';
+}
+return ' · ' + location;
+}
 
 // Athlete color palette - 8 distinct colors
 const ATHLETE_COLORS = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#EC4899','#06B6D4','#F97316'];
@@ -1032,7 +1055,7 @@ return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'bor
 <span class="text-lg font-bold text-gray-900 ml-auto">${formatTime12(ev.event_time)}</span>
 </div>
 <div class="flex items-center justify-between mt-1 pl-5">
-<p class="text-xs text-gray-500">${ev.sport ? ev.sport : ''}${ev.location ? ' · ' + ev.location : ''}${ev.chaperone ? ' · ' + ev.chaperone : ''}</p>
+<p class="text-xs text-gray-500">${ev.sport ? ev.sport : ''}${ev.location ? renderLocation(ev.location) : ''}${ev.chaperone ? ' · ' + ev.chaperone : ''}</p>
 <div class="flex items-center gap-1 flex-shrink-0">
 <button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
 <button class="del-event-btn p-2 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
@@ -1308,6 +1331,14 @@ document.getElementById('weekPickerInput').addEventListener('change', function()
   selectedDate = null;
   weekendView = false;
   updateWeekDisplay();
+});
+
+// Today button - jump to current week
+document.getElementById('todayBtn').addEventListener('click', () => {
+currentWeekStart = getMonday(new Date());
+selectedDate = null;
+weekendView = false;
+updateWeekDisplay();
 });
 
 // 🆕 Back to Week View button
