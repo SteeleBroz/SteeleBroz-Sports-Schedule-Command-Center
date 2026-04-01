@@ -243,6 +243,16 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div>
 </div>
 
+<!-- Step 2b -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">⚽</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm">Which Sport? (Optional)</p>
+<input id="sportNamePrefill" type="text" placeholder="e.g., Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
+<p class="text-xs text-gray-400 mt-1.5">Leave blank if the schedule covers multiple sports.</p>
+</div>
+</div>
+
 <!-- Step 3 -->
 <div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">🤖</div>
@@ -602,7 +612,7 @@ Schedule Builder
 </div>
 </div>
 </div> 
-</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 brightness-0"><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
+</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
@@ -812,6 +822,7 @@ let weeklyNotes = {};
 let currentUserId = null;
 let setupCode = null;
 let currentEditingEventId = null;
+let isOnboarding = false;
 
 // 🆕 STEP 3: Add selection state for visual styling (no filtering yet)
 let selectedDate = null; // '2024-03-25' format when a day is selected
@@ -1676,7 +1687,10 @@ CRITICAL: Extract times even when buried in descriptions like 'Field Practice 5:
 
 Remember: CAPTURE EVERYTHING - incomplete data is better than missing events!`;
 
-navigator.clipboard.writeText(prompt).then(() => {
+const sportPrefill = document.getElementById('sportNamePrefill').value.trim();
+const finalPrompt = sportPrefill ? prompt + `\n\nNOTE: The sport for all events is: ${sportPrefill}` : prompt;
+
+navigator.clipboard.writeText(finalPrompt).then(() => {
 const btn = document.getElementById('copyPromptBtn');
 const originalText = btn.innerHTML;
 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Copied!';
@@ -1721,8 +1735,9 @@ function parseCSV(csvText) {
 const lines = csvText.trim().split('\n');
 const events = [];
 
-// Get pre-fill athlete name
+// Get pre-fill athlete name and sport name
 const prefillName = document.getElementById('athleteNamePrefill').value.trim();
+const prefillSport = document.getElementById('sportNamePrefill').value.trim();
 
 for (let line of lines) {
 // Skip header line if present
@@ -1740,7 +1755,7 @@ events.push({
 event_date: event_date || '',
 location: location || '',
 child_name: prefillName || child_name || '', // Use prefill FIRST, then ChatGPT result
-sport: sport || '',
+sport: prefillSport || sport || '', // Use prefill sport FIRST, then parsed value
 event_type: event_type || 'Practice',
 event_time: event_time || '',
 chaperone: chaperone || ''
@@ -1752,7 +1767,7 @@ events.push({
 event_date: date,
 location: location || '',
 child_name: prefillName || '', // Use prefill for simple format
-sport: '',
+sport: prefillSport || '', // Use prefill sport for simple format
 event_type: 'Practice',
 event_time: '',
 chaperone: ''
@@ -2352,11 +2367,13 @@ document.getElementById('appSetupModal').classList.remove('hidden');
 // App setup modal - all exit methods lead to setup code
 function proceedToSetupCode() {
 document.getElementById('appSetupModal').classList.add('hidden');
-// 🔧 PHASE 2: Show setup code after app setup instructions  
+if (isOnboarding) {
+// 🔧 PHASE 2: Show setup code after app setup instructions
 document.getElementById('displayCode').textContent = setupCode;
 document.getElementById('codeDisplayModal').classList.remove('hidden');
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
+}
 }
 
 document.getElementById('closeAppSetupBtn').addEventListener('click', proceedToSetupCode);
@@ -2406,16 +2423,20 @@ window.open('https://omniform1.com/forms/v1/landingPage/68dff98661b6e1c40d51ab7a
 // Welcome modal controls
 document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
 document.getElementById('welcomeModal').classList.add('hidden');
+if (isOnboarding) {
 document.getElementById('displayCode').textContent = setupCode;
 document.getElementById('codeDisplayModal').classList.remove('hidden');
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
+}
 });
 
 document.getElementById('closeWelcomeMainBtn').addEventListener('click', () => {
 document.getElementById('welcomeModal').classList.add('hidden');
+if (isOnboarding) {
 // 🔧 PHASE 2: Show app setup modal after instructions
 document.getElementById('appSetupModal').classList.remove('hidden');
+}
 });
 
 // Help button handler moved to tools bottom sheet
@@ -2500,6 +2521,7 @@ localStorage.setItem('commandCenterUserId', currentUserId);
 console.log('💾 [DIAGNOSIS] Saved to localStorage');
 
 document.getElementById('setupModal').classList.add('hidden');
+isOnboarding = true;
 document.getElementById('welcomeModal').classList.remove('hidden');
 document.getElementById('displayCode').textContent = setupCode;
 
@@ -2532,6 +2554,7 @@ setTimeout(() => status.classList.add('hidden'), 2000);
 // Start using handler
 document.getElementById('startUsingBtn').addEventListener('click', () => {
 document.getElementById('codeDisplayModal').classList.add('hidden');
+isOnboarding = false;
 updateWeekDisplay();
 renderPackList();
 lucide.createIcons();
@@ -2605,6 +2628,7 @@ document.getElementById('setupModal').classList.add('hidden');
 // Show welcome modal on first use
 if (!localStorage.getItem('welcomeShown')) {
 console.log('👋 [DIAGNOSIS] First time user - showing welcome modal');
+isOnboarding = true;
 document.getElementById('welcomeModal').classList.remove('hidden');
 localStorage.setItem('welcomeShown', 'true');
 }
