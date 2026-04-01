@@ -829,10 +829,10 @@ let weekendView = false; // true when showing weekend-only view
 // Address detection heuristic for clickable map links
 function looksLikeAddress(text) {
 if (!text || text.length < 8) return false;
-// Has a street number followed by letters
-if (/^\d+\s+[A-Za-z]/.test(text.trim())) return true;
+// Has a street number (anywhere in text) followed by letters
+if (/\d+\s+[A-Za-z]/.test(text.trim())) return true;
 // Contains common street suffixes
-if (/\b(St|Ave|Blvd|Dr|Rd|Lane|Ln|Ct|Way|Pkwy|Hwy|Circle|Cir|Trail|Trl|Place|Pl)\b/i.test(text)) return true;
+if (/\b(St|Ave|Blvd|Dr|Rd|Lane|Ln|Ct|Cr|Way|Pkwy|Hwy|Circle|Cir|Trail|Trl|Place|Pl)\b/i.test(text)) return true;
 // Contains keywords like Park, Field, Complex, Center, Stadium
 if (/\b(Park|Field|Complex|Center|Centre|Stadium|Arena|Gym|Facility|School|Academy)\b/i.test(text) && text.length > 12) return true;
 // Longer text with a comma (city, state pattern)
