@@ -52,11 +52,18 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div><!-- Code Display Modal -->
 <div id="codeDisplayModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg">
-<h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2>
-<p class="text-gray-500 text-sm mb-8">Share this with family to sync their devices</p>
-<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-6">
+<h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Family Codes</h2>
+<p class="text-gray-500 text-sm mb-6">You have two codes — one for you, one to share</p>
+<p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Owner Code (Full Access)</p>
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5 mb-4">
 <p id="displayCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p>
-</div><button id="copyCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="startUsingBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Start Using App</button> <p id="copyStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p>
+</div>
+<p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Share Code (View Only)</p>
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-2">
+<p id="displayShareCode" class="font-mono font-bold text-3xl tracking-widest text-amber-600"></p>
+</div>
+<p class="text-xs text-gray-400 mb-6">Give the Share Code to family members who just need to see the schedule</p>
+<button id="copyCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <button id="startUsingBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Start Using App</button> <p id="copyStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p>
 </div>
 </div><!-- Edit Event Modal -->
 <div id="editEventModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -200,7 +207,14 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div>
 
 <button id="closeWelcomeMainBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Got It, Let's Go</button> 
-</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg"> <h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2> <p class="text-gray-500 text-sm mb-8">Share this code with family to connect</p> <div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-6"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p> </div><button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
+</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg"> <h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2> <p class="text-gray-500 text-sm mb-8">Share this code with family to connect</p> <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Owner Code (Full Access)</p>
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-4"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p> </div>
+<div id="shareCodeSection" class="mb-6">
+<p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Share Code (View Only)</p>
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-2"> <p id="viewShareCode" class="font-mono font-bold text-3xl tracking-widest text-amber-600"></p> </div>
+<p class="text-xs text-gray-400">Give this code to family members who just need to see the schedule</p>
+</div>
+<button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <button id="copyShareCodeBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Share Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
 <div id="importScheduleModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
 <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
@@ -830,6 +844,7 @@ let currentUserId = null;
 let setupCode = null;
 let currentEditingEventId = null;
 let isOnboarding = false;
+let isViewOnly = false; // Phase 2: true when user joined with a share code
 
 // 🆕 STEP 3: Add selection state for visual styling (no filtering yet)
 let selectedDate = null; // '2024-03-25' format when a day is selected
@@ -1068,8 +1083,8 @@ return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'bor
 <div class="flex items-center justify-between mt-1 pl-5">
 <p class="text-xs text-gray-500">${ev.sport ? ev.sport : ''}${ev.location ? renderLocation(ev.location) : ''}${ev.chaperone ? ' · ' + ev.chaperone : ''}</p>
 <div class="flex items-center gap-1 flex-shrink-0">
-<button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-<button class="del-event-btn p-2 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+${isViewOnly ? '' : `<button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+<button class="del-event-btn p-2 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`}
 </div>
 </div>
 </div>`;
@@ -1149,7 +1164,7 @@ row.innerHTML = `
 <td class="py-3 px-2 text-gray-500">${ev.location || '—'}</td>
 <td class="py-3 px-2 text-gray-500">${ev.chaperone || '—'}</td>
 <td class="py-3 px-2"><span class="text-xs px-2 py-1 rounded-lg ${ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FEF3C7] text-[#B45309]' : 'bg-[#E5E7EB] text-[#374151]'} font-medium">${ev.event_type || '—'}</span></td>
-<td class="py-3 px-2 text-center"><button class="season-edit-btn text-[#0069FF] hover:text-[#0052CC] transition p-2 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-600 hover:text-red-500 transition p-2 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button></td>
+<td class="py-3 px-2 text-center">${isViewOnly ? '' : `<button class="season-edit-btn text-[#0069FF] hover:text-[#0052CC] transition p-2 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-600 hover:text-red-500 transition p-2 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button>`}</td>
 `;
 body.appendChild(row);
 });
@@ -2377,6 +2392,10 @@ document.getElementById('appSetupModal').classList.add('hidden');
 if (isOnboarding) {
 // 🔧 PHASE 2: Show setup code after app setup instructions
 document.getElementById('displayCode').textContent = setupCode;
+const wsc = localStorage.getItem('commandCenterShareCode');
+if (wsc && document.getElementById('displayShareCode')) {
+  document.getElementById('displayShareCode').textContent = wsc;
+}
 document.getElementById('codeDisplayModal').classList.remove('hidden');
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
@@ -2414,7 +2433,23 @@ document.getElementById('appSetupModal').classList.remove('hidden');
 document.getElementById('toolsSetupCodeBtn').addEventListener('click', () => {
 closeToolsBottomSheet();
 document.getElementById('viewCodeModal').classList.remove('hidden');
-document.getElementById('viewCode').textContent = setupCode || 'No code';
+if (isViewOnly) {
+  document.getElementById('viewCode').textContent = setupCode || 'No code';
+  // Hide share code section and new schedule button for viewers
+  const shareCodeSection = document.getElementById('shareCodeSection');
+  if (shareCodeSection) shareCodeSection.style.display = 'none';
+  const newSchedBtn = document.getElementById('newScheduleBtn');
+  if (newSchedBtn) newSchedBtn.parentElement.style.display = 'none';
+} else {
+  document.getElementById('viewCode').textContent = setupCode || 'No code';
+  // Show share code for owners
+  const shareCode = localStorage.getItem('commandCenterShareCode') || '';
+  const shareCodeSection = document.getElementById('shareCodeSection');
+  if (shareCodeSection && shareCode) {
+    shareCodeSection.style.display = '';
+    document.getElementById('viewShareCode').textContent = shareCode;
+  }
+}
 });
 
 document.getElementById('toolsHelpBtn').addEventListener('click', () => {
@@ -2432,6 +2467,10 @@ document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
 document.getElementById('welcomeModal').classList.add('hidden');
 if (isOnboarding) {
 document.getElementById('displayCode').textContent = setupCode;
+const wsc = localStorage.getItem('commandCenterShareCode');
+if (wsc && document.getElementById('displayShareCode')) {
+  document.getElementById('displayShareCode').textContent = wsc;
+}
 document.getElementById('codeDisplayModal').classList.remove('hidden');
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
@@ -2466,11 +2505,33 @@ document.getElementById('viewCodeModal').classList.add('hidden');
 document.getElementById('newScheduleBtn').addEventListener('click', () => {
 localStorage.removeItem('commandCenterUserId');
 localStorage.removeItem('commandCenterSetupCode');
+localStorage.removeItem('commandCenterIsViewOnly');
+localStorage.removeItem('commandCenterShareCode');
 allEvents = [];
 setupCode = null;
 currentUserId = null;
+isViewOnly = false;
 document.getElementById('viewCodeModal').classList.add('hidden');
 location.reload();
+});
+
+// Phase 2: Copy Share Code button
+document.getElementById('copyShareCodeBtn').addEventListener('click', () => {
+const shareCode = document.getElementById('viewShareCode').textContent;
+const textArea = document.createElement('textarea');
+textArea.value = shareCode;
+textArea.style.position = 'fixed';
+textArea.style.left = '0';
+textArea.style.top = '0';
+textArea.style.opacity = '0';
+document.body.appendChild(textArea);
+textArea.select();
+try { document.execCommand('copy'); } catch(e) {}
+document.body.removeChild(textArea);
+const status = document.getElementById('copyViewStatus');
+status.textContent = 'Share code copied!';
+status.classList.remove('hidden');
+setTimeout(() => status.classList.add('hidden'), 2000);
 });
 
 document.getElementById('copyViewCodeBtn').addEventListener('click', () => {
@@ -2506,6 +2567,52 @@ updateWeekDisplay();
 renderPackList();
 lucide.createIcons();
 
+// Phase 2: Apply view-only restrictions
+function applyViewOnlyMode() {
+  const addEventTab = document.querySelector('[data-screen="control"]');
+  const weeklyNotesSection = document.getElementById('weeklyNotes');
+  const packListSection = document.getElementById('packList');
+  const packInputRow = document.getElementById('newPackItem');
+  const addPackBtn = document.getElementById('addPackBtn');
+  
+  if (isViewOnly) {
+    // Hide Add Event tab
+    if (addEventTab) addEventTab.style.display = 'none';
+    
+    // Make Weekly Notes read-only
+    if (weeklyNotesSection) {
+      weeklyNotesSection.setAttribute('readonly', 'true');
+      weeklyNotesSection.style.opacity = '0.6';
+      weeklyNotesSection.placeholder = 'View only — notes are managed by the schedule owner';
+    }
+    
+    // Hide Pack List add controls
+    if (packInputRow) packInputRow.parentElement.style.display = 'none';
+    
+    // Hide Pack List entirely
+    const packListContainer = document.getElementById('packList');
+    if (packListContainer) packListContainer.closest('.mb-8').style.display = 'none';
+    
+    // Hide Weekly Notes entirely
+    if (weeklyNotesSection) weeklyNotesSection.closest('.mb-8').style.display = 'none';
+    
+    // Add view-only banner below header
+    if (!document.getElementById('viewOnlyBanner')) {
+      const banner = document.createElement('div');
+      banner.id = 'viewOnlyBanner';
+      banner.className = 'bg-amber-50 border-b border-amber-200 px-4 py-2 text-center';
+      banner.innerHTML = '<p class="text-xs text-amber-700 font-medium">👀 View Only — You\'re viewing a shared schedule</p>';
+      const nav = document.querySelector('nav');
+      if (nav) nav.parentNode.insertBefore(banner, nav);
+    }
+  } else {
+    // Ensure everything is visible for owner
+    if (addEventTab) addEventTab.style.display = '';
+    const banner = document.getElementById('viewOnlyBanner');
+    if (banner) banner.remove();
+  }
+}
+
 function generateSetupCode() {
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 let code = '';
@@ -2515,22 +2622,46 @@ code += chars.charAt(Math.floor(Math.random() * chars.length));
 return code;
 }
 
-// Create new setup
-document.getElementById('createBtn').addEventListener('click', () => {
+// Create new setup (Phase 2: also creates schedules row with share code)
+document.getElementById('createBtn').addEventListener('click', async () => {
 console.log('🆕 [DIAGNOSIS] Create new setup clicked');
 const newCode = generateSetupCode();
+const newShareCode = 'SB' + generateSetupCode().substr(0, 4);
 setupCode = newCode;
 currentUserId = newCode;
-console.log('🔑 [DIAGNOSIS] Generated new setup code:', currentUserId);
+isViewOnly = false;
+console.log('🔑 [DIAGNOSIS] Generated new setup code:', currentUserId, 'share:', newShareCode);
 
 localStorage.setItem('commandCenterSetupCode', setupCode);
 localStorage.setItem('commandCenterUserId', currentUserId);
+localStorage.setItem('commandCenterIsViewOnly', 'false');
+localStorage.setItem('commandCenterShareCode', newShareCode);
 console.log('💾 [DIAGNOSIS] Saved to localStorage');
+
+// Phase 2: Create schedules row
+try {
+  await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': window.dataSdk.supabaseKey,
+      'Authorization': `Bearer ${window.dataSdk.supabaseKey}`
+    },
+    body: JSON.stringify({ owner_code: newCode, share_code: newShareCode, plan_type: 'free' })
+  });
+  console.log('✅ [PHASE2] Created schedules row');
+} catch (err) {
+  console.error('⚠️ [PHASE2] Failed to create schedules row:', err);
+}
 
 document.getElementById('setupModal').classList.add('hidden');
 isOnboarding = true;
 document.getElementById('welcomeModal').classList.remove('hidden');
 document.getElementById('displayCode').textContent = setupCode;
+const sc = localStorage.getItem('commandCenterShareCode');
+if (sc && document.getElementById('displayShareCode')) {
+  document.getElementById('displayShareCode').textContent = sc;
+}
 
 lucide.createIcons();
 });
@@ -2567,8 +2698,8 @@ renderPackList();
 lucide.createIcons();
 });
 
-// Join existing setup
-document.getElementById('joinBtn').addEventListener('click', () => {
+// Join existing setup (Phase 2: detects owner vs share codes)
+document.getElementById('joinBtn').addEventListener('click', async () => {
 console.log('🔗 [DIAGNOSIS] Join existing setup clicked');
 const code = document.getElementById('codeInput').value.trim().toUpperCase();
 const status = document.getElementById('joinStatus');
@@ -2582,25 +2713,79 @@ status.classList.remove('hidden');
 return;
 }
 
-setupCode = code;
-currentUserId = code;
-console.log('🔑 [DIAGNOSIS] Set currentUserId to:', currentUserId);
+// Phase 2: Check if this is an owner code or share code
+status.textContent = 'Checking code...';
+status.className = 'text-xs text-center text-gray-400';
+status.classList.remove('hidden');
 
-localStorage.setItem('commandCenterSetupCode', setupCode);
-localStorage.setItem('commandCenterUserId', currentUserId);
-console.log('💾 [DIAGNOSIS] Saved join code to localStorage');
+try {
+  // First check if it's an owner code
+  let ownerRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}&select=owner_code,share_code`, {
+    headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
+  });
+  let ownerData = await ownerRes.json();
 
-// Reload data after joining to pick up shared events
+  if (ownerData && ownerData.length > 0) {
+    // It's an owner code — full access
+    console.log('🔑 [PHASE2] Owner code detected');
+    isViewOnly = false;
+    setupCode = code;
+    currentUserId = code;
+    localStorage.setItem('commandCenterSetupCode', setupCode);
+    localStorage.setItem('commandCenterUserId', currentUserId);
+    localStorage.setItem('commandCenterIsViewOnly', 'false');
+    localStorage.setItem('commandCenterShareCode', ownerData[0].share_code);
+  } else {
+    // Check if it's a share code
+    let shareRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?share_code=eq.${code}&select=owner_code,share_code`, {
+      headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
+    });
+    let shareData = await shareRes.json();
+
+    if (shareData && shareData.length > 0) {
+      // It's a share code — view only, load using owner_code
+      console.log('👀 [PHASE2] Share code detected — view-only mode');
+      isViewOnly = true;
+      setupCode = code;
+      currentUserId = shareData[0].owner_code; // load events from owner
+      localStorage.setItem('commandCenterSetupCode', code);
+      localStorage.setItem('commandCenterUserId', currentUserId);
+      localStorage.setItem('commandCenterIsViewOnly', 'true');
+    } else {
+      // Not in schedules table — treat as legacy owner code (backward compat)
+      console.log('🔑 [PHASE2] Legacy code (not in schedules table) — full access');
+      isViewOnly = false;
+      setupCode = code;
+      currentUserId = code;
+      localStorage.setItem('commandCenterSetupCode', setupCode);
+      localStorage.setItem('commandCenterUserId', currentUserId);
+      localStorage.setItem('commandCenterIsViewOnly', 'false');
+    }
+  }
+} catch (err) {
+  console.error('⚠️ [PHASE2] Error checking code type, defaulting to owner:', err);
+  isViewOnly = false;
+  setupCode = code;
+  currentUserId = code;
+  localStorage.setItem('commandCenterSetupCode', setupCode);
+  localStorage.setItem('commandCenterUserId', currentUserId);
+  localStorage.setItem('commandCenterIsViewOnly', 'false');
+}
+
+console.log('🔑 [DIAGNOSIS] Set currentUserId to:', currentUserId, 'isViewOnly:', isViewOnly);
+
+// Reload data after joining
 console.log('📥 [DIAGNOSIS] Calling loadData after join...');
 window.dataSdk.loadData();
 
-status.textContent = 'Connected! ✓';
+status.textContent = isViewOnly ? 'Connected (View Only) ✓' : 'Connected! ✓';
 status.className = 'text-xs text-center text-green-400';
 status.classList.remove('hidden');
 
 setTimeout(() => {
 console.log('🎭 [DIAGNOSIS] Closing setup modal and updating display');
 document.getElementById('setupModal').classList.add('hidden');
+applyViewOnlyMode();
 updateWeekDisplay();
 renderPackList();
 lucide.createIcons();
@@ -2630,8 +2815,10 @@ document.getElementById('setupModal').classList.remove('hidden');
 console.log('✅ [DIAGNOSIS] Found stored credentials - setting currentUserId');
 currentUserId = storedUserId;
 setupCode = storedCode;
-console.log('🔑 [DIAGNOSIS] currentUserId set to:', currentUserId);
+isViewOnly = localStorage.getItem('commandCenterIsViewOnly') === 'true';
+console.log('🔑 [DIAGNOSIS] currentUserId set to:', currentUserId, 'isViewOnly:', isViewOnly);
 document.getElementById('setupModal').classList.add('hidden');
+applyViewOnlyMode();
 // Show welcome modal on first use
 if (!localStorage.getItem('welcomeShown')) {
 console.log('👋 [DIAGNOSIS] First time user - showing welcome modal');
