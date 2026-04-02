@@ -2507,6 +2507,8 @@ localStorage.removeItem('commandCenterUserId');
 localStorage.removeItem('commandCenterSetupCode');
 localStorage.removeItem('commandCenterIsViewOnly');
 localStorage.removeItem('commandCenterShareCode');
+localStorage.removeItem('commandCenterPlanType');
+localStorage.removeItem('commandCenterExpiresAt');
 allEvents = [];
 setupCode = null;
 currentUserId = null;
@@ -2566,6 +2568,19 @@ document.getElementById('shopGearBar').classList.remove('hidden');
 updateWeekDisplay();
 renderPackList();
 lucide.createIcons();
+
+// Phase 2: Check if schedule subscription is expired (PLUMBING ONLY — not enforced yet)
+function isScheduleExpired() {
+  const expiresAt = localStorage.getItem('commandCenterExpiresAt');
+  if (!expiresAt) return false; // free/legacy codes never expire
+  const expDate = new Date(expiresAt);
+  const now = new Date();
+  const expired = now > expDate;
+  if (expired) {
+    console.log('⚠️ [PHASE2] Schedule expired on', expiresAt, '— NOT enforcing yet (plumbing only)');
+  }
+  return expired;
+}
 
 // Phase 2: Apply view-only restrictions
 function applyViewOnlyMode() {
@@ -2720,7 +2735,7 @@ status.classList.remove('hidden');
 
 try {
   // First check if it's an owner code
-  let ownerRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}&select=owner_code,share_code`, {
+  let ownerRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at`, {
     headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
   });
   let ownerData = await ownerRes.json();
@@ -2735,9 +2750,12 @@ try {
     localStorage.setItem('commandCenterUserId', currentUserId);
     localStorage.setItem('commandCenterIsViewOnly', 'false');
     localStorage.setItem('commandCenterShareCode', ownerData[0].share_code);
+    localStorage.setItem('commandCenterPlanType', ownerData[0].plan_type || 'free');
+    localStorage.setItem('commandCenterExpiresAt', ownerData[0].expires_at || '');
+    console.log('📋 [PHASE2] Plan:', ownerData[0].plan_type, 'Expires:', ownerData[0].expires_at || 'never');
   } else {
     // Check if it's a share code
-    let shareRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?share_code=eq.${code}&select=owner_code,share_code`, {
+    let shareRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?share_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at`, {
       headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
     });
     let shareData = await shareRes.json();
@@ -2751,6 +2769,9 @@ try {
       localStorage.setItem('commandCenterSetupCode', code);
       localStorage.setItem('commandCenterUserId', currentUserId);
       localStorage.setItem('commandCenterIsViewOnly', 'true');
+      localStorage.setItem('commandCenterPlanType', shareData[0].plan_type || 'free');
+      localStorage.setItem('commandCenterExpiresAt', shareData[0].expires_at || '');
+      console.log('📋 [PHASE2] Plan:', shareData[0].plan_type, 'Expires:', shareData[0].expires_at || 'never');
     } else {
       // Not in schedules table — treat as legacy owner code (backward compat)
       console.log('🔑 [PHASE2] Legacy code (not in schedules table) — full access');
