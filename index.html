@@ -2820,9 +2820,59 @@ document.getElementById('joinBtn').click();
 }
 });
 
+// Deep link handler: process ?code= URL parameter
+function getDeepLinkCode() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  if (!code) return null;
+  // Clean the URL immediately so code doesn't linger in address bar
+  history.replaceState(null, '', window.location.pathname);
+  const upperCode = code.trim().toUpperCase();
+  // If already on this exact schedule, skip
+  const storedCode = localStorage.getItem('commandCenterSetupCode');
+  if (storedCode && storedCode === upperCode) {
+    console.log('🔗 [DEEPLINK] Code matches current session, skipping');
+    return null;
+  }
+  return upperCode;
+}
+
 // Auto-generate unique user session ID and initialize DataSDK
 (async function initSession() {
 console.log('🎬 [DIAGNOSIS] initSession() starting...');
+
+// Check for deep link FIRST — capture the code before anything else clears the URL
+const deepLinkCode = getDeepLinkCode();
+
+if (deepLinkCode) {
+  console.log('🔗 [DEEPLINK] New code detected, resetting session:', deepLinkCode);
+  // Clear all session state so onboarding runs fresh
+  localStorage.removeItem('commandCenterUserId');
+  localStorage.removeItem('commandCenterSetupCode');
+  localStorage.removeItem('commandCenterIsViewOnly');
+  localStorage.removeItem('commandCenterShareCode');
+  localStorage.removeItem('commandCenterPlanType');
+  localStorage.removeItem('commandCenterExpiresAt');
+  localStorage.removeItem('welcomeShown');
+  allEvents = [];
+  setupCode = null;
+  currentUserId = null;
+  isViewOnly = false;
+  // Show setup modal with code pre-filled
+  document.getElementById('setupModal').classList.remove('hidden');
+  document.getElementById('codeInput').value = deepLinkCode;
+  // Init SDK first, THEN trigger join so the handler has everything it needs
+  console.log('⚡ [DEEPLINK] Initializing DataSDK before join...');
+  const sdkResult = await window.dataSdk.init(dataHandler);
+  if (sdkResult.isError) {
+    console.error('💥 [DEEPLINK] DataSDK init failed:', sdkResult);
+  } else {
+    console.log('✅ [DEEPLINK] DataSDK ready, triggering join...');
+    document.getElementById('joinBtn').click();
+  }
+  return;
+}
+
 let storedUserId = localStorage.getItem('commandCenterUserId');
 let storedCode = localStorage.getItem('commandCenterSetupCode');
 console.log('💾 [DIAGNOSIS] Retrieved from localStorage - UserId:', storedUserId, 'Code:', storedCode);
