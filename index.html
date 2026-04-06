@@ -2807,8 +2807,25 @@ setTimeout(() => {
 console.log('🎭 [DIAGNOSIS] Closing setup modal and updating display');
 document.getElementById('setupModal').classList.add('hidden');
 applyViewOnlyMode();
-updateWeekDisplay();
-renderPackList();
+
+// If this is a first-time join (welcomeShown not set), show the welcome/onboarding flow
+if (!localStorage.getItem('welcomeShown')) {
+  console.log('👋 [DEEPLINK] First time on this schedule — showing welcome modal');
+  isOnboarding = true;
+  document.getElementById('welcomeModal').classList.remove('hidden');
+  localStorage.setItem('welcomeShown', 'true');
+  // Show the code display modal after welcome
+  if (document.getElementById('displayCode')) {
+    document.getElementById('displayCode').textContent = setupCode;
+  }
+  const sc = localStorage.getItem('commandCenterShareCode');
+  if (sc && document.getElementById('displayShareCode')) {
+    document.getElementById('displayShareCode').textContent = sc;
+  }
+} else {
+  updateWeekDisplay();
+  renderPackList();
+}
 lucide.createIcons();
 }, 1000);
 });
