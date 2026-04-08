@@ -2638,47 +2638,8 @@ return code;
 }
 
 // Create new setup (Phase 2: also creates schedules row with share code)
-document.getElementById('createBtn').addEventListener('click', async () => {
-console.log('🆕 [DIAGNOSIS] Create new setup clicked');
-const newCode = generateSetupCode();
-const newShareCode = 'SB' + generateSetupCode().substr(0, 4);
-setupCode = newCode;
-currentUserId = newCode;
-isViewOnly = false;
-console.log('🔑 [DIAGNOSIS] Generated new setup code:', currentUserId, 'share:', newShareCode);
-
-localStorage.setItem('commandCenterSetupCode', setupCode);
-localStorage.setItem('commandCenterUserId', currentUserId);
-localStorage.setItem('commandCenterIsViewOnly', 'false');
-localStorage.setItem('commandCenterShareCode', newShareCode);
-console.log('💾 [DIAGNOSIS] Saved to localStorage');
-
-// Phase 2: Create schedules row
-try {
-  await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': window.dataSdk.supabaseKey,
-      'Authorization': `Bearer ${window.dataSdk.supabaseKey}`
-    },
-    body: JSON.stringify({ owner_code: newCode, share_code: newShareCode, plan_type: 'free' })
-  });
-  console.log('✅ [PHASE2] Created schedules row');
-} catch (err) {
-  console.error('⚠️ [PHASE2] Failed to create schedules row:', err);
-}
-
-document.getElementById('setupModal').classList.add('hidden');
-isOnboarding = true;
-document.getElementById('welcomeModal').classList.remove('hidden');
-document.getElementById('displayCode').textContent = setupCode;
-const sc = localStorage.getItem('commandCenterShareCode');
-if (sc && document.getElementById('displayShareCode')) {
-  document.getElementById('displayShareCode').textContent = sc;
-}
-
-lucide.createIcons();
+document.getElementById('createBtn').addEventListener('click', () => {
+window.location.href = 'https://steelebroz.com/pages/family-sports-schedule-app';
 });
 
 // Copy code handler
