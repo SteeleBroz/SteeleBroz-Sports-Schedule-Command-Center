@@ -207,14 +207,14 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div>
 
 <button id="closeWelcomeMainBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Got It, Let's Go</button> 
-</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg"> <h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2> <p class="text-gray-500 text-sm mb-8">Share this code with family to connect</p> <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Owner Code (Full Access)</p>
-<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-4"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p> </div>
+</div> </div> </div><!-- View Setup Code Modal --> <div id="viewCodeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 text-center shadow-lg"> <h2 class="font-semibold text-2xl mb-2 text-gray-900">Your Setup Code</h2> <p class="text-gray-500 text-sm mb-8">Share this code with family to connect</p> <p id="ownerCodeLabel" class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Owner Code (Full Access)</p>
+<div id="ownerCodeDisplay" class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-6 mb-4"> <p id="viewCode" class="font-mono font-bold text-3xl tracking-widest text-[#0069FF]"></p> </div>
 <div id="shareCodeSection" class="mb-6">
 <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Share Code (View Only)</p>
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-2"> <p id="viewShareCode" class="font-mono font-bold text-3xl tracking-widest text-amber-600"></p> </div>
 <p class="text-xs text-gray-400">Give this code to family members who just need to see the schedule</p>
 </div>
-<button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <button id="copyShareCodeBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Share Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
+<button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <a id="getOwnScheduleBtn" href="https://steelebroz.com/pages/family-sports-schedule-app" class="hidden w-full bg-[#7DC41E] hover:bg-[#6aad14] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3 no-underline" style="text-decoration:none;"> <i data-lucide="shopping-cart" class="w-4 h-4"></i> Get Your Own Schedule </a> <button id="copyShareCodeBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Share Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> </div> </div><!-- Import Schedule Modal -->
 <div id="importScheduleModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
 <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
@@ -633,7 +633,7 @@ Schedule Builder
 </div>
 </div>
 </div> 
-</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
+</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
@@ -2434,21 +2434,37 @@ document.getElementById('toolsSetupCodeBtn').addEventListener('click', () => {
 closeToolsBottomSheet();
 document.getElementById('viewCodeModal').classList.remove('hidden');
 if (isViewOnly) {
-  document.getElementById('viewCode').textContent = setupCode || 'No code';
-  // Hide share code section and new schedule button for viewers
-  const shareCodeSection = document.getElementById('shareCodeSection');
-  if (shareCodeSection) shareCodeSection.style.display = 'none';
-  const newSchedBtn = document.getElementById('newScheduleBtn');
-  if (newSchedBtn) newSchedBtn.parentElement.style.display = 'none';
-} else {
-  document.getElementById('viewCode').textContent = setupCode || 'No code';
-  // Show share code for owners
+  // View-only users: hide owner code, show share code, show "Get Your Own Schedule"
+  document.getElementById('ownerCodeLabel').style.display = 'none';
+  document.getElementById('ownerCodeDisplay').style.display = 'none';
+  document.getElementById('copyViewCodeBtn').style.display = 'none';
+  document.getElementById('getOwnScheduleBtn').style.display = 'flex';
+  // Show share code so viewer can re-share with other family
   const shareCode = localStorage.getItem('commandCenterShareCode') || '';
   const shareCodeSection = document.getElementById('shareCodeSection');
   if (shareCodeSection && shareCode) {
     shareCodeSection.style.display = '';
     document.getElementById('viewShareCode').textContent = shareCode;
   }
+  // Hide "Want to start fresh?" section
+  const newSchedBtn = document.getElementById('newScheduleBtn');
+  if (newSchedBtn) newSchedBtn.parentElement.style.display = 'none';
+} else {
+  // Owners: show everything, hide "Get Your Own Schedule"
+  document.getElementById('ownerCodeLabel').style.display = '';
+  document.getElementById('ownerCodeDisplay').style.display = '';
+  document.getElementById('copyViewCodeBtn').style.display = 'flex';
+  document.getElementById('getOwnScheduleBtn').style.display = 'none';
+  document.getElementById('viewCode').textContent = setupCode || 'No code';
+  const shareCode = localStorage.getItem('commandCenterShareCode') || '';
+  const shareCodeSection = document.getElementById('shareCodeSection');
+  if (shareCodeSection && shareCode) {
+    shareCodeSection.style.display = '';
+    document.getElementById('viewShareCode').textContent = shareCode;
+  }
+  // Show "Want to start fresh?" for owners
+  const newSchedBtn = document.getElementById('newScheduleBtn');
+  if (newSchedBtn) newSchedBtn.parentElement.style.display = '';
 }
 });
 
