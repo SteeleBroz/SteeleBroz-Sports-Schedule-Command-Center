@@ -656,6 +656,37 @@ Week
 <button id="importScheduleBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="upload" class="w-4 h-4"></i> Import </button>
 </div> <div id="addStatus" class="text-center text-xs hidden"></div> </div> </div> </section><!-- SCREEN 3: Season --> <section id="screen-season" class="px-5 py-6 hidden"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="database" class="w-4 h-4 text-[#0069FF]"></i> SEASON EVENTS</h2> <div class="overflow-x-auto -mx-5 px-5"> <table id="seasonTable" class="w-full min-w-[700px] bg-white rounded-2xl border border-gray-200 shadow-sm"> <thead> <tr class="border-b border-gray-200"> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Athlete</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Sport</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Date</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Day</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Time</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Location</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Taking</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-left py-3 px-2">Type</th> <th class="text-xs uppercase tracking-wider font-semibold text-gray-500 text-center py-3 px-2 w-10"></th> </tr> </thead> <tbody id="seasonBody" class="text-sm"></tbody> </table> </div> <div id="emptySeason" class="hidden text-center py-12"> <p class="text-gray-500 text-sm">No events yet</p> </div> </section> </div> </div>
 <script>
+// Analytics helpers — fire-and-forget, never break app flow
+function trackEvent(eventName, metadata) {
+  try {
+    const payload = {
+      event_name: eventName,
+      setup_code: localStorage.getItem('commandCenterSetupCode') || '',
+      metadata: metadata || {},
+      created_at: new Date().toISOString()
+    };
+    fetch('https://mdelkultmvadmbkjlpkx.supabase.co/rest/v1/analytics_events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZWxrdWx0bXZhZG1ia2pscGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDY1MjYsImV4cCI6MjA5MDEyMjUyNn0.F9RcEGQA9mirNrgIAS5T655Um2043siSHLup1SVjx2A',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZWxrdWx0bXZhZG1ia2pscGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDY1MjYsImV4cCI6MjA5MDEyMjUyNn0.F9RcEGQA9mirNrgIAS5T655Um2043siSHLup1SVjx2A',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  } catch(e) {}
+}
+
+function trackSession() {
+  try {
+    trackEvent('session_started', {
+      is_view_only: localStorage.getItem('commandCenterIsViewOnly') === 'true',
+      plan_type: localStorage.getItem('commandCenterPlanType') || 'unknown'
+    });
+  } catch(e) {}
+}
+
 // Supabase multi-tenant storage system
 window.dataSdk = {
   supabaseUrl: 'https://mdelkultmvadmbkjlpkx.supabase.co',
@@ -1035,6 +1066,23 @@ document.getElementById('editEventModal').classList.add('hidden');
 currentEditingEventId = null;
 }
 
+function openDuplicateForm(eventId) {
+const event = allEvents.find(e => e.backend_id === eventId);
+if (!event) return;
+
+document.getElementById('inputChild').value = event.child_name || '';
+document.getElementById('inputSport').value = event.sport || '';
+document.getElementById('inputType').value = event.event_type || 'Practice';
+document.getElementById('inputChaperone').value = event.chaperone || '';
+document.getElementById('inputDate').value = '';
+document.getElementById('inputTime').value = event.event_time || '';
+document.getElementById('inputLocation').value = event.location || '';
+
+document.querySelector('[data-screen="control"]').click();
+try { trackEvent('event_duplicated'); } catch(e) {}
+window.scrollTo(0, 0);
+}
+
 // Render weekly cards
 function renderWeekly() {
 const container = document.getElementById('weeklyCards');
@@ -1083,7 +1131,7 @@ return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'bor
 <div class="flex items-center justify-between mt-1 pl-5">
 <p class="text-xs text-gray-500">${ev.sport ? ev.sport : ''}${ev.location ? renderLocation(ev.location) : ''}${ev.chaperone ? ' · ' + ev.chaperone : ''}</p>
 <div class="flex items-center gap-1 flex-shrink-0">
-${isViewOnly ? '' : `<button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+${isViewOnly ? '' : `<button class="dup-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
 <button class="del-event-btn p-2 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`}
 </div>
 </div>
@@ -1107,6 +1155,13 @@ btn.addEventListener('click', (e) => {
 e.stopPropagation();
 const eventId = btn.dataset.eventId;
 openEditModal(eventId);
+});
+});
+
+container.querySelectorAll('.dup-event-btn').forEach(btn => {
+btn.addEventListener('click', (e) => {
+e.stopPropagation();
+openDuplicateForm(btn.dataset.id);
 });
 });
 
@@ -1164,12 +1219,16 @@ row.innerHTML = `
 <td class="py-3 px-2 text-gray-500">${ev.location || '—'}</td>
 <td class="py-3 px-2 text-gray-500">${ev.chaperone || '—'}</td>
 <td class="py-3 px-2"><span class="text-xs px-2 py-1 rounded-lg ${ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FEF3C7] text-[#B45309]' : 'bg-[#E5E7EB] text-[#374151]'} font-medium">${ev.event_type || '—'}</span></td>
-<td class="py-3 px-2 text-center">${isViewOnly ? '' : `<button class="season-edit-btn text-[#0069FF] hover:text-[#0052CC] transition p-2 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-600 hover:text-red-500 transition p-2 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button>`}</td>
+<td class="py-3 px-2 text-center">${isViewOnly ? '' : `<button class="season-dup-btn text-[#0069FF] hover:text-[#0052CC] transition p-2 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="season-edit-btn text-[#0069FF] hover:text-[#0052CC] transition p-2 bg-blue-50 rounded-lg mr-1" data-id="${ev.backend_id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button><button class="del-btn text-red-600 hover:text-red-500 transition p-2 bg-red-500/10 hover:bg-red-500/20 rounded-lg" data-id="${ev.backend_id}" type="button"><i data-lucide="trash" class="w-4 h-4"></i></button>`}</td>
 `;
 body.appendChild(row);
 });
 
 lucide.createIcons();
+
+body.querySelectorAll('.season-dup-btn').forEach(btn => {
+btn.addEventListener('click', () => openDuplicateForm(btn.dataset.id));
+});
 
 body.querySelectorAll('.season-edit-btn').forEach(btn => {
 btn.addEventListener('click', () => {
@@ -1477,6 +1536,7 @@ status.className = 'text-center text-xs text-green-400 mt-2';
 document.getElementById('inputChild').value = '';
 document.getElementById('inputChaperone').value = '';
 document.getElementById('inputLocation').value = '';
+try { trackEvent('user_added_event', { event_type: type }); } catch(e) {}
 } else {
 status.textContent = result.error || 'Failed to add event. Try again.';
 status.className = 'text-center text-xs text-red-400 mt-2';
@@ -2776,6 +2836,7 @@ try {
       localStorage.setItem('commandCenterSetupCode', code);
       localStorage.setItem('commandCenterUserId', currentUserId);
       localStorage.setItem('commandCenterIsViewOnly', 'true');
+      try { trackEvent('invite_code_used'); } catch(e) {}
       localStorage.setItem('commandCenterShareCode', code); // viewer's share code = the code they entered
       localStorage.setItem('commandCenterPlanType', shareData[0].plan_type || 'free');
       localStorage.setItem('commandCenterExpiresAt', shareData[0].expires_at || '');
@@ -2822,6 +2883,7 @@ if (!localStorage.getItem('welcomeShown')) {
   isOnboarding = true;
   document.getElementById('welcomeModal').classList.remove('hidden');
   localStorage.setItem('welcomeShown', 'true');
+  if (!isViewOnly) { try { trackEvent('user_created_schedule'); } catch(e) {} }
   // Show the code display modal after welcome
   if (document.getElementById('displayCode')) {
     document.getElementById('displayCode').textContent = setupCode;
@@ -2921,6 +2983,7 @@ console.log('👋 [DIAGNOSIS] First time user - showing welcome modal');
 isOnboarding = true;
 document.getElementById('welcomeModal').classList.remove('hidden');
 localStorage.setItem('welcomeShown', 'true');
+if (!isViewOnly) { try { trackEvent('user_created_schedule'); } catch(e) {} }
 }
 }
 console.log('🎬 [DIAGNOSIS] initSession() complete');
@@ -2933,6 +2996,7 @@ if (result.isError) {
 console.error('💥 [DIAGNOSIS] Data SDK init failed:', result);
 } else {
 console.log('✅ [DIAGNOSIS] Data SDK init succeeded');
+try { trackSession(); } catch(e) {}
 }
 })();
 
