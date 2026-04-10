@@ -2842,24 +2842,19 @@ try {
       localStorage.setItem('commandCenterExpiresAt', shareData[0].expires_at || '');
       console.log('📋 [PHASE2] Plan:', shareData[0].plan_type, 'Expires:', shareData[0].expires_at || 'never');
     } else {
-      // Not in schedules table — treat as legacy owner code (backward compat)
-      console.log('🔑 [PHASE2] Legacy code (not in schedules table) — full access');
-      isViewOnly = false;
-      setupCode = code;
-      currentUserId = code;
-      localStorage.setItem('commandCenterSetupCode', setupCode);
-      localStorage.setItem('commandCenterUserId', currentUserId);
-      localStorage.setItem('commandCenterIsViewOnly', 'false');
+      // Code not found — show error, do NOT create a schedule
+      status.textContent = 'That code wasn\'t found. Please check and try again.';
+      status.className = 'text-xs text-center text-red-400';
+      status.classList.remove('hidden');
+      return;
     }
   }
 } catch (err) {
-  console.error('⚠️ [PHASE2] Error checking code type, defaulting to owner:', err);
-  isViewOnly = false;
-  setupCode = code;
-  currentUserId = code;
-  localStorage.setItem('commandCenterSetupCode', setupCode);
-  localStorage.setItem('commandCenterUserId', currentUserId);
-  localStorage.setItem('commandCenterIsViewOnly', 'false');
+  console.error('⚠️ [PHASE2] Error checking code:', err);
+  status.textContent = 'Something went wrong. Please try again.';
+  status.className = 'text-xs text-center text-red-400';
+  status.classList.remove('hidden');
+  return;
 }
 
 console.log('🔑 [DIAGNOSIS] Set currentUserId to:', currentUserId, 'isViewOnly:', isViewOnly);
@@ -2977,6 +2972,8 @@ isViewOnly = localStorage.getItem('commandCenterIsViewOnly') === 'true';
 console.log('🔑 [DIAGNOSIS] currentUserId set to:', currentUserId, 'isViewOnly:', isViewOnly);
 document.getElementById('setupModal').classList.add('hidden');
 applyViewOnlyMode();
+document.getElementById('toolsButton').classList.remove('hidden');
+document.getElementById('shopGearBar').classList.remove('hidden');
 // Show welcome modal on first use
 if (!localStorage.getItem('welcomeShown')) {
 console.log('👋 [DIAGNOSIS] First time user - showing welcome modal');
