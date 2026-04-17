@@ -87,7 +87,7 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div>
 </div><!-- Edit Event Modal -->
 <div id="editEventModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-<div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 shadow-lg">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-sm w-full p-8 shadow-lg" style="max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
 <h2 class="font-semibold text-2xl mb-6 text-gray-900">Edit Event</h2>
 <div class="space-y-4">
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="editChild" type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
@@ -746,14 +746,17 @@ function startWalkthrough() {
   // In-app tour steps — selectors verified against actual HTML
   const allAppSteps = [
     { selector: '.screen-tab[data-screen="weekly"]', title: 'This Week', text: 'Your weekly view. All your games and practices for the current week show up right here.', ownerOnly: false },
+    { selector: '#kidFilter', title: 'Filter by Athlete', text: 'Switch between athletes to see just one kid\'s schedule, or choose All Athletes to see everyone.', ownerOnly: false },
     { selector: '#weekendViewBtn', title: 'Weekend Filter', text: 'Tap Weekend to only show Saturday and Sunday games. Great for grandparents who only need game days.', ownerOnly: false },
     { selector: '#prevWeek', title: 'Browse Weeks', text: 'Use the arrows to move between weeks, or tap the calendar icon to jump to any date.', ownerOnly: false },
+    { selector: '#weekPickerBtn', title: 'Pick a Date', text: 'Tap the calendar icon to jump to any specific date, or use the arrows to move week by week.', ownerOnly: false },
     { selector: '.screen-tab[data-screen="control"]', title: 'Add Event', text: 'Tap here to add a new game or practice to your schedule.', ownerOnly: true },
     { selector: '#importScheduleBtn', title: 'Import Schedule', text: 'Got a schedule from your coach? Use Photo Import to snap a picture and import the whole thing in seconds.', ownerOnly: true },
     { selector: '.screen-tab[data-screen="season"]', title: 'All Games', text: 'See every event on your schedule in one list, sorted by date.', ownerOnly: false },
     { selector: '#weeklyNotes', title: 'Weekly Notes', text: 'Leave a message for the week, like reminding grandpa to bring snacks on Saturday.', ownerOnly: false },
     { selector: '#packList', title: 'Packing List', text: 'Keep a checklist of everything you need for the week so nothing gets left behind.', ownerOnly: false },
-    { selector: '#openToolsBtn', title: 'Tools', text: 'Settings, your setup code, sharing with family, and this guide are all in here. You can replay this walkthrough anytime.', ownerOnly: false }
+    { selector: '#openToolsBtn', title: 'Tools', text: 'Settings, your setup code, sharing with family, and this guide are all in here. You can replay this walkthrough anytime.', ownerOnly: false },
+    { selector: '#openToolsBtn', title: 'Share With Family', text: 'Tap Tools, then Setup Code to find your share link. Hit Share Schedule to text it directly to grandparents, coaches, or anyone who needs to see the schedule.', ownerOnly: false }
   ];
 
   // Filter steps based on viewer/owner
@@ -2835,31 +2838,34 @@ location.reload();
 
 // Phase 2: Share Schedule button (Web Share API with clipboard fallback)
 document.getElementById('copyShareCodeBtn').addEventListener('click', async () => {
-  const shareCode = document.getElementById('viewShareCode').textContent;
+  const shareCode = document.getElementById('viewShareCode').textContent.trim();
   const shareUrl = window.location.origin + '?code=' + encodeURIComponent(shareCode);
-  const shareText = "Here's our family sports schedule. Just tap this link and you're in:";
+  const shareMessage = "Here's our family sports schedule. Just tap this link and you're in:\n" + shareUrl;
 
-  // Try Web Share API first (works on mobile)
-  if (navigator.share) {
+  // Try Web Share API first (mobile only)
+  if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
     try {
       await navigator.share({
         title: 'Family Sports Schedule',
-        text: shareText,
+        text: "Here's our family sports schedule. Just tap this link and you're in:",
         url: shareUrl
       });
       return;
     } catch (err) {
-      // User cancelled or share failed, fall back to clipboard
       if (err.name === 'AbortError') return;
+      // Fall through to clipboard
     }
   }
 
-  // Fallback: copy link to clipboard
+  // Clipboard fallback
   try {
-    await navigator.clipboard.writeText(shareText + '\n' + shareUrl);
+    await navigator.clipboard.writeText(shareMessage);
   } catch (e) {
+    // Final fallback for older browsers
     const textArea = document.createElement('textarea');
-    textArea.value = shareText + '\n' + shareUrl;
+    textArea.value = shareMessage;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
     document.body.appendChild(textArea);
     textArea.select();
     document.execCommand('copy');
@@ -2867,9 +2873,11 @@ document.getElementById('copyShareCodeBtn').addEventListener('click', async () =
   }
 
   const status = document.getElementById('copyViewStatus');
-  status.textContent = 'Link copied! Paste it in a text or message.';
-  status.classList.remove('hidden');
-  setTimeout(() => status.classList.add('hidden'), 3000);
+  if (status) {
+    status.textContent = 'Link copied! Paste it in a text or message.';
+    status.classList.remove('hidden');
+    setTimeout(() => status.classList.add('hidden'), 3000);
+  }
 });
 
 document.getElementById('copyViewCodeBtn').addEventListener('click', () => {
@@ -3144,13 +3152,14 @@ function getDeepLinkCode() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code');
   if (!code) return null;
-  // Clean the URL immediately so code doesn't linger in address bar
-  history.replaceState(null, '', window.location.pathname);
   const upperCode = code.trim().toUpperCase();
+  if (!upperCode || upperCode.length < 1) return null;
   // If already on this exact schedule, skip
   const storedCode = localStorage.getItem('commandCenterSetupCode');
   if (storedCode && storedCode === upperCode) {
     console.log('🔗 [DEEPLINK] Code matches current session, skipping');
+    // Still clean the URL
+    history.replaceState(null, '', window.location.pathname);
     return null;
   }
   return upperCode;
@@ -3165,6 +3174,8 @@ const deepLinkCode = getDeepLinkCode();
 
 if (deepLinkCode) {
   console.log('🔗 [DEEPLINK] New code detected, resetting session:', deepLinkCode);
+  // Clean URL now that code is captured
+  history.replaceState(null, '', window.location.pathname);
   // Clear all session state so onboarding runs fresh
   localStorage.removeItem('commandCenterUserId');
   localStorage.removeItem('commandCenterSetupCode');
@@ -3180,7 +3191,10 @@ if (deepLinkCode) {
   isViewOnly = false;
   // Show setup modal with code pre-filled
   document.getElementById('setupModal').classList.remove('hidden');
-  document.getElementById('codeInput').value = deepLinkCode;
+  const codeInput = document.getElementById('codeInput');
+  codeInput.value = deepLinkCode;
+  // Ensure the input value is readable by the join handler
+  codeInput.dispatchEvent(new Event('input', { bubbles: true }));
   // Init SDK first, THEN trigger join so the handler has everything it needs
   console.log('⚡ [DEEPLINK] Initializing DataSDK before join...');
   const sdkResult = await window.dataSdk.init(dataHandler);
