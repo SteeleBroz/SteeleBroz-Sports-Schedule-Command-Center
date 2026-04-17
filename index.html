@@ -1306,7 +1306,7 @@ ${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
 <button class="del-event-btn p-1.5 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
 </div>`}
 </div>
-<div class="mt-1 pl-5">
+<div class="mt-1 pl-3">
 <div class="text-xs text-gray-500 space-y-0.5">
 <div class="flex items-center gap-1 flex-wrap">${ev.event_type ? `<span class="${typeBadge} text-xs font-medium px-2 py-0.5 rounded-lg">${ev.event_type}</span>` : ''}${ev.sport ? `<span>· ${ev.sport}</span>` : ''}${ev.field_court ? `<span>· FLD/CRT: ${ev.field_court}</span>` : ''}</div>
 ${ev.chaperone ? `<div>Taking: ${ev.chaperone}</div>` : ''}
@@ -1314,8 +1314,8 @@ ${ev.location ? `<div>${renderLocation(ev.location)}</div>` : ''}
 </div>
 </div>
 ${(ev.event_link || ev.game_details || ev.hotel_link) ? `
-<div class="mt-1 pl-5">
-  <button class="more-details-toggle text-xs text-blue-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
+<div class="mt-1 pl-3">
+  <button class="more-details-toggle text-xs text-gray-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
   <div class="hidden mt-2 space-y-1">
     ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ev.event_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
     ${ev.game_details ? `<div class="text-xs text-gray-600"><span class="font-semibold">Game Details:</span> ${ev.game_details}</div>` : ''}
