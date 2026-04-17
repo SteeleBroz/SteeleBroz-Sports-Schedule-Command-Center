@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#0069FF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="SteeleBroz">
+<meta name="apple-mobile-web-app-title" content="Game Week">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{body:['Inter','system-ui','-apple-system','sans-serif']}}}}</script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -214,7 +214,7 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-2"> <p id="viewShareCode" class="font-mono font-bold text-3xl tracking-widest text-amber-600"></p> </div>
 <p class="text-xs text-gray-400">Give this code to family members who just need to see the schedule</p>
 </div>
-<button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <a id="getOwnScheduleBtn" href="https://steelebroz.com/pages/family-sports-schedule-app" class="hidden w-full bg-[#7DC41E] hover:bg-[#6aad14] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3 no-underline" style="text-decoration:none;"> <i data-lucide="shopping-cart" class="w-4 h-4"></i> Get Your Own Schedule </a> <button id="copyShareCodeBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Share Code </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> <div id="joinDifferentSection" class="mt-6 pt-6 border-t border-gray-200 hidden"> <p class="text-xs text-gray-500 mb-3">Join a different schedule?</p> <input id="joinDifferentCodeInput" type="text" maxlength="6" placeholder="Enter 6-character code" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest uppercase mb-3 focus:outline-none focus:ring-2 focus:ring-blue-200" style="letter-spacing:0.15em;"> <button id="joinDifferentBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="log-in" class="w-4 h-4"></i> Switch to This Schedule </button> <p id="joinDifferentStatus" class="text-xs text-center text-red-500 mt-2 hidden">Please enter a valid 6-character code</p> </div> </div> </div><!-- Import Schedule Modal -->
+<button id="copyViewCodeBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="copy" class="w-4 h-4"></i> Copy Owner Code </button> <a id="getOwnScheduleBtn" href="https://steelebroz.com/pages/family-sports-schedule-app" class="hidden w-full bg-[#7DC41E] hover:bg-[#6aad14] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3 no-underline" style="text-decoration:none;"> <i data-lucide="shopping-cart" class="w-4 h-4"></i> Get Your Own Schedule </a> <button id="copyShareCodeBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 mb-3"> <i data-lucide="share-2" class="w-4 h-4"></i> Share Schedule </button> <button id="closeViewCodeBtn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Close</button> <p id="copyViewStatus" class="text-xs text-green-600 mt-2 hidden">Copied!</p> <div class="mt-6 pt-6 border-t border-gray-200"> <p class="text-xs text-gray-500 mb-3">Want to start fresh?</p><button id="newScheduleBtn" class="w-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 text-sm py-2.5 rounded-lg transition flex items-center justify-center gap-2 font-medium border border-gray-200"> <i data-lucide="plus" class="w-4 h-4"></i> Create New Schedule </button> </div> <div id="joinDifferentSection" class="mt-6 pt-6 border-t border-gray-200 hidden"> <p class="text-xs text-gray-500 mb-3">Join a different schedule?</p> <input id="joinDifferentCodeInput" type="text" maxlength="6" placeholder="Enter 6-character code" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest uppercase mb-3 focus:outline-none focus:ring-2 focus:ring-blue-200" style="letter-spacing:0.15em;"> <button id="joinDifferentBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"> <i data-lucide="log-in" class="w-4 h-4"></i> Switch to This Schedule </button> <p id="joinDifferentStatus" class="text-xs text-center text-red-500 mt-2 hidden">Please enter a valid 6-character code</p> </div> </div> </div><!-- Import Schedule Modal -->
 <div id="importScheduleModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
 <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
@@ -2620,23 +2620,43 @@ document.getElementById('viewCodeModal').classList.add('hidden');
 location.reload();
 });
 
-// Phase 2: Copy Share Code button
-document.getElementById('copyShareCodeBtn').addEventListener('click', () => {
-const shareCode = document.getElementById('viewShareCode').textContent;
-const textArea = document.createElement('textarea');
-textArea.value = shareCode;
-textArea.style.position = 'fixed';
-textArea.style.left = '0';
-textArea.style.top = '0';
-textArea.style.opacity = '0';
-document.body.appendChild(textArea);
-textArea.select();
-try { document.execCommand('copy'); } catch(e) {}
-document.body.removeChild(textArea);
-const status = document.getElementById('copyViewStatus');
-status.textContent = 'Share code copied!';
-status.classList.remove('hidden');
-setTimeout(() => status.classList.add('hidden'), 2000);
+// Phase 2: Share Schedule button (Web Share API with clipboard fallback)
+document.getElementById('copyShareCodeBtn').addEventListener('click', async () => {
+  const shareCode = document.getElementById('viewShareCode').textContent;
+  const shareUrl = window.location.origin + '?code=' + encodeURIComponent(shareCode);
+  const shareText = "Here's our family sports schedule. Just tap this link and you're in:";
+
+  // Try Web Share API first (works on mobile)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'Family Sports Schedule',
+        text: shareText,
+        url: shareUrl
+      });
+      return;
+    } catch (err) {
+      // User cancelled or share failed, fall back to clipboard
+      if (err.name === 'AbortError') return;
+    }
+  }
+
+  // Fallback: copy link to clipboard
+  try {
+    await navigator.clipboard.writeText(shareText + '\n' + shareUrl);
+  } catch (e) {
+    const textArea = document.createElement('textarea');
+    textArea.value = shareText + '\n' + shareUrl;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+  }
+
+  const status = document.getElementById('copyViewStatus');
+  status.textContent = 'Link copied! Paste it in a text or message.';
+  status.classList.remove('hidden');
+  setTimeout(() => status.classList.add('hidden'), 3000);
 });
 
 document.getElementById('copyViewCodeBtn').addEventListener('click', () => {
