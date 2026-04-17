@@ -1051,6 +1051,16 @@ let selectedDate = null; // '2024-03-25' format when a day is selected
 let weekendView = false; // true when showing weekend-only view
 
 // Address detection heuristic for clickable map links
+function ensureUrl(url) {
+if (!url) return '';
+url = url.trim();
+if (!/^https?:\/\//i.test(url)) return 'https://' + url;
+return url;
+}
+
+function setCookie(k,v,days){document.cookie=k+'='+encodeURIComponent(v)+';max-age='+(days*86400)+';path=/;SameSite=Lax';}
+function getCookie(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+
 function looksLikeAddress(text) {
 if (!text || text.length < 8) return false;
 // Has a street number (anywhere in text) followed by letters
@@ -1317,9 +1327,9 @@ ${(ev.event_link || ev.game_details || ev.hotel_link) ? `
 <div class="mt-1 pl-3">
   <button class="more-details-toggle text-xs text-gray-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
   <div class="hidden mt-2 space-y-1">
-    ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ev.event_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
+    ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ensureUrl(ev.event_link)}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
     ${ev.game_details ? `<div class="text-xs text-gray-600"><span class="font-semibold">Game Details:</span> ${ev.game_details}</div>` : ''}
-    ${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Hotel:</span> <a href="${ev.hotel_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.hotel_link.length > 35 ? ev.hotel_link.substring(0, 35) + '...' : ev.hotel_link}</a></div>` : ''}
+    ${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Hotel:</span> <a href="${ensureUrl(ev.hotel_link)}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.hotel_link.length > 35 ? ev.hotel_link.substring(0, 35) + '...' : ev.hotel_link}</a></div>` : ''}
   </div>
 </div>
 ` : ''}
@@ -1402,9 +1412,9 @@ const seasonMoreDetails = (ev.event_link || ev.game_details || ev.hotel_link) ? 
 <div class="mt-1">
   <button class="more-details-toggle text-xs text-blue-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
   <div class="hidden mt-1 space-y-1">
-    ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ev.event_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
+    ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ensureUrl(ev.event_link)}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
     ${ev.game_details ? `<div class="text-xs text-gray-600"><span class="font-semibold">Game Details:</span> ${ev.game_details}</div>` : ''}
-    ${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Hotel:</span> <a href="${ev.hotel_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.hotel_link.length > 35 ? ev.hotel_link.substring(0, 35) + '...' : ev.hotel_link}</a></div>` : ''}
+    ${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Hotel:</span> <a href="${ensureUrl(ev.hotel_link)}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.hotel_link.length > 35 ? ev.hotel_link.substring(0, 35) + '...' : ev.hotel_link}</a></div>` : ''}
   </div>
 </div>
 ` : '';
@@ -2826,6 +2836,7 @@ localStorage.removeItem('commandCenterUserId');
 localStorage.removeItem('commandCenterSetupCode');
 localStorage.removeItem('commandCenterIsViewOnly');
 localStorage.removeItem('commandCenterShareCode');
+setCookie('ccUserId','',-1);setCookie('ccCode','',-1);setCookie('ccViewOnly','',-1);
 localStorage.removeItem('commandCenterPlanType');
 localStorage.removeItem('commandCenterExpiresAt');
 localStorage.removeItem('walkthroughCompleted');
@@ -3064,6 +3075,7 @@ try {
     localStorage.setItem('commandCenterUserId', currentUserId);
     localStorage.setItem('commandCenterIsViewOnly', 'false');
     localStorage.setItem('commandCenterShareCode', ownerData[0].share_code);
+    setCookie('ccUserId',currentUserId,90);setCookie('ccCode',setupCode,90);setCookie('ccViewOnly','false',90);
     localStorage.setItem('commandCenterPlanType', ownerData[0].plan_type || 'free');
     localStorage.setItem('commandCenterExpiresAt', ownerData[0].expires_at || '');
     console.log('📋 [PHASE2] Plan:', ownerData[0].plan_type, 'Expires:', ownerData[0].expires_at || 'never');
@@ -3083,6 +3095,7 @@ try {
       localStorage.setItem('commandCenterSetupCode', code);
       localStorage.setItem('commandCenterUserId', currentUserId);
       localStorage.setItem('commandCenterIsViewOnly', 'true');
+      setCookie('ccUserId',currentUserId,90);setCookie('ccCode',code,90);setCookie('ccViewOnly','true',90);
       try { trackEvent('invite_code_used'); } catch(e) {}
       localStorage.setItem('commandCenterShareCode', code); // viewer's share code = the code they entered
       localStorage.setItem('commandCenterPlanType', shareData[0].plan_type || 'free');
@@ -3183,6 +3196,7 @@ if (deepLinkCode) {
   localStorage.removeItem('commandCenterSetupCode');
   localStorage.removeItem('commandCenterIsViewOnly');
   localStorage.removeItem('commandCenterShareCode');
+  setCookie('ccUserId','',-1);setCookie('ccCode','',-1);setCookie('ccViewOnly','',-1);
   localStorage.removeItem('commandCenterPlanType');
   localStorage.removeItem('commandCenterExpiresAt');
   localStorage.removeItem('welcomeShown');
@@ -3211,7 +3225,17 @@ if (deepLinkCode) {
 
 let storedUserId = localStorage.getItem('commandCenterUserId');
 let storedCode = localStorage.getItem('commandCenterSetupCode');
-console.log('💾 [DIAGNOSIS] Retrieved from localStorage - UserId:', storedUserId, 'Code:', storedCode);
+// Cookie fallback for iOS PWA home screen (localStorage can be lost)
+if (!storedUserId && getCookie('ccUserId')) {
+  storedUserId = getCookie('ccUserId');
+  storedCode = getCookie('ccCode');
+  localStorage.setItem('commandCenterUserId', storedUserId);
+  if (storedCode) localStorage.setItem('commandCenterSetupCode', storedCode);
+  const vo = getCookie('ccViewOnly');
+  if (vo) localStorage.setItem('commandCenterIsViewOnly', vo);
+  console.log('🍪 [DIAGNOSIS] Restored from cookies - UserId:', storedUserId);
+}
+console.log('💾 [DIAGNOSIS] Retrieved - UserId:', storedUserId, 'Code:', storedCode);
 
 if (!storedUserId) {
 console.log('❌ [DIAGNOSIS] No stored user ID - showing setup modal');
