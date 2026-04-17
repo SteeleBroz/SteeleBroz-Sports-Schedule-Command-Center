@@ -1068,9 +1068,9 @@ function renderLocation(location) {
 if (!location) return '';
 if (looksLikeAddress(location)) {
   const encoded = encodeURIComponent(location);
-  return ' · <a href="https://maps.apple.com/?q=' + encoded + '" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">📍 ' + location + '</a>';
+  return '<a href="https://maps.apple.com/?q=' + encoded + '" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">📍 ' + location + '</a>';
 }
-return ' · ' + location;
+return location;
 }
 
 // Athlete color palette - 8 distinct colors
@@ -1295,6 +1295,7 @@ const isToday = ds === formatDate(new Date());
 
 let eventsHtml = dayEvents.map(ev => {
 const sportColor = ATHLETE_COLORS[hashAthleteName(ev.child_name) % ATHLETE_COLORS.length];
+const typeBadge = ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FFF7ED] text-[#C2410C]' : ev.event_type === 'Practice' ? 'bg-[#F3F4F6] text-[#6B7280]' : 'bg-[#F3F4F6] text-[#6B7280]';
 return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-gray-100' : ''}">
 <div class="flex items-center gap-2">
 <div class="w-1 h-10 rounded-full flex-shrink-0" style="background:${sportColor}"></div>
@@ -1307,7 +1308,7 @@ ${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
 </div>
 <div class="mt-1 pl-5">
 <div class="text-xs text-gray-500 space-y-0.5">
-<div class="flex items-center gap-1"><span>${ev.sport || ''}${ev.event_type ? ` · ${ev.event_type}` : ''}</span>${ev.field_court ? `<span class="ml-auto font-semibold text-gray-600">FLD/CRT: ${ev.field_court}</span>` : ''}</div>
+<div class="flex items-center gap-1 flex-wrap">${ev.event_type ? `<span class="${typeBadge} text-xs font-medium px-2 py-0.5 rounded-lg">${ev.event_type}</span>` : ''}${ev.sport ? `<span>· ${ev.sport}</span>` : ''}${ev.field_court ? `<span>· FLD/CRT: ${ev.field_court}</span>` : ''}</div>
 ${ev.chaperone ? `<div>Taking: ${ev.chaperone}</div>` : ''}
 ${ev.location ? `<div>${renderLocation(ev.location)}</div>` : ''}
 </div>
