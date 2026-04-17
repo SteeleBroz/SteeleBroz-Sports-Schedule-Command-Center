@@ -1295,28 +1295,25 @@ const isToday = ds === formatDate(new Date());
 
 let eventsHtml = dayEvents.map(ev => {
 const sportColor = ATHLETE_COLORS[hashAthleteName(ev.child_name) % ATHLETE_COLORS.length];
-const typeBadge = ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FEF3C7] text-[#B45309]' : ev.event_type === 'Practice' ? 'bg-[#E5E7EB] text-[#374151]' : 'bg-[#F3F4F6] text-[#6B7280]';
 return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-gray-100' : ''}">
-<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
 <div class="w-1 h-10 rounded-full flex-shrink-0" style="background:${sportColor}"></div>
 <span class="text-lg font-semibold text-gray-900 flex-shrink-0">${ev.child_name || 'Unknown'}</span>
-<span class="${typeBadge} text-xs font-medium px-2 py-0.5 rounded-lg">${ev.event_type || ''}</span>
 <span class="text-lg font-bold text-gray-900 ml-auto">${formatTime12(ev.event_time)}</span>
+${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
+<button class="dup-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="edit-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+<button class="del-event-btn p-1.5 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+</div>`}
 </div>
-<div class="mt-1 pl-5 flex justify-between items-start gap-2">
-<div class="text-xs text-gray-500 space-y-0.5 min-w-0">
-${ev.sport ? `<div>${ev.sport}</div>` : ''}
-${ev.location ? `<div>${renderLocation(ev.location)}</div>` : ''}
+<div class="mt-1 pl-5">
+<div class="text-xs text-gray-500 space-y-0.5">
+<div class="flex items-center gap-1"><span>${ev.sport || ''}${ev.event_type ? ` · ${ev.event_type}` : ''}</span>${ev.field_court ? `<span class="ml-auto font-semibold text-gray-600">FLD/CRT: ${ev.field_court}</span>` : ''}</div>
 ${ev.chaperone ? `<div>Taking: ${ev.chaperone}</div>` : ''}
-</div>
-<div class="flex items-center gap-1 flex-shrink-0 pt-0.5">
-${isViewOnly ? '' : `<button class="dup-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="edit-event-btn p-2 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-<button class="del-event-btn p-2 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`}
+${ev.location ? `<div>${renderLocation(ev.location)}</div>` : ''}
 </div>
 </div>
-${ev.field_court ? `<div class="text-xs text-gray-600 mt-1 pl-5"><span class="font-semibold uppercase tracking-wider" style="color:#555;">FIELD/COURT:</span> ${ev.field_court}</div>` : ''}
 ${(ev.event_link || ev.game_details || ev.hotel_link) ? `
-<div class="mt-2 pl-5">
+<div class="mt-1 pl-5">
   <button class="more-details-toggle text-xs text-blue-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
   <div class="hidden mt-2 space-y-1">
     ${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">Event Link:</span> <a href="${ev.event_link}" target="_blank" rel="noopener" class="text-blue-500 underline">${ev.event_link.length > 35 ? ev.event_link.substring(0, 35) + '...' : ev.event_link}</a></div>` : ''}
