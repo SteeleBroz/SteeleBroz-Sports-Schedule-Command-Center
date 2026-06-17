@@ -55,6 +55,11 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 /* Numbered step circle (shared design language) */
 .num-circle { width: 44px; height: 44px; border-radius: 50%; background: #F97316; color: #fff; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(249,115,22,0.35); }
 .num-circle.done { background: #16A34A; box-shadow: 0 2px 6px rgba(22,163,74,0.35); }
+/* Save to Home Screen step rows (blue circle + text) */
+.home-step { display: flex; align-items: center; gap: 16px; text-align: left; margin-bottom: 18px; }
+.home-step-num { background: #2563EB; color: #fff; font-weight: 800; font-size: 20px; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(37,99,235,0.35); }
+.home-step-text { font-size: 16px; color: #374151; line-height: 1.5; }
+.home-step-text strong { color: #2563EB; font-weight: 700; }
 </style>
 <style>body { box-sizing: border-box; }</style>
 </head>
@@ -589,110 +594,237 @@ Schedule Builder
 <div id="appSetupModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
 <div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-lg">
 <div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
-<h2 class="font-semibold text-2xl text-gray-900">Add to Home Screen</h2>
+<h2 class="font-semibold text-2xl text-gray-900">Save to Your Home Screen</h2>
 <button id="closeAppSetupBtn" class="text-gray-400 hover:text-gray-700 transition">
 <i data-lucide="x" class="w-6 h-6"></i>
 </button>
 </div>
-<div class="px-8 py-6 space-y-6">
-<div class="bg-[#FFF7ED] border border-orange-100 rounded-2xl p-5 mb-6">
-<h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-orange-500"></i> Save it to your phone like an app</h3>
-<p class="text-sm text-gray-600">Pick your phone below and follow the steps. It opens with one tap after that, no app store needed.</p>
+<div class="px-8 py-6">
+<p class="text-base text-gray-500 mb-7">So you can open it like any other app</p>
+
+<!-- iPhone steps (always visible) -->
+<div class="home-step">
+<div class="home-step-num">1</div>
+<p class="home-step-text">Tap the <strong>three dots</strong> (...) at the bottom right of your screen</p>
+</div>
+<div class="home-step">
+<div class="home-step-num">2</div>
+<p class="home-step-text">Tap <strong>Share</strong></p>
+</div>
+<div class="home-step">
+<div class="home-step-num">3</div>
+<p class="home-step-text">Tap <strong>View More</strong></p>
+</div>
+<div class="home-step">
+<div class="home-step-num">4</div>
+<p class="home-step-text">Tap <strong>Add to Home Screen</strong></p>
+</div>
+<div class="home-step">
+<div class="home-step-num">5</div>
+<p class="home-step-text">Tap <strong>Add</strong> in the top right corner</p>
 </div>
 
-<!-- iPhone / iPad -->
-<div class="border border-gray-200 rounded-2xl overflow-hidden mb-5">
-<div class="bg-gray-50 px-5 py-4 flex items-center gap-3 border-b border-gray-200">
-<i data-lucide="smartphone" class="w-5 h-5 text-blue-400"></i>
-<span class="font-semibold text-base text-gray-900">iPhone / iPad</span>
-</div>
-<div class="bg-white px-5 py-5 space-y-4">
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">1</div>
-<p class="text-sm text-gray-700 leading-snug">Tap the share button at the bottom of Safari (the square with an up arrow <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0069FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-text-bottom"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>).</p>
-</div>
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">2</div>
-<p class="text-sm text-gray-700 leading-snug">Scroll down in the share menu that pops up.</p>
-</div>
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">3</div>
-<p class="text-sm text-gray-700 leading-snug">Tap "Add to Home Screen".</p>
-</div>
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">4</div>
-<p class="text-sm text-gray-700 leading-snug">Tap "Add" in the top right corner.</p>
-</div>
-</div>
-</div>
+<p class="text-sm text-gray-400 mt-2 mb-5">You can always do this later from the Tools menu.</p>
 
-<!-- Android -->
-<div class="border border-gray-200 rounded-2xl overflow-hidden mb-2">
-<div class="bg-gray-50 px-5 py-4 flex items-center gap-3 border-b border-gray-200">
+<!-- Android (click to expand) -->
+<div class="border border-gray-200 rounded-2xl overflow-hidden">
+<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition">
+<div class="flex items-center gap-3">
 <i data-lucide="smartphone" class="w-5 h-5 text-green-500"></i>
-<span class="font-semibold text-base text-gray-900">Android</span>
+<span class="font-semibold text-base text-gray-900">Using Android?</span>
 </div>
-<div class="bg-white px-5 py-5 space-y-4">
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">1</div>
-<p class="text-sm text-gray-700 leading-snug">Tap the 3 dots <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#374151" class="inline-block align-text-bottom"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> menu in the top right of Chrome.</p>
+<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i>
+</button>
+<div class="device-steps hidden bg-white px-5 py-5 border-t border-gray-200">
+<div class="home-step">
+<div class="home-step-num">1</div>
+<p class="home-step-text">Tap the <strong>three dots</strong> menu in the top right of Chrome</p>
 </div>
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">2</div>
-<p class="text-sm text-gray-700 leading-snug">Tap "Install app" or "Add to Home screen".</p>
+<div class="home-step">
+<div class="home-step-num">2</div>
+<p class="home-step-text">Tap <strong>Install app</strong> or <strong>Add to Home screen</strong></p>
 </div>
-<div class="flex items-center gap-3">
-<div class="num-circle" style="width:32px;height:32px;font-size:15px;">3</div>
-<p class="text-sm text-gray-700 leading-snug">Tap "Install" or "Add".</p>
+<div class="home-step" style="margin-bottom:0;">
+<div class="home-step-num">3</div>
+<p class="home-step-text">Tap <strong>Install</strong> or <strong>Add</strong></p>
 </div>
 </div>
 </div>
-
-<!-- Mac/Desktop --> 
-<div class="border border-gray-200 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
-<div class="flex items-center gap-3">
-<i data-lucide="monitor" class="w-5 h-5 text-purple-400"></i> 
-<span class="font-medium text-gray-900">Mac / Desktop</span> 
-</div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
-</button> 
-<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
-<p><span class="font-bold text-gray-900">1.</span> Open your browser (Chrome, Safari, or Edge)</p> 
-<p><span class="font-bold text-gray-900">2.</span> Visit this schedule page</p> 
-<p><span class="font-bold text-gray-900">3.</span> Look for the "Install" icon in the address bar</p> 
-<p><span class="font-bold text-gray-900">4.</span> Click it and confirm installation</p> 
-<p class="text-xs text-gray-400 mt-2">The app will open as its own window on your desktop and dock!</p>
-</div> 
-</div>
-
-<!-- Windows --> 
-<div class="border border-gray-200 rounded-2xl overflow-hidden">
-<button class="device-btn w-full bg-gray-50 hover:bg-gray-100 px-5 py-4 flex items-center justify-between transition"> 
-<div class="flex items-center gap-3">
-<i data-lucide="monitor" class="w-5 h-5 text-blue-300"></i> 
-<span class="font-medium text-gray-900">Windows</span> 
-</div>
-<i data-lucide="chevron-down" class="w-5 h-5 text-gray-400"></i> 
-</button> 
-<div class="device-steps hidden bg-white px-5 py-4 border-t border-gray-200 space-y-3 text-sm text-gray-600"> 
-<p><span class="font-bold text-gray-900">1.</span> Open Edge or Chrome browser</p> 
-<p><span class="font-bold text-gray-900">2.</span> Visit this schedule page</p> 
-<p><span class="font-bold text-gray-900">3.</span> Click the Install icon in the address bar</p> 
-<p><span class="font-bold text-gray-900">4.</span> Click "Install" to confirm</p> 
-<p class="text-xs text-gray-400 mt-2">Find it in your Start Menu or taskbar after installation!</p>
-</div> 
-</div> 
 
 </div>
 <div class="sticky bottom-0 bg-white border-t border-gray-200 px-8 py-6">
+<button id="continueAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Got It</button>
+</div>
+</div>
+</div>
+
+<!-- Help Modal -->
+<div id="helpModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white border border-gray-200 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-lg">
+<div class="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+<h2 class="font-semibold text-2xl text-gray-900">Help & How to Use</h2>
+<button id="closeHelpBtn" class="text-gray-400 hover:text-gray-700 transition">
+<i data-lucide="x" class="w-6 h-6"></i>
+</button>
+</div>
+<div class="px-8 py-6 space-y-6">
+<div class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5">
+<h3 class="font-semibold text-gray-900 mb-2 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-[#0069FF]"></i> What is this?</h3>
+<p class="text-sm text-gray-600">Command Center keeps your family coordinated. Track all your athletes' practices, games, and tournaments in one place. Share the schedule code with family members so everyone knows where to be and when. Import entire seasons in minutes instead of hours!</p>
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="rocket" class="w-5 h-5 text-green-500"></i> Quick Start Guide</h3>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">Create or Join a Schedule</p>
+<p class="text-xs text-gray-500 mt-1">Either create a new schedule to get a 6-character code, or join an existing one using a code someone shared with you.</p>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">2</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">Import Your Season Schedule</p>
+<p class="text-xs text-gray-500 mt-1">Go to <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">Add Event</span> &rarr; <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-green-600">Import Schedule</span> to add your entire season at once using Photo Import, Recurring Schedule, or manual entry.</p>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3 mb-2">
+<span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white text-xs flex items-center justify-center font-bold">3</span>
+<div>
+<p class="font-medium text-gray-900 text-sm">View & Navigate Your Schedule</p>
+<p class="text-xs text-gray-500 mt-1">The <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">This Week</span> tab shows this week's events. Use arrows to navigate weeks and filter by athlete. <span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded text-[#0069FF]">All Games</span> tab shows everything in table format.</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5 text-green-500"></i> Import Methods</h3>
+
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
 <div class="flex gap-3">
-<button id="skipAppSetupBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition">Skip For Now</button>
-<button id="continueAppSetupBtn" class="flex-1 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Continue</button>
+<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="camera" class="w-4 h-4 text-[#0069FF]"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">📸 Photo Import (Recommended)</p>
+<p class="text-xs text-gray-500">Snap a photo &rarr; Copy our prompt &rarr; Paste in ChatGPT or Gemini &rarr; Import your schedule. Done!</p>
 </div>
 </div>
-</div> 
-</div><!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
+</div>
+
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="repeat" class="w-4 h-4 text-orange-500"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">🔁 Recurring Schedule</p>
+<p class="text-xs text-gray-500">Coach says "practice is Tuesdays & Thursdays at 5:30"? Just tell us the details and we'll build your whole season.</p>
+</div>
+</div>
+</div>
+
+<div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+<i data-lucide="edit" class="w-4 h-4 text-[#0069FF]"></i>
+</div>
+<div>
+<p class="font-medium text-gray-900 text-sm mb-1">✏️ Add One by One</p>
+<p class="text-xs text-gray-500">Enter events manually with an easy grid. Add rows, fill out details, and import when ready. Best for a few quick additions.</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-[#0069FF]"></i> Daily Features</h3>
+
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="check-square" class="w-3 h-3 text-[#0069FF]"></i> Pack Lists</p>
+<p class="text-xs text-gray-500">Weekly packing reminders with checkboxes</p>
+</div>
+
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="file-text" class="w-3 h-3 text-[#0069FF]"></i> Weekly Notes</p>
+<p class="text-xs text-gray-500">Share important reminders with family</p>
+</div>
+
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="quote" class="w-3 h-3 text-[#0069FF]"></i> Athlete Insights</p>
+<p class="text-xs text-gray-500">Weekly motivational quotes and stories</p>
+</div>
+
+<div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+<p class="font-medium text-gray-900 text-xs mb-1 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3 text-[#0069FF]"></i> Kid Filtering</p>
+<p class="text-xs text-gray-500">Focus on one athlete's schedule at a time</p>
+</div>
+</div>
+
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-[#0069FF]"></i> Pro Tips</h3>
+<ul class="space-y-2 text-sm text-gray-600">
+<li class="flex gap-2"><span class="text-green-500">•</span> <span><strong>Start with Photo Import</strong> - fastest way to import a full season from photos</span></li>
+<li class="flex gap-2"><span class="text-orange-500">•</span> <span><strong>Use Recurring Schedule</strong> - generate entire seasons when coach only gives you "Tuesdays at 5:30"</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Edit or delete events using pencil/trash icons in This Week or All Games tabs</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Share your 6-character code with coaches, grandparents, and siblings</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Use the Pack List and Weekly Notes to stay organized each week</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Filter by athlete when you have multiple kids to manage</span></li>
+<li class="flex gap-2"><span class="text-[#0069FF]">•</span> <span>Navigate weeks with arrow buttons to see future games and practices</span></li>
+</ul>
+</div>
+
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="play-circle" class="w-5 h-5 text-[#0069FF]"></i> Take a Quick Tour</h3>
+<p class="text-sm text-gray-600">Want a guided walk through the whole app? Take the quick tour and we'll point out every feature step by step.</p>
+<button id="helpStartTourBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"><i data-lucide="compass" class="w-4 h-4 text-[#0069FF]"></i> Start the Walkthrough</button>
+</div>
+
+<!-- Save to Your Home Screen (step by step) -->
+<div class="space-y-4">
+<h3 class="font-semibold text-gray-900 flex items-center gap-2"><i data-lucide="smartphone" class="w-5 h-5 text-[#0069FF]"></i> Save to Your Home Screen</h3>
+<p class="text-sm text-gray-600">So you can open it like any other app:</p>
+<div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+<div class="home-step">
+<div class="home-step-num">1</div>
+<p class="home-step-text">Tap the <strong>three dots</strong> (...) at the bottom right of your screen</p>
+</div>
+<div class="home-step">
+<div class="home-step-num">2</div>
+<p class="home-step-text">Tap <strong>Share</strong></p>
+</div>
+<div class="home-step">
+<div class="home-step-num">3</div>
+<p class="home-step-text">Tap <strong>View More</strong></p>
+</div>
+<div class="home-step">
+<div class="home-step-num">4</div>
+<p class="home-step-text">Tap <strong>Add to Home Screen</strong></p>
+</div>
+<div class="home-step" style="margin-bottom:0;">
+<div class="home-step-num">5</div>
+<p class="home-step-text">Tap <strong>Add</strong> in the top right corner</p>
+</div>
+</div>
+<p class="text-xs text-gray-400">On Android? Open the Save to Home Screen guide from the Tools menu for the Android steps.</p>
+</div>
+
+<button id="closeHelpMainBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Got It, Let's Go</button>
+</div>
+</div>
+</div>
+<!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
@@ -704,7 +836,7 @@ Wknd
 Week
 </button>
 </div>
-</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Add to Home Screen</div> <div class="text-xs text-blue-100">Save it to your phone like an app</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">Take a quick tour of the app</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6">
+</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Save to Home Screen</div> <div class="text-xs text-blue-100">Save it to your phone like an app</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">How to use the app and take a tour</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6">
 <!-- Owner Welcome Card (new schedules only) -->
 <div id="ownerWelcomeCard" class="setup-card-accent hidden bg-[#FFF7ED] border border-orange-100 rounded-2xl p-6 pl-7 mb-6 shadow-lg">
 <div class="mb-5">
@@ -2770,7 +2902,6 @@ document.getElementById('shopGearBar').classList.remove('hidden');
 }
 
 document.getElementById('closeAppSetupBtn').addEventListener('click', proceedToSetupCode);
-document.getElementById('skipAppSetupBtn').addEventListener('click', proceedToSetupCode);
 document.getElementById('continueAppSetupBtn').addEventListener('click', proceedToSetupCode);
 
 // Tools bottom sheet functionality
@@ -2864,8 +2995,24 @@ document.getElementById('joinDifferentBtn').addEventListener('click', () => {
 
 document.getElementById('toolsHelpBtn').addEventListener('click', () => {
 closeToolsBottomSheet();
+setTimeout(() => {
+document.getElementById('helpModal').classList.remove('hidden');
+if (window.lucide) lucide.createIcons();
+}, 400);
+});
+
+// Help modal close handlers
+function closeHelpModal() {
+document.getElementById('helpModal').classList.add('hidden');
+}
+document.getElementById('closeHelpBtn').addEventListener('click', closeHelpModal);
+document.getElementById('closeHelpMainBtn').addEventListener('click', closeHelpModal);
+
+// Help modal - launch the guided walkthrough
+document.getElementById('helpStartTourBtn').addEventListener('click', () => {
+closeHelpModal();
 localStorage.removeItem('walkthroughCompleted');
-setTimeout(() => startWalkthrough(), 400);
+setTimeout(() => startWalkthrough(), 300);
 });
 
 document.getElementById('toolsParentHubBtn').addEventListener('click', () => {
