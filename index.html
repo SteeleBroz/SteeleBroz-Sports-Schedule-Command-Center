@@ -824,7 +824,7 @@ Schedule Builder
 </div>
 </div>
 </div>
-<!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
+<!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span id="familyScheduleLabel" class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex gap-2 flex-shrink-0">
@@ -1794,6 +1794,7 @@ if (names.includes(current) || current === 'all') select.value = current;
 
 // Tab switching
 document.addEventListener('DOMContentLoaded', () => {
+try { updateFamilyScheduleLabel(); } catch(e) {}
 document.querySelectorAll('.screen-tab').forEach(tab => {
 tab.addEventListener('click', () => {
 const screen = tab.dataset.screen;
@@ -3311,6 +3312,7 @@ try {
     localStorage.setItem('commandCenterPlanType', ownerData[0].plan_type || 'free');
     localStorage.setItem('commandCenterExpiresAt', ownerData[0].expires_at || '');
     if (ownerData[0].schedule_name) { localStorage.setItem('commandCenterScheduleName', ownerData[0].schedule_name); } else { localStorage.removeItem('commandCenterScheduleName'); }
+    updateFamilyScheduleLabel();
     console.log('📋 [PHASE2] Plan:', ownerData[0].plan_type, 'Expires:', ownerData[0].expires_at || 'never');
   } else {
     // Check if it's a share code
@@ -3334,6 +3336,7 @@ try {
       localStorage.setItem('commandCenterPlanType', shareData[0].plan_type || 'free');
       localStorage.setItem('commandCenterExpiresAt', shareData[0].expires_at || '');
       if (shareData[0].schedule_name) { localStorage.setItem('commandCenterScheduleName', shareData[0].schedule_name); } else { localStorage.removeItem('commandCenterScheduleName'); }
+      updateFamilyScheduleLabel();
       console.log('📋 [PHASE2] Plan:', shareData[0].plan_type, 'Expires:', shareData[0].expires_at || 'never');
     } else {
       // Code not found — show error, do NOT create a schedule
@@ -3500,9 +3503,18 @@ try { trackSession(); } catch(e) {}
 // ============================
 // WELCOME / SETUP CARD
 // ============================
+function updateFamilyScheduleLabel() {
+  const saved = localStorage.getItem('commandCenterScheduleName');
+  const label = (saved && saved.trim()) ? saved.trim() : 'Family Sports Schedule';
+  document.querySelectorAll('#familyScheduleLabel').forEach(el => {
+    el.textContent = label.toUpperCase();
+  });
+}
+
 function setupCardSaveScheduleName(name) {
   if (!name) return;
   localStorage.setItem('commandCenterScheduleName', name);
+  updateFamilyScheduleLabel();
   const isViewer = localStorage.getItem('commandCenterIsViewOnly') === 'true';
   const code = localStorage.getItem('commandCenterSetupCode');
   if (isViewer || !code) return;
