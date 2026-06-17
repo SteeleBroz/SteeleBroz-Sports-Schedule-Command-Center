@@ -46,6 +46,10 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 .walkthrough-step-number { background: #0069FF; color: white; font-weight: 700; font-size: 14px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .walkthrough-step-text { font-size: 15px; color: #333; line-height: 1.5; padding-top: 2px; }
 .walkthrough-step-text strong { color: #0069FF; }
+/* Welcome / Setup Card */
+.step-num { transition: background-color 0.3s ease; }
+.setup-step.done h3 { color: #9CA3AF; }
+.setup-step.done .step-tagline { display: none; }
 </style>
 <style>body { box-sizing: border-box; }</style>
 </head>
@@ -669,7 +673,59 @@ Wknd
 Week
 </button>
 </div>
-</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Setup</div> <div class="text-xs text-blue-100">Install to home screen</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">App instructions & guide</div> </div> </button> <button id="replayWalkthroughBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="compass" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Guide</div> <div class="text-xs text-gray-500">Step-by-step walkthrough</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6"> <div id="installPrompt" class="bg-[#EBF3FF] border border-blue-200 rounded-2xl p-5 mb-6"> <div class="flex items-start gap-3"><i data-lucide="smartphone" class="w-5 h-5 text-[#0069FF] flex-shrink-0 mt-0.5"></i> <div class="flex-1"> <h3 class="text-sm font-semibold text-gray-900 mb-1">Save to Home Screen</h3> <p class="text-xs text-gray-600 mb-3">Access your game week schedule anytime, right from your phone or computer.</p><button id="openAppSetupBtn" class="text-[#0069FF] text-xs hover:text-[#0052CC] transition font-medium flex items-center gap-1"> <i data-lucide="arrow-right" class="w-3 h-3"></i> View Setup Instructions </button> <button id="dismissInstall" class="mt-3 text-base text-gray-400 hover:text-gray-600 transition py-2">Dismiss</button> </div> </div> </div> <div id="weeklyCards" class="space-y-3"></div> <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-gray-300 mx-auto mb-3"></i> <p class="text-gray-400 text-base">No events this week</p> <p class="text-gray-400 text-sm mt-1">Add events in the Add Event tab</p> </div>
+</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="text-gray-500 text-xs font-medium">Shop Performance Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed bottom-12 right-5 z-40"> <button id="openToolsBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white text-sm font-semibold px-4 py-3 rounded-full transition flex items-center gap-2 shadow-lg"> <i data-lucide="settings" class="w-4 h-4"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Setup</div> <div class="text-xs text-blue-100">Install to home screen</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">App instructions & guide</div> </div> </button> <button id="replayWalkthroughBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="compass" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">App Guide</div> <div class="text-xs text-gray-500">Step-by-step walkthrough</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6">
+<!-- Owner Welcome Card (new schedules only) -->
+<div id="ownerWelcomeCard" class="hidden bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+<div class="mb-5">
+<h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, let's get you set up</h2>
+<p class="text-sm text-gray-500">Takes about 2 minutes</p>
+</div>
+<div class="mb-6">
+<label class="text-xs text-gray-500 font-medium block mb-2 uppercase tracking-wide">What should we call your family schedule? (optional)</label>
+<input id="scheduleNameInput" type="text" maxlength="50" placeholder="The Bennis Family Schedule" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-11 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition">
+</div>
+<div class="space-y-5 mb-6">
+<div id="setupStep1" class="setup-step flex items-start gap-4">
+<div class="step-num flex-shrink-0 w-12 h-12 rounded-full bg-[#0069FF] text-white text-xl font-bold flex items-center justify-center">1</div>
+<div class="flex-1 pt-1">
+<h3 class="text-base font-semibold text-gray-900 leading-snug">Snap a photo to import your schedule</h3>
+<p class="step-tagline text-sm text-gray-500 mt-1">No more typing every event in by hand.</p>
+</div>
+</div>
+<div id="setupStep2" class="setup-step flex items-start gap-4">
+<div class="step-num flex-shrink-0 w-12 h-12 rounded-full bg-[#0069FF] text-white text-xl font-bold flex items-center justify-center">2</div>
+<div class="flex-1 pt-1">
+<h3 class="text-base font-semibold text-gray-900 leading-snug">Save it to your phone like an app</h3>
+<p class="step-tagline text-sm text-gray-500 mt-1">Opens with one tap, no more digging through emails.</p>
+</div>
+</div>
+<div id="setupStep3" class="setup-step flex items-start gap-4">
+<div class="step-num flex-shrink-0 w-12 h-12 rounded-full bg-[#0069FF] text-white text-xl font-bold flex items-center justify-center">3</div>
+<div class="flex-1 pt-1">
+<h3 class="text-base font-semibold text-gray-900 leading-snug">Share with the whole family</h3>
+<p class="step-tagline text-sm text-gray-500 mt-1">They see the schedule, only you can change it.</p>
+</div>
+</div>
+</div>
+<button id="setupCardActionBtn" data-step="1" data-action="start" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition">Start Step 1</button>
+</div>
+
+<!-- Viewer Welcome Card (share-code users) -->
+<div id="viewerWelcomeCard" class="hidden bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+<h2 id="viewerWelcomeTitle" class="text-xl font-semibold text-gray-900 mb-1">Welcome</h2>
+<p class="text-sm text-gray-500 mb-5">Save this to your phone so it is always handy.</p>
+<div class="flex items-start gap-4 mb-5">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#0069FF] text-white flex items-center justify-center">
+<i data-lucide="smartphone" class="w-6 h-6"></i>
+</div>
+<div class="flex-1 pt-1">
+<h3 class="text-base font-semibold text-gray-900 leading-snug">Save to your home screen</h3>
+<p class="text-sm text-gray-500 mt-1">Opens with one tap, no more digging through messages.</p>
+</div>
+</div>
+<button id="viewerSaveBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-xl transition mb-2">Show me how</button>
+<button id="viewerDismissBtn" class="w-full text-gray-500 hover:text-gray-700 text-sm py-2 transition">Maybe later</button>
+</div> <div id="weeklyCards" class="space-y-3"></div> <div id="emptyWeek" class="hidden text-center py-16"><i data-lucide="calendar-off" class="w-10 h-10 text-gray-300 mx-auto mb-3"></i> <p class="text-gray-400 text-base">No events this week</p> <p class="text-gray-400 text-sm mt-1">Add events in the Add Event tab</p> </div>
 <div class="mt-8 mb-6 flex items-center gap-3">
   <div class="flex-1 h-px bg-gray-200"></div>
   <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Weekly Tools</span>
@@ -1817,11 +1873,13 @@ onDataChanged(data) {
 console.log('🎯 [DIAGNOSIS] dataHandler.onDataChanged called with', data.length, 'events');
 console.log('📋 [DIAGNOSIS] Events data:', data);
 allEvents = data;
+window.__dataLoadedOnce = true;
 console.log('🔄 [DIAGNOSIS] Updated allEvents, calling render functions...');
 updateKidFilter();
 renderWeekly();
 renderDayChips();
 if (activeScreen === 'season') renderSeason();
+try { refreshSetupCard(); } catch(e) {}
 console.log('✅ [DIAGNOSIS] All render functions completed');
 }
 };
@@ -2662,7 +2720,7 @@ return events;
 }
 
 // App setup modal controls
-document.getElementById('openAppSetupBtn').addEventListener('click', () => {
+document.getElementById('openAppSetupBtn')?.addEventListener('click', () => {
 document.getElementById('appSetupModal').classList.remove('hidden');
 });
 
@@ -2816,12 +2874,12 @@ document.getElementById('appSetupModal').classList.remove('hidden');
 
 // Help button handler moved to tools bottom sheet
 
-// Install prompt
-document.getElementById('dismissInstall').addEventListener('click', () => {
+// Install prompt (legacy, element may not exist after redesign)
+document.getElementById('dismissInstall')?.addEventListener('click', () => {
 const prompt = document.getElementById('installPrompt');
 const restore = document.getElementById('toolsButton');
-prompt.style.display = 'none';
-restore.classList.remove('hidden');
+if (prompt) prompt.style.display = 'none';
+if (restore) restore.classList.remove('hidden');
 localStorage.setItem('installPromptDismissed', 'true');
 });
 
@@ -2853,14 +2911,16 @@ location.reload();
 document.getElementById('copyShareCodeBtn').addEventListener('click', async () => {
   const shareCode = document.getElementById('viewShareCode').textContent.trim();
   const shareUrl = window.location.origin + '?code=' + encodeURIComponent(shareCode);
-  const shareMessage = "Here's our family sports schedule. Just tap this link and you're in:\n" + shareUrl;
+  const scheduleName = localStorage.getItem('commandCenterScheduleName');
+  const namePhrase = scheduleName ? scheduleName : 'our family sports schedule';
+  const shareMessage = 'Here is ' + namePhrase + '. Tap to open: ' + shareUrl + '. Once it opens, tap save to home screen so it lives on your phone like an app.';
 
   // Try Web Share API first (mobile only)
   if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
     try {
       await navigator.share({
-        title: 'Family Sports Schedule',
-        text: "Here's our family sports schedule. Just tap this link and you're in:",
+        title: scheduleName || 'Family Sports Schedule',
+        text: 'Here is ' + namePhrase + '. Once it opens, tap save to home screen so it lives on your phone like an app.',
         url: shareUrl
       });
       return;
@@ -2916,7 +2976,8 @@ setTimeout(() => status.classList.add('hidden'), 2000);
 });
 
 if (localStorage.getItem('installPromptDismissed')) {
-document.getElementById('installPrompt').style.display = 'none';
+const legacyPrompt = document.getElementById('installPrompt');
+if (legacyPrompt) legacyPrompt.style.display = 'none';
 }
 // Always show tools button for any user with an active session
 if (localStorage.getItem('commandCenterSetupCode')) {
@@ -3060,7 +3121,7 @@ status.classList.remove('hidden');
 
 try {
   // First check if it's an owner code
-  let ownerRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at`, {
+  let ownerRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at,schedule_name`, {
     headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
   });
   let ownerData = await ownerRes.json();
@@ -3078,10 +3139,11 @@ try {
     setCookie('ccUserId',currentUserId,90);setCookie('ccCode',setupCode,90);setCookie('ccViewOnly','false',90);
     localStorage.setItem('commandCenterPlanType', ownerData[0].plan_type || 'free');
     localStorage.setItem('commandCenterExpiresAt', ownerData[0].expires_at || '');
+    if (ownerData[0].schedule_name) { localStorage.setItem('commandCenterScheduleName', ownerData[0].schedule_name); } else { localStorage.removeItem('commandCenterScheduleName'); }
     console.log('📋 [PHASE2] Plan:', ownerData[0].plan_type, 'Expires:', ownerData[0].expires_at || 'never');
   } else {
     // Check if it's a share code
-    let shareRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?share_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at`, {
+    let shareRes = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?share_code=eq.${code}&select=owner_code,share_code,plan_type,expires_at,schedule_name`, {
       headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
     });
     let shareData = await shareRes.json();
@@ -3100,6 +3162,7 @@ try {
       localStorage.setItem('commandCenterShareCode', code); // viewer's share code = the code they entered
       localStorage.setItem('commandCenterPlanType', shareData[0].plan_type || 'free');
       localStorage.setItem('commandCenterExpiresAt', shareData[0].expires_at || '');
+      if (shareData[0].schedule_name) { localStorage.setItem('commandCenterScheduleName', shareData[0].schedule_name); } else { localStorage.removeItem('commandCenterScheduleName'); }
       console.log('📋 [PHASE2] Plan:', shareData[0].plan_type, 'Expires:', shareData[0].expires_at || 'never');
     } else {
       // Code not found — show error, do NOT create a schedule
@@ -3132,25 +3195,15 @@ console.log('🎭 [DIAGNOSIS] Closing setup modal and updating display');
 document.getElementById('setupModal').classList.add('hidden');
 applyViewOnlyMode();
 
-// If this is a first-time join (welcomeShown not set), show the welcome/onboarding flow
+// First-time join: skip welcomeModal (new in-app welcome card handles onboarding)
 if (!localStorage.getItem('welcomeShown')) {
-  console.log('👋 [DEEPLINK] First time on this schedule — showing welcome modal');
-  isOnboarding = true;
-  document.getElementById('welcomeModal').classList.remove('hidden');
+  console.log('👋 [DEEPLINK] First time on this schedule — using in-app welcome card');
   localStorage.setItem('welcomeShown', 'true');
   if (!isViewOnly) { try { trackEvent('user_created_schedule'); } catch(e) {} }
-  // Show the code display modal after welcome
-  if (document.getElementById('displayCode')) {
-    document.getElementById('displayCode').textContent = setupCode;
-  }
-  const sc = localStorage.getItem('commandCenterShareCode');
-  if (sc && document.getElementById('displayShareCode')) {
-    document.getElementById('displayShareCode').textContent = sc;
-  }
-} else {
-  updateWeekDisplay();
-  renderPackList();
 }
+updateWeekDisplay();
+renderPackList();
+try { refreshSetupCard(); } catch(e) {}
 lucide.createIcons();
 }, 1000);
 });
@@ -3252,11 +3305,9 @@ document.getElementById('setupModal').classList.add('hidden');
 applyViewOnlyMode();
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
-// Show welcome modal on first use
+// First-time use: skip welcomeModal (new in-app welcome card handles onboarding)
 if (!localStorage.getItem('welcomeShown')) {
-console.log('👋 [DIAGNOSIS] First time user - showing welcome modal');
-isOnboarding = true;
-document.getElementById('welcomeModal').classList.remove('hidden');
+console.log('👋 [DIAGNOSIS] First time user - using in-app welcome card');
 localStorage.setItem('welcomeShown', 'true');
 if (!isViewOnly) { try { trackEvent('user_created_schedule'); } catch(e) {} }
 }
@@ -3274,6 +3325,181 @@ console.log('✅ [DIAGNOSIS] Data SDK init succeeded');
 try { trackSession(); } catch(e) {}
 }
 })();
+
+// ============================
+// WELCOME / SETUP CARD
+// ============================
+function setupCardSaveScheduleName(name) {
+  if (!name) return;
+  localStorage.setItem('commandCenterScheduleName', name);
+  const isViewer = localStorage.getItem('commandCenterIsViewOnly') === 'true';
+  const code = localStorage.getItem('commandCenterSetupCode');
+  if (isViewer || !code) return;
+  try {
+    fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': window.dataSdk.supabaseKey,
+        'Authorization': `Bearer ${window.dataSdk.supabaseKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ schedule_name: name })
+    }).catch(() => {});
+  } catch(e) { console.error('save schedule_name failed:', e); }
+}
+
+function setupCardMarkStep(num, done) {
+  const stepEl = document.getElementById('setupStep' + num);
+  if (!stepEl) return;
+  const numEl = stepEl.querySelector('.step-num');
+  if (done) {
+    stepEl.classList.add('done');
+    numEl.classList.remove('bg-[#0069FF]');
+    numEl.classList.add('bg-green-500');
+    numEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  } else {
+    stepEl.classList.remove('done');
+    numEl.classList.add('bg-[#0069FF]');
+    numEl.classList.remove('bg-green-500');
+    numEl.textContent = String(num);
+  }
+}
+
+function refreshSetupCard() {
+  const ownerCard = document.getElementById('ownerWelcomeCard');
+  const viewerCard = document.getElementById('viewerWelcomeCard');
+  if (!ownerCard || !viewerCard) return;
+  const isViewer = localStorage.getItem('commandCenterIsViewOnly') === 'true';
+  const hasCode = !!localStorage.getItem('commandCenterSetupCode');
+  if (!hasCode) { ownerCard.classList.add('hidden'); viewerCard.classList.add('hidden'); return; }
+
+  if (isViewer) {
+    ownerCard.classList.add('hidden');
+    if (localStorage.getItem('viewerCardDismissed')) { viewerCard.classList.add('hidden'); return; }
+    const name = localStorage.getItem('commandCenterScheduleName');
+    const titleEl = document.getElementById('viewerWelcomeTitle');
+    if (titleEl) titleEl.textContent = name ? ('Welcome to ' + name) : 'Welcome';
+    viewerCard.classList.remove('hidden');
+    return;
+  }
+
+  viewerCard.classList.add('hidden');
+  if (localStorage.getItem('setupCardDismissed') === '1') { ownerCard.classList.add('hidden'); return; }
+
+  // Don't make show/hide decisions until data has loaded at least once
+  if (!window.__dataLoadedOnce) { ownerCard.classList.add('hidden'); return; }
+
+  // Existing users: had events before they ever saw this card → hide forever
+  const hasEvents = Array.isArray(allEvents) && allEvents.length > 0;
+  if (hasEvents && !localStorage.getItem('setupCardEverShown')) {
+    localStorage.setItem('setupCardDismissed', '1');
+    ownerCard.classList.add('hidden');
+    return;
+  }
+  localStorage.setItem('setupCardEverShown', '1');
+  if (hasEvents && !localStorage.getItem('setupStep1Done')) {
+    localStorage.setItem('setupStep1Done', '1');
+  }
+
+  // Restore typed name
+  const nameInput = document.getElementById('scheduleNameInput');
+  if (nameInput && !nameInput.value) {
+    const saved = localStorage.getItem('commandCenterScheduleName');
+    if (saved) nameInput.value = saved;
+  }
+
+  const step1Done = localStorage.getItem('setupStep1Done') === '1' || (Array.isArray(allEvents) && allEvents.length > 0);
+  const step2Done = localStorage.getItem('setupStep2Done') === '1';
+  const step3Done = localStorage.getItem('setupStep3Done') === '1';
+  if (step1Done && !localStorage.getItem('setupStep1Done')) localStorage.setItem('setupStep1Done', '1');
+
+  setupCardMarkStep(1, step1Done);
+  setupCardMarkStep(2, step2Done);
+  setupCardMarkStep(3, step3Done);
+
+  if (step1Done && step2Done && step3Done) {
+    localStorage.setItem('setupCardDismissed', '1');
+    ownerCard.classList.add('hidden');
+    return;
+  }
+
+  ownerCard.classList.remove('hidden');
+  const btn = document.getElementById('setupCardActionBtn');
+  if (!btn) return;
+  const nextStep = !step1Done ? 1 : !step2Done ? 2 : 3;
+  btn.dataset.step = String(nextStep);
+  btn.dataset.action = 'start';
+  btn.textContent = 'Start Step ' + nextStep;
+  try { if (window.lucide) lucide.createIcons(); } catch(e) {}
+}
+
+function setupCardShowDoneState(step) {
+  const btn = document.getElementById('setupCardActionBtn');
+  if (!btn) return;
+  btn.dataset.step = String(step);
+  btn.dataset.action = 'done';
+  btn.textContent = 'I did it';
+}
+
+// Wire up welcome card handlers
+(function wireWelcomeCards() {
+  const nameInput = document.getElementById('scheduleNameInput');
+  if (nameInput) {
+    let lastSaved = '';
+    const saveName = () => {
+      const v = nameInput.value.trim();
+      if (v && v !== lastSaved) { lastSaved = v; setupCardSaveScheduleName(v); }
+    };
+    nameInput.addEventListener('blur', saveName);
+    nameInput.addEventListener('change', saveName);
+  }
+
+  const actionBtn = document.getElementById('setupCardActionBtn');
+  if (actionBtn) {
+    actionBtn.addEventListener('click', () => {
+      const step = parseInt(actionBtn.dataset.step || '1', 10);
+      const action = actionBtn.dataset.action || 'start';
+      if (action === 'start') {
+        if (step === 1) {
+          // Open import flow — try control tab first, then import modal
+          const controlTab = document.querySelector('.screen-tab[data-screen="control"]');
+          if (controlTab) controlTab.click();
+          const importBtn = document.getElementById('importScheduleBtn');
+          if (importBtn) { setTimeout(() => importBtn.click(), 200); }
+          // Step 1 auto-detects when events appear
+        } else if (step === 2) {
+          document.getElementById('appSetupModal').classList.remove('hidden');
+          setupCardShowDoneState(2);
+        } else if (step === 3) {
+          const toolsSetupBtn = document.getElementById('toolsSetupCodeBtn');
+          if (toolsSetupBtn) toolsSetupBtn.click();
+          setupCardShowDoneState(3);
+        }
+      } else if (action === 'done') {
+        localStorage.setItem('setupStep' + step + 'Done', '1');
+        refreshSetupCard();
+      }
+    });
+  }
+
+  const viewerSaveBtn = document.getElementById('viewerSaveBtn');
+  if (viewerSaveBtn) {
+    viewerSaveBtn.addEventListener('click', () => {
+      document.getElementById('appSetupModal').classList.remove('hidden');
+    });
+  }
+  const viewerDismissBtn = document.getElementById('viewerDismissBtn');
+  if (viewerDismissBtn) {
+    viewerDismissBtn.addEventListener('click', () => {
+      localStorage.setItem('viewerCardDismissed', '1');
+      document.getElementById('viewerWelcomeCard').classList.add('hidden');
+    });
+  }
+})();
+
+// Initial refresh in case data loaded before this script position
+try { refreshSetupCard(); } catch(e) {}
 
 });
 </script>
