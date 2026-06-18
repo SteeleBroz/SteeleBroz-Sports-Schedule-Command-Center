@@ -3187,22 +3187,20 @@ function applyViewOnlyMode() {
     // Hide Add Event tab
     if (addEventTab) addEventTab.style.display = 'none';
     
-    // Make Weekly Notes read-only
+    // Make Weekly Notes read-only, but keep them visible so the viewer can read the week's notes
     if (weeklyNotesSection) {
       weeklyNotesSection.setAttribute('readonly', 'true');
-      weeklyNotesSection.style.opacity = '0.6';
-      weeklyNotesSection.placeholder = 'View only — notes are managed by the schedule owner';
+      weeklyNotesSection.style.cursor = 'default';
+      weeklyNotesSection.placeholder = 'No notes for this week yet';
+      weeklyNotesSection.closest('.mb-8').style.display = '';
     }
-    
+
     // Hide Pack List add controls
     if (packInputRow) packInputRow.parentElement.style.display = 'none';
-    
+
     // Hide Pack List entirely
     const packListContainer = document.getElementById('packList');
     if (packListContainer) packListContainer.closest('.mb-8').style.display = 'none';
-    
-    // Hide Weekly Notes entirely
-    if (weeklyNotesSection) weeklyNotesSection.closest('.mb-8').style.display = 'none';
     
     // Add view-only banner below header
     if (!document.getElementById('viewOnlyBanner')) {
@@ -3664,18 +3662,27 @@ function setupCardShowDoneState(step) {
     });
   }
 
+  const dismissViewerCard = () => {
+    localStorage.setItem('viewerCardDismissed', '1');
+    const card = document.getElementById('viewerWelcomeCard');
+    if (card) card.classList.add('hidden');
+  };
+
   const viewerSaveBtn = document.getElementById('viewerSaveBtn');
   if (viewerSaveBtn) {
     viewerSaveBtn.addEventListener('click', () => {
+      if (viewerSaveBtn.dataset.state === 'done') {
+        dismissViewerCard();
+        return;
+      }
       document.getElementById('appSetupModal').classList.remove('hidden');
+      viewerSaveBtn.dataset.state = 'done';
+      viewerSaveBtn.textContent = 'I did it';
     });
   }
   const viewerDismissBtn = document.getElementById('viewerDismissBtn');
   if (viewerDismissBtn) {
-    viewerDismissBtn.addEventListener('click', () => {
-      localStorage.setItem('viewerCardDismissed', '1');
-      document.getElementById('viewerWelcomeCard').classList.add('hidden');
-    });
+    viewerDismissBtn.addEventListener('click', dismissViewerCard);
   }
 })();
 
