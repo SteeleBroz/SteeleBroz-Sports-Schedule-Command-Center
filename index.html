@@ -1753,6 +1753,69 @@ notesInput.value = weeklyNotes[weekKey] || '';
 function saveWeeklyNotes(text) {
 const weekKey = formatDate(currentWeekStart);
 weeklyNotes[weekKey] = text;
+persistWeeklyNotesLocal();
+saveWeeklyNotesToSupabase();
+}
+
+// Persist the full weeklyNotes map to localStorage (keyed per owner so multiple schedules don't collide)
+function weeklyNotesStorageKey() {
+const owner = currentUserId || localStorage.getItem('commandCenterUserId') || 'default';
+return 'commandCenterWeeklyNotes_' + owner;
+}
+
+function persistWeeklyNotesLocal() {
+try { localStorage.setItem(weeklyNotesStorageKey(), JSON.stringify(weeklyNotes)); } catch(e) {}
+}
+
+function loadWeeklyNotesLocal() {
+try {
+  const raw = localStorage.getItem(weeklyNotesStorageKey());
+  if (raw) { const parsed = JSON.parse(raw); if (parsed && typeof parsed === 'object') weeklyNotes = parsed; }
+} catch(e) {}
+}
+
+// Owner-side: PATCH the full weekly_notes JSON onto the schedules row matched by owner_code.
+// Mirrors setupCardSaveScheduleName. Viewers never write.
+function saveWeeklyNotesToSupabase() {
+const isViewer = localStorage.getItem('commandCenterIsViewOnly') === 'true';
+const code = currentUserId || localStorage.getItem('commandCenterUserId');
+if (isViewer || !code || !window.dataSdk) return;
+try {
+  fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${code}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': window.dataSdk.supabaseKey,
+      'Authorization': `Bearer ${window.dataSdk.supabaseKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ weekly_notes: weeklyNotes })
+  }).catch(() => {});
+} catch(e) { console.error('save weekly_notes failed:', e); }
+}
+
+// Hydrate weeklyNotes from Supabase. Owner side: merge (DB wins per key, local fills gaps for unsynced edits).
+// Viewer side: DB is the source of truth.
+async function hydrateWeeklyNotes() {
+loadWeeklyNotesLocal();
+const owner = currentUserId || localStorage.getItem('commandCenterUserId');
+if (!owner || !window.dataSdk) return;
+const isViewer = localStorage.getItem('commandCenterIsViewOnly') === 'true';
+try {
+  const res = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${owner}&select=weekly_notes`, {
+    headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` }
+  });
+  if (!res.ok) return;
+  const rows = await res.json();
+  const dbNotes = (rows && rows[0] && rows[0].weekly_notes) ? rows[0].weekly_notes : {};
+  if (isViewer) {
+    weeklyNotes = dbNotes || {};
+  } else {
+    weeklyNotes = Object.assign({}, weeklyNotes, dbNotes);
+  }
+  persistWeeklyNotesLocal();
+  if (typeof updateWeeklyNotes === 'function') updateWeeklyNotes();
+} catch(e) { console.error('hydrate weekly_notes failed:', e); }
 }
 
 function renderWeeklyStory() {
@@ -3357,6 +3420,7 @@ console.log('🔑 [DIAGNOSIS] Set currentUserId to:', currentUserId, 'isViewOnly
 // Reload data after joining
 console.log('📥 [DIAGNOSIS] Calling loadData after join...');
 window.dataSdk.loadData();
+try { hydrateWeeklyNotes(); } catch(e) {}
 
 status.textContent = isViewOnly ? 'Connected (View Only) ✓' : 'Connected! ✓';
 status.className = 'text-xs text-center text-green-400';
@@ -3475,6 +3539,7 @@ isViewOnly = localStorage.getItem('commandCenterIsViewOnly') === 'true';
 console.log('🔑 [DIAGNOSIS] currentUserId set to:', currentUserId, 'isViewOnly:', isViewOnly);
 document.getElementById('setupModal').classList.add('hidden');
 applyViewOnlyMode();
+try { await hydrateWeeklyNotes(); } catch(e) {}
 document.getElementById('toolsButton').classList.remove('hidden');
 document.getElementById('shopGearBar').classList.remove('hidden');
 // First-time use: skip welcomeModal (new in-app welcome card handles onboarding)
