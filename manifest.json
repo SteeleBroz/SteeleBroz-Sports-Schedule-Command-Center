@@ -1,6 +1,6 @@
 {
-  "name": "Game Week by SteeleBroz",
-  "short_name": "Game Week",
+  "name": "Family Sports Schedule",
+  "short_name": "Family Sports",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
