@@ -902,7 +902,7 @@ Week
   <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Weekly Tools</span>
   <div class="flex-1 h-px bg-gray-200"></div>
 </div>
-<!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="file-text" class="w-4 h-4 text-[#0069FF]"></i> WEEKLY NOTES</h2><textarea id="weeklyNotes" rows="4" placeholder="Anything for this week..." class="w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none transition shadow-sm"></textarea> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="check-square" class="w-4 h-4 text-[#0069FF]"></i> PACK LIST</h2> <div id="packList" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="e.g., Cleats, Water Bottle, Snacks..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addPackBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="quote" class="w-4 h-4 text-[#0069FF]"></i> ATHLETE INSIGHT</h2> <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"> <p class="text-gray-900 text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-gray-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-[#0069FF] text-xs mt-4 flex items-center gap-1 hover:text-[#0052CC] transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-gray-200"> <p class="text-gray-500 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-gray-400 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="plus-circle" class="w-4 h-4 text-[#0069FF]"></i> ADD EVENT</h2> <div class="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-sm"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="inputType" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="inputDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="inputTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="file-text" class="w-4 h-4 text-[#0069FF]"></i> WEEKLY NOTES</h2><p class="text-xs text-gray-500 -mt-2 mb-3">Everyone with the share link can see these notes. Use Pack List above for anything private.</p><div id="weeklyNotes" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div id="weeklyNoteAddRow" class="mt-3 flex gap-2"><input id="newWeeklyNote" type="text" placeholder="Add a note for this week..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addNoteBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="check-square" class="w-4 h-4 text-[#0069FF]"></i> PACK LIST</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Only you can see this. Friends and family with the share link will not see your pack list.</p> <div id="packList" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="e.g., Cleats, Water Bottle, Snacks..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addPackBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="quote" class="w-4 h-4 text-[#0069FF]"></i> ATHLETE INSIGHT</h2> <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"> <p class="text-gray-900 text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-gray-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-[#0069FF] text-xs mt-4 flex items-center gap-1 hover:text-[#0052CC] transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-gray-200"> <p class="text-gray-500 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-gray-400 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="plus-circle" class="w-4 h-4 text-[#0069FF]"></i> ADD EVENT</h2> <button id="importScheduleBtnTop" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2 mb-4"> <i data-lucide="upload" class="w-4 h-4"></i> Import </button> <div class="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-sm"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="inputType" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="inputDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="inputTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Field / Court</label> <input id="inputFieldCourt" type="text" placeholder="e.g. Field 3, Court B" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time to Arrive</label> <input id="inputTimeToArrive" type="text" placeholder="e.g. 30 min before game" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Game 1 Time</label> <input id="inputGame1Time" type="text" placeholder="e.g. 9:00 AM" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
@@ -1760,17 +1760,161 @@ packLists[weekKey] = [...DEFAULT_PACK_ITEMS];
 }
 }
 
-function updateWeeklyNotes() {
-const weekKey = formatDate(currentWeekStart);
-const notesInput = document.getElementById('weeklyNotes');
-notesInput.value = weeklyNotes[weekKey] || '';
+// Weekly notes are stored per week inside the weekly_notes jsonb as an array of {id, text, created_at}.
+let editingNoteId = null;
+
+function genNoteId() {
+try { if (window.crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID(); } catch(e) {}
+return Date.now().toString() + Math.random().toString(36).slice(2, 11);
 }
 
-function saveWeeklyNotes(text) {
-const weekKey = formatDate(currentWeekStart);
-weeklyNotes[weekKey] = text;
+// Normalize a week's stored value into an array of note objects, migrating legacy shapes
+// (plain string, {text} object, null/empty) to the new array shape.
+function normalizeWeekNotes(raw) {
+const now = new Date().toISOString();
+if (Array.isArray(raw)) {
+return raw.map(n => (n && typeof n === 'object')
+? { id: n.id || genNoteId(), text: typeof n.text === 'string' ? n.text : String(n.text == null ? '' : n.text), created_at: n.created_at || now }
+: { id: genNoteId(), text: String(n == null ? '' : n), created_at: now });
+}
+if (typeof raw === 'string') {
+return raw.trim() ? [{ id: genNoteId(), text: raw, created_at: now }] : [];
+}
+if (raw && typeof raw === 'object' && typeof raw.text === 'string') {
+return raw.text.trim() ? [{ id: raw.id || genNoteId(), text: raw.text, created_at: raw.created_at || now }] : [];
+}
+return [];
+}
+
+// Return the normalized notes array for a week, migrating the in-memory shape in place.
+function getWeekNotes(weekKey) {
+const arr = normalizeWeekNotes(weeklyNotes[weekKey]);
+weeklyNotes[weekKey] = arr;
+return arr;
+}
+
+function persistWeeklyNotes() {
 persistWeeklyNotesLocal();
 saveWeeklyNotesToSupabase();
+}
+
+function addWeeklyNote(text) {
+const t = (text || '').trim();
+if (!t) return;
+const weekKey = formatDate(currentWeekStart);
+const notes = getWeekNotes(weekKey);
+notes.push({ id: genNoteId(), text: t, created_at: new Date().toISOString() });
+weeklyNotes[weekKey] = notes;
+persistWeeklyNotes();
+renderWeeklyNotes();
+}
+
+function deleteWeeklyNote(id) {
+const weekKey = formatDate(currentWeekStart);
+weeklyNotes[weekKey] = getWeekNotes(weekKey).filter(n => n.id !== id);
+editingNoteId = null;
+persistWeeklyNotes();
+renderWeeklyNotes();
+}
+
+function saveWeeklyNoteEdit(id, text) {
+const weekKey = formatDate(currentWeekStart);
+let notes = getWeekNotes(weekKey);
+const t = (text || '').trim();
+if (!t) {
+notes = notes.filter(n => n.id !== id);
+} else {
+const note = notes.find(n => n.id === id);
+if (note) note.text = t;
+}
+weeklyNotes[weekKey] = notes;
+editingNoteId = null;
+persistWeeklyNotes();
+renderWeeklyNotes();
+}
+
+// Render weekly notes as an add/edit/delete list, mirroring renderPackList().
+// Viewers (share link) see notes read-only: no add row, no edit/delete buttons.
+function renderWeeklyNotes() {
+const container = document.getElementById('weeklyNotes');
+if (!container) return;
+container.innerHTML = '';
+
+const weekKey = formatDate(currentWeekStart);
+const notes = getWeekNotes(weekKey);
+
+if (notes.length === 0) {
+const empty = document.createElement('p');
+empty.className = 'text-gray-400 text-sm';
+empty.textContent = 'No notes for this week yet';
+container.appendChild(empty);
+}
+
+notes.forEach((note) => {
+const div = document.createElement('div');
+div.className = 'flex items-center justify-between gap-3 group py-2';
+
+if (!isViewOnly && editingNoteId === note.id) {
+const input = document.createElement('input');
+input.type = 'text';
+input.value = note.text;
+input.className = 'flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition';
+input.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveWeeklyNoteEdit(note.id, input.value); });
+div.appendChild(input);
+
+const actions = document.createElement('div');
+actions.className = 'flex items-center gap-1 flex-shrink-0';
+const saveBtn = document.createElement('button');
+saveBtn.type = 'button';
+saveBtn.className = 'text-gray-400 hover:text-green-600 transition p-1';
+saveBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+saveBtn.addEventListener('click', () => saveWeeklyNoteEdit(note.id, input.value));
+const cancelBtn = document.createElement('button');
+cancelBtn.type = 'button';
+cancelBtn.className = 'text-gray-400 hover:text-red-500 transition p-1';
+cancelBtn.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i>';
+cancelBtn.addEventListener('click', () => { editingNoteId = null; renderWeeklyNotes(); });
+actions.appendChild(saveBtn);
+actions.appendChild(cancelBtn);
+div.appendChild(actions);
+
+container.appendChild(div);
+setTimeout(() => { try { input.focus(); } catch(e) {} }, 0);
+return;
+}
+
+const span = document.createElement('span');
+span.className = 'text-gray-700 text-sm flex-1 break-words whitespace-pre-wrap';
+span.textContent = note.text;
+div.appendChild(span);
+
+if (!isViewOnly) {
+const actions = document.createElement('div');
+actions.className = 'flex items-center gap-1 flex-shrink-0';
+actions.innerHTML = `
+<button class="edit-note-btn text-gray-400 hover:text-[#0069FF] transition p-1" data-id="${note.id}" type="button"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+<button class="del-note-btn text-gray-400 hover:text-red-500 transition p-1" data-id="${note.id}" type="button"><i data-lucide="x" class="w-4 h-4"></i></button>`;
+div.appendChild(actions);
+}
+
+container.appendChild(div);
+});
+
+if (!isViewOnly) {
+container.querySelectorAll('.del-note-btn').forEach(btn => {
+btn.addEventListener('click', () => deleteWeeklyNote(btn.dataset.id));
+});
+container.querySelectorAll('.edit-note-btn').forEach(btn => {
+btn.addEventListener('click', () => { editingNoteId = btn.dataset.id; renderWeeklyNotes(); });
+});
+}
+
+lucide.createIcons();
+}
+
+// Backwards-compatible entry point used by week navigation and Supabase hydration.
+function updateWeeklyNotes() {
+renderWeeklyNotes();
 }
 
 // Persist the full weeklyNotes map to localStorage (keyed per owner so multiple schedules don't collide)
@@ -2208,10 +2352,16 @@ mapToEditPanelValues: (config) => new Map([
 ])
 });
 
-// Notes sync
-document.getElementById('weeklyNotes').addEventListener('input', (e) => {
-saveWeeklyNotes(e.target.value);
-window.elementSdk.setConfig({ weekly_notes: e.target.value });
+// Weekly notes add (mirrors pack list add)
+document.getElementById('addNoteBtn').addEventListener('click', () => {
+const input = document.getElementById('newWeeklyNote');
+addWeeklyNote(input.value);
+input.value = '';
+});
+document.getElementById('newWeeklyNote').addEventListener('keypress', (e) => {
+if (e.key === 'Enter') {
+document.getElementById('addNoteBtn').click();
+}
 });
 
 // DataSDK initialization moved to initSession() to fix timing
@@ -2791,6 +2941,11 @@ initManualInput();
 }
 });
 
+// Top import button: triggers the exact same flow as the bottom import button.
+document.getElementById('importScheduleBtnTop').addEventListener('click', () => {
+document.getElementById('importScheduleBtn').click();
+});
+
 // CSV Upload Functionality
 // Recurring Practice functionality
 document.getElementById('previewRecurringBtn').addEventListener('click', () => {
@@ -3311,13 +3466,13 @@ function applyViewOnlyMode() {
     // Hide Family Name editor for viewers (owner-only)
     if (familyNameBtn) familyNameBtn.style.display = 'none';
     
-    // Make Weekly Notes read-only, but keep them visible so the viewer can read the week's notes
+    // Keep Weekly Notes visible so the viewer can read the week's notes; hide the add controls.
+    // Edit/delete buttons are already withheld in renderWeeklyNotes() when isViewOnly is true.
     if (weeklyNotesSection) {
-      weeklyNotesSection.setAttribute('readonly', 'true');
-      weeklyNotesSection.style.cursor = 'default';
-      weeklyNotesSection.placeholder = 'No notes for this week yet';
       weeklyNotesSection.closest('.mb-8').style.display = '';
     }
+    const weeklyNoteAddRow = document.getElementById('weeklyNoteAddRow');
+    if (weeklyNoteAddRow) weeklyNoteAddRow.style.display = 'none';
 
     // Hide Pack List add controls
     if (packInputRow) packInputRow.parentElement.style.display = 'none';
