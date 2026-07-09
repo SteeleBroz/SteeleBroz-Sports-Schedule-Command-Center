@@ -3664,6 +3664,12 @@ updateWeekDisplay();
 renderPackList();
 try { refreshSetupCard(); } catch(e) {}
 lucide.createIcons();
+// First-time on this device, run the guided walkthrough for owner or viewer.
+// startWalkthrough already filters owner-only steps for viewers. Gated so
+// returning users who finished the tour on this device do not see it again.
+if (!localStorage.getItem('walkthroughCompleted')) {
+  setTimeout(() => startWalkthrough(), 1000);
+}
 }, 1000);
 });
 
