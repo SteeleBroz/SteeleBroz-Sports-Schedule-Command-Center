@@ -3664,12 +3664,11 @@ updateWeekDisplay();
 renderPackList();
 try { refreshSetupCard(); } catch(e) {}
 lucide.createIcons();
-// First-time on this device, run the guided walkthrough for owner or viewer.
-// startWalkthrough already filters owner-only steps for viewers. Gated so
-// returning users who finished the tour on this device do not see it again.
-if (!localStorage.getItem('walkthroughCompleted')) {
-  setTimeout(() => startWalkthrough(), 1000);
-}
+// First-time on this device, show the in-app welcome setup card instead of the
+// old guided tour. refreshSetupCard picks the owner or viewer card automatically
+// and is gated by setupCardDismissed or viewerCardDismissed, so returning users
+// on this device do not see it again. Delayed so it runs after data has loaded.
+setTimeout(() => { try { refreshSetupCard(); } catch(e) {} }, 1000);
 }, 1000);
 });
 
