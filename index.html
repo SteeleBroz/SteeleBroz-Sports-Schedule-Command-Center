@@ -3549,10 +3549,11 @@ isOnboarding = false;
 updateWeekDisplay();
 renderPackList();
 lucide.createIcons();
-// Trigger walkthrough for first-time users
-if (!localStorage.getItem('walkthroughCompleted')) {
-  setTimeout(() => startWalkthrough(), 1000);
-}
+// First-time on this device, show the in-app welcome setup card instead of the
+// old guided tour. refreshSetupCard picks the owner or viewer card automatically
+// and is gated by setupCardDismissed or viewerCardDismissed, so returning users
+// on this device do not see it again. Delayed so it runs after data has loaded.
+setTimeout(() => { try { refreshSetupCard(); } catch(e) {} }, 1000);
 });
 
 // Join existing setup (Phase 2: detects owner vs share codes)
