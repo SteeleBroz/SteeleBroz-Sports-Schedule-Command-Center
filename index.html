@@ -363,7 +363,7 @@ RULES:
 2. If location missing → leave blank, still include event
 3. If unclear → guess: Practice, Game, or Tournament
 4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'
-5. Look for ANY time format: 5:30, 6:00 PM, 18:00
+5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). For tournaments or events without a specific time listed, leave the time field blank.
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
 
@@ -1561,7 +1561,7 @@ return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'bor
 <div class="flex items-center gap-2">
 <div class="w-1 h-10 rounded-full flex-shrink-0" style="background:${sportColor}"></div>
 <span class="text-lg font-semibold text-gray-900 flex-shrink-0">${(ev.child_name || 'Unknown').toUpperCase()}</span>
-<span class="text-lg font-bold text-gray-900 ml-auto">${formatTime12(ev.event_time)}</span>
+<span class="text-lg font-bold text-gray-900 ml-auto">${formatTime12(ev.event_time) || 'TBD'}</span>
 ${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
 <button class="dup-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="edit-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
 <button class="del-event-btn p-1.5 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
@@ -2580,11 +2580,16 @@ if (!time12h || time12h.trim() === '') return '';
 // Remove extra spaces and convert to lowercase
 const time = time12h.trim().toLowerCase();
 
-// If already in 24-hour format (no AM/PM), return as-is
+// No AM or PM indicator: normalize bare times to PM for the AI import flow.
+// Hours 1 through 11 become PM, 12 stays noon, 0 and 13 through 23 are kept as entered.
 if (!time.includes('am') && !time.includes('pm')) {
-// Add :00 if just hour (e.g., "17" -> "17:00")
-if (!time.includes(':')) return time + ':00';
-return time;
+const bareParts = time.split(':');
+let bareHours = parseInt(bareParts[0], 10);
+if (isNaN(bareHours)) return '';
+let bareMinutes = bareParts[1] !== undefined ? parseInt(bareParts[1], 10) : 0;
+if (isNaN(bareMinutes)) bareMinutes = 0;
+if (bareHours >= 1 && bareHours <= 11) bareHours += 12;
+return `${bareHours.toString().padStart(2, '0')}:${bareMinutes.toString().padStart(2, '0')}`;
 }
 
 // Extract time parts - handle both "9:30 AM" and "9 AM" formats
@@ -2611,6 +2616,7 @@ gridBody.innerHTML = '';
 events.forEach((event, index) => {
 const row = document.createElement('tr');
 row.className = 'border-b border-gray-200 hover:bg-gray-50';
+const normalizedTime = convertTimeTo24Hour(event.event_time);
 row.innerHTML = `
 <td class="py-2 px-2 text-green-600 font-mono text-xs">${event.event_date}</td>
 <td class="py-2 px-2 text-[#0069FF] font-mono text-xs max-w-32 truncate" title="${event.location}">${event.location}</td>
@@ -2632,8 +2638,7 @@ row.innerHTML = `
 </select>
 </td>
 <td class="py-2 px-2">
-<input type="time" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
-       value="${convertTimeTo24Hour(event.event_time)}" data-field="event_time" data-index="${index}">
+${normalizedTime ? `<input type="time" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]" value="${normalizedTime}" data-field="event_time" data-index="${index}">` : `<input type="text" placeholder="TBD" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]" value="" data-field="event_time" data-index="${index}">`}
 </td>
 <td class="py-2 px-2">
 <input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
@@ -2729,7 +2734,7 @@ continue;
 const result = await window.dataSdk.create({
 child_name: event.child_name,
 event_date: event.event_date,
-event_time: event.event_time,
+event_time: convertTimeTo24Hour(event.event_time),
 location: event.location,
 event_type: event.event_type,
 chaperone: event.chaperone,
