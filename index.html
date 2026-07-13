@@ -366,6 +366,7 @@ RULES:
 5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). For tournaments or events without a specific time listed, leave the time field blank.
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
+8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
 
 EXAMPLE:
 Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
@@ -2619,7 +2620,10 @@ row.className = 'border-b border-gray-200 hover:bg-gray-50';
 const normalizedTime = convertTimeTo24Hour(event.event_time);
 row.innerHTML = `
 <td class="py-2 px-2 text-green-600 font-mono text-xs">${event.event_date}</td>
-<td class="py-2 px-2 text-[#0069FF] font-mono text-xs max-w-32 truncate" title="${event.location}">${event.location}</td>
+<td class="py-2 px-2">
+<input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
+       value="${event.location || ''}" placeholder="Add location" data-field="location" data-index="${index}">
+</td>
 <td class="py-2 px-2">
 <input type="text" class="bg-white border border-gray-200 rounded px-2 py-1 text-xs w-20 text-gray-900 focus:outline-none focus:border-[#0069FF]"
        value="${event.child_name}" placeholder="Name" data-field="child_name" data-index="${index}">
