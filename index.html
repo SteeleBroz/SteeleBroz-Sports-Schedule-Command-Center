@@ -2448,41 +2448,26 @@ icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : '
 
 // ChatGPT functionality
 document.getElementById('copyPromptBtn').addEventListener('click', () => {
-const prompt = `EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, scrimmages, meetings, etc.
+const prompt = `EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.
 
 FORMAT: Return CSV with these exact headers:
 child_name,sport,event_type,chaperone,event_date,event_time,location
 
 RULES:
-1. EXTRACT EVERY DATE/TIME you find - don't skip anything
-2. If location is missing → leave blank, still include the event
-3. If event type is unclear → guess: "Practice", "Game", or "Tournament"
-4. If no athlete name → use "Athlete" or team name
-5. If no sport specified → use team/context clues
-6. Extract from ANY format: calendars, lists, tables, paragraphs
+1. EXTRACT EVERY DATE/TIME - don't skip anything
+2. If location missing → leave blank, still include event
+3. If unclear → guess: Practice, Game, or Tournament
+4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'
+5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). For tournaments or events without a specific time listed, leave the time field blank.
+6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
-8. Include partial information - blank fields are better than missing events
+8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
 
-COMMON PATTERNS TO CATCH:
-- "vs [Opponent]" = Game
-- "@ [Location]" = Game
-- "Practice" or "Training" = Practice
-- Tournament names = Tournament
-- Times in ANY format: "6:00 PM", "18:00", "5:30", "5:30 PM"
-- Times EMBEDDED in text: "Field Practice 5:30 Select" → extract "5:30"
-- Look for numbers followed by colon (5:30, 6:00, etc.)
-- Dates in any format
+EXAMPLE:
+Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
+Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex
 
-CRITICAL: Extract times even when buried in event descriptions!
-
-EXAMPLE OUTPUT:
-Stryker,Baseball,Practice,,2024-03-25,5:30 PM,Select
-Stryker,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex
-Maverick,Soccer,Tournament,,2024-03-27,9:00 AM,Regional Park
-
-CRITICAL: Extract times even when buried in descriptions like 'Field Practice 5:30 Select'!
-
-Remember: CAPTURE EVERYTHING - incomplete data is better than missing events!`;
+CRITICAL: Extract times even when buried in descriptions!`;
 
 const sportPrefill = document.getElementById('sportNamePrefill').value.trim();
 const finalPrompt = sportPrefill ? prompt + `\n\nNOTE: The sport for all events is: ${sportPrefill}` : prompt;
