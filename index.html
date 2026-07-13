@@ -367,6 +367,11 @@ RULES:
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
 8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
+9. Exact column count. Every row must have exactly the same number of fields, separated by exactly one comma each. Never add an extra comma and never leave a comma out. If a field is empty, put nothing between the commas, not a placeholder.
+10. No commas inside a field. If a location or note naturally has a comma in it (like "Fort Myers, FL" or "Tampa, Florida"), take the comma out before you write it in the CSV. Write "Fort Myers FL" or "Tampa Florida" instead. Never put a comma inside any single field.
+11. Always fill in the Location if it is visible in the source. Even short or single-word spots like "Patel High School", "Home Gym", "Field 3", or "Select" must be kept exactly as they appear in the source image or text.
+12. Same format for every source. Use the same output whether the schedule came from a photo, screenshot, PDF, calendar image, coach email, or plain text. The CSV columns must always be the same.
+13. Never leave the location column empty just because you were not sure of the format. If the source shows any location text at all, use it.
 
 EXAMPLE:
 Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
@@ -2462,6 +2467,11 @@ RULES:
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
 8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
+9. Exact column count. Every row must have exactly the same number of fields, separated by exactly one comma each. Never add an extra comma and never leave a comma out. If a field is empty, put nothing between the commas, not a placeholder.
+10. No commas inside a field. If a location or note naturally has a comma in it (like "Fort Myers, FL" or "Tampa, Florida"), take the comma out before you write it in the CSV. Write "Fort Myers FL" or "Tampa Florida" instead. Never put a comma inside any single field.
+11. Always fill in the Location if it is visible in the source. Even short or single-word spots like "Patel High School", "Home Gym", "Field 3", or "Select" must be kept exactly as they appear in the source image or text.
+12. Same format for every source. Use the same output whether the schedule came from a photo, screenshot, PDF, calendar image, coach email, or plain text. The CSV columns must always be the same.
+13. Never leave the location column empty just because you were not sure of the format. If the source shows any location text at all, use it.
 
 EXAMPLE:
 Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
