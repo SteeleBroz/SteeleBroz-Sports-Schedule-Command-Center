@@ -835,9 +835,12 @@ Schedule Builder
 <!-- Main App --> <div id="app" class="flex-1 flex flex-col overflow-hidden"><!-- Top Bar --> <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 pt-2 pb-2 flex-shrink-0"> <div class="flex items-center justify-between mb-2"><div class="flex flex-col gap-0"><a href="https://steelebroz.com/pages/family-sports-schedule-app" target="_blank" style="text-decoration:none;"><img src="https://steelebroz.com/cdn/shop/files/LOGO_THIN_2_copy_2.png?v=1758840414&amp;width=400" alt="SteeleBroz" class="h-7 w-auto object-contain brightness-0"></a><span id="familyScheduleLabel" class="text-[10px] uppercase tracking-widest text-gray-400 font-medium">Family Sports Schedule</span></div><select id="kidFilter" class="bg-white border border-gray-200 text-gray-900 text-base rounded-lg px-4 py-2 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 h-fit"> <option value="all">All Athletes</option> </select> </div><!-- Week Nav --> <div class="flex items-center justify-between"><button id="prevWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-left" class="w-5 h-5"></i> </button> <div class="text-center"> <p id="weekLabel" class="text-sm font-medium text-gray-900"></p> <p id="weekSub" class="hidden text-xs text-gray-500 mt-0.5"></p> </div><button id="nextWeek" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-600"> <i data-lucide="chevron-right" class="w-5 h-5"></i> </button> <button id="todayBtn" class="text-[#0069FF] text-xs font-semibold px-2 py-1 rounded-lg hover:bg-blue-50 transition" title="Jump to today">Today</button> <div class="relative inline-flex"><button id="weekPickerBtn" class="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" title="Jump to week"> <i data-lucide="calendar" class="w-5 h-5"></i> </button><input type="date" id="weekPickerInput" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style="font-size:16px;"></div> </div><!-- Day Chips -->
 <div class="flex items-center gap-2 mt-1.5">
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
-<div class="flex gap-2 flex-shrink-0">
+<div class="flex flex-col gap-2 flex-shrink-0">
+<button id="detailsToggleBtn" class="bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition">
+Details
+</button>
 <button id="weekendViewBtn" class="hidden bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1">
-Wknd
+Weekend
 </button>
 <button id="backToWeekBtn" class="hidden bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1">
 <i data-lucide="calendar" class="w-3 h-3"></i>
@@ -1516,6 +1519,7 @@ function renderWeekly() {
 const container = document.getElementById('weeklyCards');
 const empty = document.getElementById('emptyWeek');
 container.innerHTML = '';
+const detailsOpen = localStorage.getItem('detailsExpandedDefault') !== 'false';
 let hasEvents = false;
 
 for (let i = 0; i < 7; i++) {
@@ -1564,10 +1568,10 @@ ${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
 </div>`}
 </div>
 ${(pillLabel || hasExpandable) ? `<div class="flex items-center justify-between gap-2 mt-1.5 pl-3 pr-1.5">
-${hasExpandable ? `<button class="location-details-toggle text-xs text-gray-500 font-semibold whitespace-nowrap flex-shrink-0" onclick="const c=this.parentElement.nextElementSibling;c.classList.toggle('hidden');this.textContent = c.classList.contains('hidden') ? 'LOCATION & DETAILS ▼' : 'LOCATION & DETAILS ▲'">LOCATION & DETAILS ▼</button>` : '<span></span>'}
+${hasExpandable ? `<button class="location-details-toggle text-xs text-gray-500 font-semibold whitespace-nowrap flex-shrink-0" onclick="const c=this.parentElement.nextElementSibling;c.classList.toggle('hidden');this.textContent = c.classList.contains('hidden') ? 'LOCATION & DETAILS ▼' : 'LOCATION & DETAILS ▲'">LOCATION & DETAILS ${detailsOpen ? '▲' : '▼'}</button>` : '<span></span>'}
 ${pillLabel ? `<span class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${pillClass}">${pillLabel}</span>` : ''}
 </div>
-${hasExpandable ? `<div class="hidden mt-2 pl-3 space-y-1">${moreDetailsRows}</div>` : ''}` : ''}
+${hasExpandable ? `<div class="${detailsOpen ? '' : 'hidden'} mt-2 pl-3 space-y-1">${moreDetailsRows}</div>` : ''}` : ''}
 </div>`;
 }).join('');
 
@@ -2099,6 +2103,13 @@ selectedDate = null; // Clear day selection
 weekendView = true; // Enable weekend filtering
 renderDayChips(); // Update button visibility
 renderWeekly(); // Show weekend events only
+});
+
+// Details default toggle button (per-device expand/collapse preference)
+document.getElementById('detailsToggleBtn').addEventListener('click', () => {
+const current = localStorage.getItem('detailsExpandedDefault') !== 'false';
+localStorage.setItem('detailsExpandedDefault', current ? 'false' : 'true');
+renderWeekly();
 });
 
 // Kid filter
