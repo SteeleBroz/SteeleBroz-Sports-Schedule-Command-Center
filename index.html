@@ -3408,7 +3408,7 @@ document.getElementById('copyShareCodeBtn').addEventListener('click', async () =
   const shareUrl = window.location.origin + '?code=' + encodeURIComponent(shareCode);
   const scheduleName = localStorage.getItem('commandCenterScheduleName');
   const namePhrase = scheduleName ? scheduleName : 'our family sports schedule';
-  const shareMessage = 'Here is ' + namePhrase + '. Tap to open: ' + shareUrl + '. Once it opens, tap save to home screen so it lives on your phone like an app.';
+  const shareMessage = 'Here is ' + namePhrase + '. Once it opens, tap save to home screen so it lives on your phone like an app.\n\n' + shareUrl;
 
   // Try Web Share API first (mobile only)
   if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
