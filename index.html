@@ -2752,8 +2752,14 @@ status.classList.remove('hidden');
 // Close modal after success
 setTimeout(() => {
 document.getElementById('importScheduleModal').classList.add('hidden');
+// Only reset the form on a fully clean import.
+// If any insert failed, keep the pasted CSV and preview grid so the customer can retry without re-pasting.
+if (errorCount === 0) {
+document.getElementById('chatgptResults').value = '';
+document.getElementById('parsedDataGrid').innerHTML = '';
 document.getElementById('parsedDataSection').classList.add('hidden');
 parsedEvents = [];
+}
 }, 2000);
 
 lucide.createIcons();
