@@ -837,7 +837,7 @@ Schedule Builder
 <div id="dayChips" class="flex gap-2 overflow-x-auto pb-1 flex-1"></div>
 <div class="flex flex-col gap-2 flex-shrink-0">
 <button id="detailsToggleBtn" class="bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition">
-Details
+Details On
 </button>
 <button id="weekendViewBtn" class="hidden bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1">
 Weekend
@@ -2105,12 +2105,23 @@ renderDayChips(); // Update button visibility
 renderWeekly(); // Show weekend events only
 });
 
+// Reflect the current global Details preference on the toggle button
+function updateDetailsToggleBtn() {
+const btn = document.getElementById('detailsToggleBtn');
+if (!btn) return;
+const on = localStorage.getItem('detailsExpandedDefault') !== 'false';
+btn.className = on ? 'bg-amber-500 hover:bg-amber-400 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition' : 'bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-lg transition';
+btn.textContent = on ? 'Details On' : 'Details Off';
+}
+
 // Details default toggle button (per-device expand/collapse preference)
 document.getElementById('detailsToggleBtn').addEventListener('click', () => {
 const current = localStorage.getItem('detailsExpandedDefault') !== 'false';
 localStorage.setItem('detailsExpandedDefault', current ? 'false' : 'true');
+updateDetailsToggleBtn();
 renderWeekly();
 });
+updateDetailsToggleBtn();
 
 // Kid filter
 document.getElementById('kidFilter').addEventListener('change', (e) => {
