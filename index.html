@@ -2759,6 +2759,16 @@ document.getElementById('chatgptResults').value = '';
 document.getElementById('parsedDataGrid').innerHTML = '';
 document.getElementById('parsedDataSection').classList.add('hidden');
 parsedEvents = [];
+// Clear the optional athlete and sport prefill inputs so the next import starts blank.
+document.getElementById('athleteNamePrefill').value = '';
+document.getElementById('sportNamePrefill').value = '';
+// Restore the import button to its default label, icon, and color.
+btn.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Import All Events';
+btn.className = btn.className.replace('bg-green-700', 'bg-green-600 hover:bg-green-500');
+// Clear and hide the success message.
+status.textContent = '';
+status.className = 'text-center text-xs mt-3 hidden';
+lucide.createIcons();
 }
 }, 2000);
 
