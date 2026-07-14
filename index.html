@@ -427,6 +427,8 @@ Complete Your Schedule Data
 </button>
 </div>
 
+<div id="importHelperMsg" class="text-center text-xs text-gray-500 mt-2">Make sure Athlete and Sport are filled out.</div>
+
 <div id="importStatus" class="text-center text-xs mt-3 hidden"></div>
 </div>
 </div>
@@ -2842,6 +2844,14 @@ if (!btn) return;
 const hasAthlete = document.getElementById('athleteNamePrefill').value.trim().length > 0;
 const hasSport = document.getElementById('sportNamePrefill').value.trim().length > 0;
 btn.disabled = !(hasAthlete && hasSport);
+// Show the fill in fields helper only while the button is disabled, and never while an
+// import result message (Import Complete, Partial Import, Import Failed) is showing.
+const helper = document.getElementById('importHelperMsg');
+if (helper) {
+const status = document.getElementById('importStatus');
+const statusShowing = status && !status.classList.contains('hidden');
+helper.classList.toggle('hidden', !btn.disabled || statusShowing);
+}
 }
 ['athleteNamePrefill', 'sportNamePrefill'].forEach(function(id) {
 const field = document.getElementById(id);
