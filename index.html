@@ -296,7 +296,7 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">📸</div>
 <div>
 <p class="text-gray-900 font-semibold text-sm">Take a Photo</p>
-<p class="text-gray-500 text-xs mt-0.5">Snap a clear photo of your game schedule, practice calendar, or any document from the coach.</p>
+<p class="text-gray-500 text-xs mt-0.5">Snap a photo of your schedule, then upload it into ChatGPT or Gemini with the copied prompt. The photo does NOT upload into this app.</p>
 </div>
 </div>
 
@@ -304,9 +304,9 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">👤</div>
 <div class="w-full">
-<p class="text-gray-900 font-semibold text-sm">Which Athlete? (Optional)</p>
+<p class="text-gray-900 font-semibold text-sm">Which Athlete? (Required)</p>
 <input id="athleteNamePrefill" type="text" placeholder="e.g., Stryker, Maverick..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
-<p class="text-xs text-gray-400 mt-1.5">Leave blank if the schedule has multiple kids listed.</p>
+<p class="text-xs text-gray-400 mt-1.5">Assigned to every imported event.</p>
 </div>
 </div>
 
@@ -314,9 +314,9 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">⚽</div>
 <div class="w-full">
-<p class="text-gray-900 font-semibold text-sm">Which Sport? (Optional)</p>
+<p class="text-gray-900 font-semibold text-sm">Which Sport? (Required)</p>
 <input id="sportNamePrefill" type="text" placeholder="e.g., Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
-<p class="text-xs text-gray-400 mt-1.5">Leave blank if the schedule covers multiple sports.</p>
+<p class="text-xs text-gray-400 mt-1.5">Assigned to every imported event.</p>
 </div>
 </div>
 
@@ -422,7 +422,7 @@ Complete Your Schedule Data
 
 <div class="flex gap-3 mt-4">
 <button id="clearParsedBtn" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-2 rounded-lg transition text-sm">Clear</button>
-<button id="importParsedBtn" class="flex-1 bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
+<button id="importParsedBtn" disabled class="flex-1 bg-green-600 hover:bg-green-500 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2 rounded-lg transition text-sm flex items-center justify-center gap-2">
 <i data-lucide="download" class="w-4 h-4"></i> Import All Events
 </button>
 </div>
@@ -2750,16 +2750,49 @@ errorCount++;
 await new Promise(resolve => setTimeout(resolve, 100));
 }
 
-// Success feedback
+// Import result feedback.
+// Only show green when every event imported. Show amber for a partial import,
+// and red when nothing imported at all, so a failure never looks like a success.
 btn.disabled = false;
+
+// Normalize any prior state color back to the green base before applying the new
+// one, so repeat attempts always recolor correctly.
+btn.className = btn.className
+.replace('bg-green-700', 'bg-green-600 hover:bg-green-500')
+.replace('bg-amber-500', 'bg-green-600 hover:bg-green-500')
+.replace('bg-red-600', 'bg-green-600 hover:bg-green-500');
+
+const athletePrefill = document.getElementById('athleteNamePrefill').value.trim();
+const sportPrefill = document.getElementById('sportNamePrefill').value.trim();
+
+if (errorCount === 0) {
+// Every event imported successfully.
 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Import Complete';
 btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-green-700');
-
-status.textContent = `✓ ${successCount} events imported successfully${errorCount > 0 ? `, ${errorCount} failed` : ''}`;
-status.className = 'text-center text-xs mt-3 text-green-400';
+status.textContent = `✓ ${successCount} events imported successfully`;
+status.className = 'text-center text-xs mt-3 text-green-600';
+} else if (successCount > 0) {
+// Some events imported, some failed.
+btn.innerHTML = '<i data-lucide="alert-triangle" class="w-4 h-4"></i> Partial Import';
+btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-amber-500');
+status.textContent = `Partial import. ${successCount} imported, ${errorCount} failed.`;
+status.className = 'text-center text-xs mt-3 text-amber-600';
+} else {
+// Nothing imported, every event failed.
+btn.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i> Import Failed';
+btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-red-600');
+if (!athletePrefill || !sportPrefill) {
+status.textContent = `Import failed. 0 imported, ${errorCount} failed. Fill in Athlete and Sport, then try again.`;
+} else {
+status.textContent = `Import failed. ${errorCount} events could not be parsed.`;
+}
+status.className = 'text-center text-xs mt-3 text-red-600';
+}
 status.classList.remove('hidden');
 
-// Close modal after success
+// Only auto-close when at least one event imported. On a total failure, keep the
+// modal open so the customer can read the message and fix the athlete or sport.
+if (successCount > 0) {
 setTimeout(() => {
 document.getElementById('importScheduleModal').classList.add('hidden');
 // Only reset the form on a fully clean import.
@@ -2769,7 +2802,7 @@ document.getElementById('chatgptResults').value = '';
 document.getElementById('parsedDataGrid').innerHTML = '';
 document.getElementById('parsedDataSection').classList.add('hidden');
 parsedEvents = [];
-// Clear the optional athlete and sport prefill inputs so the next import starts blank.
+// Clear the athlete and sport prefill inputs so the next import starts blank.
 document.getElementById('athleteNamePrefill').value = '';
 document.getElementById('sportNamePrefill').value = '';
 // Restore the import button to its default label, icon, and color.
@@ -2778,9 +2811,12 @@ btn.className = btn.className.replace('bg-green-700', 'bg-green-600 hover:bg-gre
 // Clear and hide the success message.
 status.textContent = '';
 status.className = 'text-center text-xs mt-3 hidden';
+// Re-disable the button since athlete and sport are now empty again.
+syncImportParsedBtn();
 lucide.createIcons();
 }
 }, 2000);
+}
 
 lucide.createIcons();
 
@@ -2796,6 +2832,22 @@ status.classList.remove('hidden');
 lucide.createIcons();
 }
 });
+
+// Fix 1: require Athlete and Sport before an import is allowed.
+// Keep the Import All Events button disabled until both prefill fields have text,
+// and re-check on every keystroke in either field.
+function syncImportParsedBtn() {
+const btn = document.getElementById('importParsedBtn');
+if (!btn) return;
+const hasAthlete = document.getElementById('athleteNamePrefill').value.trim().length > 0;
+const hasSport = document.getElementById('sportNamePrefill').value.trim().length > 0;
+btn.disabled = !(hasAthlete && hasSport);
+}
+['athleteNamePrefill', 'sportNamePrefill'].forEach(function(id) {
+const field = document.getElementById(id);
+if (field) field.addEventListener('input', syncImportParsedBtn);
+});
+syncImportParsedBtn();
 
 // Manual Input Grid Functions
 function generateManualRow(index, event = {}) {
