@@ -297,6 +297,13 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div>
 <p class="text-gray-900 font-semibold text-sm">Take a Photo</p>
 <p class="text-gray-500 text-xs mt-0.5">Snap a photo of your schedule, then upload it into ChatGPT or Gemini with the copied prompt below.</p>
+<p class="text-gray-700 text-xs mt-2 font-medium">Before you snap the photo:</p>
+<ul class="text-gray-500 text-xs mt-1 space-y-1 list-disc pl-4">
+<li>Turn the calendar right side up so the month name is at the top</li>
+<li>Include the year if it is not already printed on the calendar</li>
+<li>Get the whole calendar in the frame, nothing cropped off</li>
+</ul>
+<p class="text-gray-400 text-xs mt-1.5">A sideways photo is the number one reason days come in wrong.</p>
 </div>
 </div>
 
@@ -356,14 +363,14 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div id="promptTextContainer" class="hidden mt-2 bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-xs text-gray-700 whitespace-pre-wrap break-words max-h-48 overflow-y-auto">EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.
 
 FORMAT: Return CSV with these exact headers:
-child_name,sport,event_type,chaperone,event_date,event_time,location
+child_name,sport,event_type,chaperone,event_date,event_time,location,day_of_week
 
 RULES:
 1. EXTRACT EVERY DATE/TIME - don't skip anything
 2. If location missing → leave blank, still include event
 3. If unclear → guess: Practice, Game, or Tournament
 4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'
-5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). For tournaments or events without a specific time listed, leave the time field blank.
+5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). Never use military time like 17:30. If an event says Time TBD or shows no time at all, put TBD in the event_time column.
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
 8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
@@ -372,12 +379,19 @@ RULES:
 11. Always fill in the Location if it is visible in the source. Even short or single-word spots like "Patel High School", "Home Gym", "Field 3", or "Select" must be kept exactly as they appear in the source image or text.
 12. Same format for every source. Use the same output whether the schedule came from a photo, screenshot, PDF, calendar image, coach email, or plain text. The CSV columns must always be the same.
 13. Never leave the location column empty just because you were not sure of the format. If the source shows any location text at all, use it.
+14. Read the actual date numbers printed on the calendar. Those numbers are the truth. Do not decide the date from which column an event sits in.
+15. Fill in day_of_week with the full day name for that date, like Monday or Tuesday.
+16. Check every row before you send it back. Make sure the day name really is the day for that date and year (September 1, 2026 is a Tuesday). If a row does not line up, leave it out and tell me which one you left out and why.
+17. Always include the year in event_date. If the calendar does not show a year anywhere, use 2026.
+18. Read the day headers across the top of the grid and use those. Some calendars start the week on Sunday and some start on Monday, so do not assume either one.
+19. If the photo is sideways or upside down, turn it the right way first, then read the day headers and the date numbers.
 
 EXAMPLE:
-Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
-Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex
+Athlete,Baseball,Practice,,2026-09-01,5:30 PM,Select,Tuesday
+Athlete,Baseball,Game,,2026-09-02,6:00 PM,Trinity Sports Complex,Wednesday
 
-CRITICAL: Extract times even when buried in descriptions!</div>
+CRITICAL: Extract times even when buried in descriptions!
+CRITICAL: The day name and the date have to match. If they do not match, leave that event out and tell me which one.</div>
 </div>
 </div>
 
@@ -388,6 +402,7 @@ CRITICAL: Extract times even when buried in descriptions!</div>
 <p class="text-gray-900 font-semibold text-sm">Paste Results</p>
 <textarea id="chatgptResults" rows="5" placeholder="Paste what ChatGPT gave you here..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none text-xs mt-2"></textarea>
 <button id="parseResultsBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition mt-2">Create My Schedule</button>
+<div id="importSkippedMsg" class="hidden mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 leading-relaxed"></div>
 </div>
 </div>
 
@@ -731,6 +746,7 @@ Schedule Builder
 <div>
 <p class="font-medium text-gray-900 text-sm mb-1">📸 Photo Import (Recommended)</p>
 <p class="text-xs text-gray-500">Snap a photo &rarr; Copy our prompt &rarr; Paste in ChatGPT or Gemini &rarr; Import your schedule. Done!</p>
+<p class="text-xs text-gray-500 mt-1">Hold the calendar right side up with the month name at the top, include the year, and fit the whole thing in the frame. A sideways photo can push every practice to the wrong day. If a day name and a date do not match, we leave that event out and tell you, so you can add it yourself.</p>
 </div>
 </div>
 </div>
@@ -2464,14 +2480,14 @@ document.getElementById('copyPromptBtn').addEventListener('click', () => {
 const prompt = `EXTRACT ALL SPORTS EVENTS from this document. Include EVERYTHING - practices, games, tournaments, etc.
 
 FORMAT: Return CSV with these exact headers:
-child_name,sport,event_type,chaperone,event_date,event_time,location
+child_name,sport,event_type,chaperone,event_date,event_time,location,day_of_week
 
 RULES:
 1. EXTRACT EVERY DATE/TIME - don't skip anything
 2. If location missing → leave blank, still include event
 3. If unclear → guess: Practice, Game, or Tournament
 4. Extract times EMBEDDED in text: 'Field Practice 5:30 Select' → time is '5:30'
-5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). For tournaments or events without a specific time listed, leave the time field blank.
+5. FORMAT ALL TIMES as HH:MM AM or HH:MM PM (for example, 5:30 PM or 9:00 AM). If AM or PM is not specified in the source schedule, use PM by default (most youth practices are in the afternoon or evening). Never use military time like 17:30. If an event says Time TBD or shows no time at all, put TBD in the event_time column.
 6. Include partial information - blank fields better than missing events
 7. Extract FULL street address when visible (street, city, state, zip) - do not abbreviate
 8. For the location column, preserve the exact text from the source schedule verbatim, even if it is a single word like "Select" or a field name. Do not treat short or unusual location values as placeholders. Only leave the location field blank if the source has no location text at all.
@@ -2480,12 +2496,19 @@ RULES:
 11. Always fill in the Location if it is visible in the source. Even short or single-word spots like "Patel High School", "Home Gym", "Field 3", or "Select" must be kept exactly as they appear in the source image or text.
 12. Same format for every source. Use the same output whether the schedule came from a photo, screenshot, PDF, calendar image, coach email, or plain text. The CSV columns must always be the same.
 13. Never leave the location column empty just because you were not sure of the format. If the source shows any location text at all, use it.
+14. Read the actual date numbers printed on the calendar. Those numbers are the truth. Do not decide the date from which column an event sits in.
+15. Fill in day_of_week with the full day name for that date, like Monday or Tuesday.
+16. Check every row before you send it back. Make sure the day name really is the day for that date and year (September 1, 2026 is a Tuesday). If a row does not line up, leave it out and tell me which one you left out and why.
+17. Always include the year in event_date. If the calendar does not show a year anywhere, use 2026.
+18. Read the day headers across the top of the grid and use those. Some calendars start the week on Sunday and some start on Monday, so do not assume either one.
+19. If the photo is sideways or upside down, turn it the right way first, then read the day headers and the date numbers.
 
 EXAMPLE:
-Athlete,Baseball,Practice,,2024-03-25,5:30 PM,Select
-Athlete,Baseball,Game,,2024-03-26,6:00 PM,Trinity Sports Complex
+Athlete,Baseball,Practice,,2026-09-01,5:30 PM,Select,Tuesday
+Athlete,Baseball,Game,,2026-09-02,6:00 PM,Trinity Sports Complex,Wednesday
 
-CRITICAL: Extract times even when buried in descriptions!`;
+CRITICAL: Extract times even when buried in descriptions!
+CRITICAL: The day name and the date have to match. If they do not match, leave that event out and tell me which one.`;
 
 const sportPrefill = document.getElementById('sportNamePrefill').value.trim();
 const finalPrompt = sportPrefill ? prompt + `\n\nNOTE: The sport for all events is: ${sportPrefill}` : prompt;
@@ -2529,9 +2552,101 @@ lucide.createIcons();
 let parsedEvents = [];
 let manualEvents = [];
 let recurringEvents = [];
+// Events we left out because the day name the AI sent did not match the real date.
+// We hold onto them so we can tell the customer exactly what was skipped and why.
+let skippedImportEvents = [];
+
+const IMPORT_DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const IMPORT_MONTH_NAMES = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+
+// Turn whatever the AI wrote in the day column into a clean full day name.
+// Accepts Tues, TUESDAY, Tue. and so on. Returns '' when it is not a day name.
+function normalizeDayName(value) {
+if (!value) return '';
+const cleaned = String(value).trim().toLowerCase().replace(/[^a-z]/g, '');
+if (cleaned.length < 3) return '';
+return IMPORT_DAY_NAMES.find(day => day.toLowerCase().startsWith(cleaned.slice(0, 3))) || '';
+}
+
+// Read the date the AI gave us and work out the real day of the week for it.
+// Builds the date with the local constructor (year, month, day) on purpose. Passing a
+// string like '2026-09-01' to new Date() is read as UTC and slides back a day in US time zones.
+// Returns null when the date cannot be read, and in that case we leave the row alone.
+function readImportDate(raw) {
+if (!raw) return null;
+const text = String(raw).trim();
+if (!text) return null;
+const currentYear = new Date().getFullYear();
+let year = null;
+let monthIndex = null;
+let day = null;
+
+// Year first, like 2026-09-01.
+let parts = text.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/);
+if (parts) {
+year = parseInt(parts[1], 10);
+monthIndex = parseInt(parts[2], 10) - 1;
+day = parseInt(parts[3], 10);
+}
+
+// Month first, like 9/1/2026, or 9/1 with the year left off.
+if (monthIndex === null) {
+parts = text.match(/^(\d{1,2})[-/.](\d{1,2})(?:[-/.](\d{2,4}))?$/);
+if (parts) {
+monthIndex = parseInt(parts[1], 10) - 1;
+day = parseInt(parts[2], 10);
+year = parts[3] ? parseInt(parts[3], 10) : currentYear;
+if (year < 100) year += 2000;
+}
+}
+
+// Spelled out, like September 1 2026 or Sept 1 with the year left off.
+if (monthIndex === null) {
+const lower = text.toLowerCase();
+const foundMonth = IMPORT_MONTH_NAMES.findIndex(name => lower.includes(name.slice(0, 3)));
+if (foundMonth !== -1) {
+monthIndex = foundMonth;
+const yearMatch = lower.match(/\d{4}/);
+year = yearMatch ? parseInt(yearMatch[0], 10) : currentYear;
+const dayMatch = lower.replace(/\d{4}/, ' ').match(/\d{1,2}/);
+if (dayMatch) day = parseInt(dayMatch[0], 10);
+}
+}
+
+if (monthIndex === null || day === null || !year) return null;
+const dateObj = new Date(year, monthIndex, day);
+// Catches dates that do not exist, like February 31, which quietly roll into the next month.
+if (dateObj.getFullYear() !== year || dateObj.getMonth() !== monthIndex || dateObj.getDate() !== day) return null;
+
+return {
+iso: `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+weekday: dateObj.toLocaleDateString('en-US', { weekday: 'long' })
+};
+}
+
+// Tell the customer which events we left out, in plain words, so nothing disappears quietly.
+function renderSkippedImportMsg() {
+const box = document.getElementById('importSkippedMsg');
+if (!box) return;
+if (skippedImportEvents.length === 0) {
+box.classList.add('hidden');
+box.innerHTML = '';
+return;
+}
+const rows = skippedImportEvents
+.map(item => `<li>${item.date} came in as ${item.claimedDay}, but that date is a ${item.actualDay}.</li>`)
+.join('');
+const count = skippedImportEvents.length;
+box.innerHTML = `<p class="font-semibold">We left out ${count} ${count === 1 ? 'event' : 'events'}.</p>
+<p class="mt-1">The day name and the date did not match, so we could not tell which one was right. This usually happens when the calendar photo was sideways. Everything else is ready to import.</p>
+<ul class="list-disc pl-4 mt-1.5 space-y-0.5">${rows}</ul>
+<p class="mt-1.5">Add those few by hand, or retake the photo right side up and try again.</p>`;
+box.classList.remove('hidden');
+}
 
 // CSV Parser functionality
 function parseCSV(csvText) {
+skippedImportEvents = [];
 const lines = csvText.trim().split('\n');
 const events = [];
 
@@ -2545,14 +2660,29 @@ if (line.toLowerCase().includes('child_name') || line.toLowerCase().includes('ev
 continue;
 }
 
-// Handle comprehensive CSV format: child_name,sport,event_type,chaperone,event_date,event_time,location
+// Handle comprehensive CSV format: child_name,sport,event_type,chaperone,event_date,event_time,location,day_of_week
 const parts = line.split(',').map(s => s.trim());
 
 if (parts.length >= 5 && parts[4]) { // At least need event_date
-const [child_name, sport, event_type, chaperone, event_date, event_time, location] = parts;
+const [child_name, sport, event_type, chaperone, event_date, event_time, location, day_of_week] = parts;
+
+// Day of week check. A sideways photo or a Sunday first grid can shift every event
+// by one day, so when the AI names a day we make sure that date really is that day.
+// If it is not, we leave the event out rather than put the wrong day on the schedule.
+const dateInfo = readImportDate(event_date);
+const claimedDay = normalizeDayName(day_of_week);
+if (dateInfo && claimedDay && claimedDay !== dateInfo.weekday) {
+skippedImportEvents.push({
+date: dateInfo.iso,
+claimedDay: claimedDay,
+actualDay: dateInfo.weekday
+});
+continue;
+}
 
 events.push({
-event_date: event_date || '',
+// Use the cleaned up date when we could read it, so a missing year fills itself in.
+event_date: dateInfo ? dateInfo.iso : (event_date || ''),
 location: location || '',
 child_name: prefillName || child_name || '', // Use prefill FIRST, then ChatGPT result
 sport: prefillSport || sport || '', // Use prefill sport FIRST, then parsed value
@@ -2681,6 +2811,7 @@ return;
 
 try {
 parsedEvents = parseCSV(results);
+renderSkippedImportMsg();
 if (parsedEvents.length === 0) {
 throw new Error('No valid events found');
 }
@@ -2713,6 +2844,8 @@ console.error('Parse error:', error);
 document.getElementById('clearParsedBtn').addEventListener('click', () => {
 document.getElementById('parsedDataSection').classList.add('hidden');
 parsedEvents = [];
+skippedImportEvents = [];
+renderSkippedImportMsg();
 });
 
 // Bulk Import
@@ -2773,17 +2906,27 @@ btn.className = btn.className
 const athletePrefill = document.getElementById('athleteNamePrefill').value.trim();
 const sportPrefill = document.getElementById('sportNamePrefill').value.trim();
 
-if (errorCount === 0) {
+// Events left out earlier for a day of week mismatch. They never reached the grid,
+// so they are not failures, but the customer still needs to hear about them.
+const skippedCount = skippedImportEvents.length;
+
+if (errorCount === 0 && skippedCount === 0) {
 // Every event imported successfully.
 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Import Complete';
 btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-green-700');
 status.textContent = `✓ ${successCount} events imported successfully`;
 status.className = 'text-center text-xs mt-3 text-green-600';
+} else if (errorCount === 0) {
+// Everything we could trust imported, the rest were left out for a day mismatch.
+btn.innerHTML = '<i data-lucide="alert-triangle" class="w-4 h-4"></i> Imported With Skips';
+btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-amber-500');
+status.textContent = `${successCount} events imported. ${skippedCount} left out because the day and the date did not match. Add those by hand.`;
+status.className = 'text-center text-xs mt-3 text-amber-600';
 } else if (successCount > 0) {
 // Some events imported, some failed.
 btn.innerHTML = '<i data-lucide="alert-triangle" class="w-4 h-4"></i> Partial Import';
 btn.className = btn.className.replace('bg-green-600 hover:bg-green-500', 'bg-amber-500');
-status.textContent = `Partial import. ${successCount} imported, ${errorCount} failed.`;
+status.textContent = `Partial import. ${successCount} imported, ${errorCount} failed.${skippedCount > 0 ? ` ${skippedCount} left out for a day mismatch.` : ''}`;
 status.className = 'text-center text-xs mt-3 text-amber-600';
 } else {
 // Nothing imported, every event failed.
@@ -2800,7 +2943,9 @@ status.classList.remove('hidden');
 
 // Only auto-close when at least one event imported. On a total failure, keep the
 // modal open so the customer can read the message and fix the athlete or sport.
-if (successCount > 0) {
+// Also stay open when events were left out for a day mismatch, so the list of what
+// was skipped does not vanish before she can read it.
+if (successCount > 0 && skippedCount === 0) {
 setTimeout(() => {
 document.getElementById('importScheduleModal').classList.add('hidden');
 // Only reset the form on a fully clean import.
