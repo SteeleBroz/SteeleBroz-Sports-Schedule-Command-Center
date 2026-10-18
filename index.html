@@ -1575,6 +1575,44 @@ const hr = h % 12 || 12;
 return `${hr}:${m.toString().padStart(2,'0')} ${ampm}`;
 }
 
+// Display-order helpers: minutes since midnight for sorting (null = TBD/unparseable).
+// Two-digit hours without AM/PM (e.g. "09:00", "10:30", "17:30") are 24-hour, matching formatTime12.
+// Single-digit hours without AM/PM (e.g. "5:30", "2") follow the app rule and default to PM.
+function timeSortMinutes(t) {
+if (t === null || t === undefined) return null;
+const s = String(t).trim().toLowerCase();
+if (s === '' || s === 'tbd' || s === 'tba') return null;
+const m = s.match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(a\.?m\.?|p\.?m\.?|a|p)?\b/);
+if (!m) return null;
+let h = parseInt(m[1], 10);
+const min = m[2] ? parseInt(m[2], 10) : 0;
+if (isNaN(h) || isNaN(min) || h > 23 || min > 59) return null;
+const suffix = m[3] ? m[3].charAt(0) : '';
+if (suffix === 'a') {
+if (h > 12) return null;
+h = h % 12;
+} else if (suffix === 'p') {
+if (h > 12) return null;
+h = (h % 12) + 12;
+} else if (m[1].length === 1 && h >= 1) {
+h = h + 12; // app rule: no AM/PM means PM
+}
+return h * 60 + min;
+}
+
+// Stable sort of one day's events: earliest first, TBD/no time last (original order kept).
+function sortDayEventsByTime(events) {
+return events
+.map((ev, idx) => ({ ev, idx, t: timeSortMinutes(ev && ev.event_time) }))
+.sort((a, b) => {
+if (a.t === null && b.t === null) return a.idx - b.idx;
+if (a.t === null) return 1;
+if (b.t === null) return -1;
+return (a.t - b.t) || (a.idx - b.idx);
+})
+.map(x => x.ev);
+}
+
 // Week navigation
 function updateWeekDisplay() {
 const end = new Date(currentWeekStart);
@@ -1729,10 +1767,10 @@ if (weekendView && dayOfWeek !== 0 && dayOfWeek !== 6) {
 continue;
 }
 
-const dayEvents = allEvents.filter(e => 
+const dayEvents = sortDayEventsByTime(allEvents.filter(e => 
 e.event_date === ds && 
 (selectedFilter === 'all' || e.child_name.toUpperCase() === selectedFilter)
-);
+));
 
 if (dayEvents.length === 0) continue;
 hasEvents = true;
@@ -1830,7 +1868,18 @@ const empty = document.getElementById('emptySeason');
 body.innerHTML = '';
 
 const filtered = allEvents.filter(e => (selectedFilter === 'all' || e.child_name.toUpperCase() === selectedFilter));
-const sorted = [...filtered].sort((a,b) => (a.event_date || '').localeCompare(b.event_date || ''));
+const sorted = (() => {
+const byDate = [...filtered].sort((a,b) => (a.event_date || '').localeCompare(b.event_date || ''));
+const out = [];
+let i = 0;
+while (i < byDate.length) {
+let j = i;
+while (j < byDate.length && (byDate[j].event_date || '') === (byDate[i].event_date || '')) j++;
+out.push(...sortDayEventsByTime(byDate.slice(i, j)));
+i = j;
+}
+return out;
+})();
 
 if (sorted.length === 0) {
 empty.classList.remove('hidden');
