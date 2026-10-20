@@ -27,6 +27,8 @@ body.pwa-mode #toolsButton { bottom: calc(env(safe-area-inset-bottom, 0px) + var
 .tab-active { color: #0069FF; border-bottom: 2px solid #0069FF; }
 .tab-inactive { color: #9CA3AF; border-bottom: 2px solid transparent; }
 .card-enter { animation: cardIn 0.3s ease forwards; }
+.event-past { opacity: 0.55; }
+.event-past, .event-past * { text-decoration: line-through; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 /* Walkthrough Overlay */
@@ -108,7 +110,7 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <h2 class="font-semibold text-2xl mb-6 text-gray-900">Edit Event</h2>
 <div class="space-y-4">
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="editChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
-<div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="editSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="editSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Team or League (Optional)</label> <input id="editTeam" type="text" placeholder="e.g., Titans, Skills Center..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="editType" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div>
 <div class="grid grid-cols-2 gap-3">
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="editDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
@@ -323,6 +325,16 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="w-full">
 <p class="text-gray-900 font-semibold text-sm">Which Sport? (Required)</p>
 <input id="sportNamePrefill" type="text" placeholder="e.g., Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
+<p class="text-xs text-gray-400 mt-1.5">Assigned to every imported event.</p>
+</div>
+</div>
+
+<!-- Step 2c -->
+<div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">🏆</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm">Which Team or League? (Optional)</p>
+<input id="teamNamePrefill" type="text" placeholder="e.g., Titans, Skills Center..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 text-sm mt-2">
 <p class="text-xs text-gray-400 mt-1.5">Assigned to every imported event.</p>
 </div>
 </div>
@@ -879,7 +891,7 @@ Weekend
 Week
 </button>
 </div>
-</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-3 sm:gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="hidden sm:inline text-gray-500 text-xs font-medium">Shop Performance Gear</span> <span class="sm:hidden text-gray-500 text-xs font-medium">Shop Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> <span class="text-gray-300 text-xs">|</span> <a href="#" id="footerHelpLink" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="help-circle" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">Help</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed z-40" style="right: 16px;"> <button id="openToolsBtn" class="bg-[#1E66D0] hover:bg-[#0052CC] text-white text-xs font-semibold px-3 py-2 rounded-full transition flex items-center gap-1.5 shadow-md opacity-95" style="min-height:44px;"> <i data-lucide="settings" class="w-3.5 h-3.5"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Save to Home Screen</div> <div class="text-xs text-blue-100">Save it to your phone like an app</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsFamilyNameBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="pencil" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Family Name</div> <div class="text-xs text-gray-500">Change the name on your schedule</div> </div> </button> <button id="toolsManageAthletesBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="palette" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Manage Athletes</div> <div class="text-xs text-gray-500">View athletes and change colors</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">How to use the app and take a tour</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Manage Athletes Modal --> <div id="manageAthletesModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-md w-full shadow-lg max-h-[85vh] flex flex-col"> <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between"><div><h2 class="font-semibold text-xl text-gray-900">Manage Athletes</h2><p class="text-sm text-gray-500 mt-1">Choose a color for each athlete.</p></div><button id="closeManageAthletesBtn" class="text-gray-400 hover:text-gray-700 transition" aria-label="Close"><i data-lucide="x" class="w-6 h-6"></i></button></div><div id="manageAthletesList" class="px-6 py-4 overflow-y-auto space-y-3"></div><div id="manageAthletesStatus" class="px-6 pb-5 text-xs text-red-600 hidden"></div></div></div><!-- Athlete Color Popover --> <div id="athleteColorPopover" class="hidden fixed z-[70] bg-white border border-gray-200 rounded-xl shadow-lg p-3 max-w-[290px]"></div><!-- Edit Family Name Modal --><div id="editFamilyNameModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-md w-full shadow-lg"> <div class="px-7 py-6 border-b border-gray-200 flex items-center justify-between"> <h2 class="font-semibold text-xl text-gray-900">Edit Family Name</h2> <button id="closeEditFamilyNameBtn" class="text-gray-400 hover:text-gray-700 transition"> <i data-lucide="x" class="w-6 h-6"></i> </button> </div> <div class="px-7 py-6"> <p class="text-sm text-gray-500 mb-4">This shows in the corner of your schedule</p> <input id="editFamilyNameInput" type="text" maxlength="40" placeholder="The Smith Family" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0069FF] focus:border-transparent"> <button id="saveFamilyNameBtn" class="w-full mt-5 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition">Save</button> <button id="cancelEditFamilyNameBtn" class="w-full mt-3 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition">Cancel</button> </div> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto" style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--footer-h) + 84px);"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6">
+</div> </header><!-- Subtle Shop & Social Bar --><div id="shopGearBar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200"> <div class="flex items-center justify-center py-2 px-4 gap-3 sm:gap-4"> <a href="https://steelebroz.com" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <span class="hidden sm:inline text-gray-500 text-xs font-medium">Shop Performance Gear</span> <span class="sm:hidden text-gray-500 text-xs font-medium">Shop Gear</span> <i data-lucide="external-link" class="w-3 h-3 text-gray-400"></i> </a> <span class="text-gray-300 text-xs">|</span> <a href="https://instagram.com/steelebroz" target="_blank" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="instagram" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">@steelebroz</span> </a> <span class="text-gray-300 text-xs">|</span> <a href="#" id="footerHelpLink" class="flex items-center gap-1 hover:text-gray-700 transition-colors duration-200"> <i data-lucide="help-circle" class="w-3 h-3 text-gray-400"></i> <span class="text-gray-500 text-xs font-medium">Help</span> </a> </div> </div><!-- Mobile Tools Button --><div id="toolsButton" class="hidden fixed z-40" style="right: 16px;"> <button id="openToolsBtn" class="bg-[#1E66D0] hover:bg-[#0052CC] text-white text-xs font-semibold px-3 py-2 rounded-full transition flex items-center gap-1.5 shadow-md opacity-95" style="min-height:44px;"> <i data-lucide="settings" class="w-3.5 h-3.5"></i> Tools </button> </div><!-- Tools Bottom Sheet --><div id="toolsBottomSheet" class="hidden fixed inset-0 z-50"> <div id="toolsBackdrop" class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div> <div id="toolsPanel" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300"> <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div> <h3 class="text-gray-900 font-semibold text-lg mb-4">Tools & Settings</h3> <div class="space-y-3"> <button id="toolsAppSetupBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="smartphone" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Save to Home Screen</div> <div class="text-xs text-blue-100">Save it to your phone like an app</div> </div> </button> <button id="toolsSetupCodeBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="key" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Setup Code</div> <div class="text-xs text-gray-500">View or share your code</div> </div> </button> <button id="toolsFamilyNameBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="pencil" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Family Name</div> <div class="text-xs text-gray-500">Change the name on your schedule</div> </div> </button> <button id="toolsManageAthletesBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="palette" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Manage Athletes</div> <div class="text-xs text-gray-500">View athletes and change colors</div> </div> </button> <button id="toolsMySportsBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="trophy" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">My Sports</div> <div class="text-xs text-gray-500">Add a sport and pick its emoji</div> </div> </button> <button id="toolsHelpBtn" class="w-full bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-900 font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="help-circle" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Help</div> <div class="text-xs text-gray-500">How to use the app and take a tour</div> </div> </button> <button id="toolsParentHubBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-4 px-5 rounded-xl transition flex items-center gap-3"> <i data-lucide="mail" class="w-5 h-5"></i> <div class="text-left"> <div class="font-semibold">Parent Resource Hub</div> <div class="text-xs text-green-100">Notes to Parents • Tools • Gear • Insights</div> </div> </button> </div> <button id="closeToolsBtn" class="w-full mt-6 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition"> Close </button> </div> </div><!-- Manage Athletes Modal --> <div id="manageAthletesModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-md w-full shadow-lg max-h-[85vh] flex flex-col"> <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between"><div><h2 class="font-semibold text-xl text-gray-900">Manage Athletes</h2><p class="text-sm text-gray-500 mt-1">Choose a color for each athlete.</p></div><button id="closeManageAthletesBtn" class="text-gray-400 hover:text-gray-700 transition" aria-label="Close"><i data-lucide="x" class="w-6 h-6"></i></button></div><div id="manageAthletesList" class="px-6 py-4 overflow-y-auto space-y-3"></div><div id="manageAthletesStatus" class="px-6 pb-5 text-xs text-red-600 hidden"></div></div></div><!-- My Sports Modal --> <div id="mySportsModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-md w-full shadow-lg max-h-[85vh] flex flex-col"> <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between"><div><h2 class="font-semibold text-xl text-gray-900">My Sports</h2><p class="text-sm text-gray-500 mt-1">Add a sport and pick its emoji.</p></div><button id="closeMySportsBtn" class="text-gray-400 hover:text-gray-700 transition" aria-label="Close"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="px-6 py-4 overflow-y-auto"><div id="mySportsList" class="space-y-2"></div><div id="mySportsForm" class="mt-4"><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport Name</label><input id="mySportName" type="text" maxlength="40" placeholder="e.g., Softball" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"><div id="mySportEmojiGrid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 mt-3"></div><button id="mySportSaveBtn" type="button" class="w-full mt-4 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 px-5 rounded-xl transition">Add Sport</button><p id="mySportStatus" class="text-xs mt-2"></p></div></div></div></div><!-- Athlete Color Popover --> <div id="athleteColorPopover" class="hidden fixed z-[70] bg-white border border-gray-200 rounded-xl shadow-lg p-3 max-w-[290px]"></div><!-- Edit Family Name Modal --><div id="editFamilyNameModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"> <div class="bg-white border border-gray-200 rounded-3xl max-w-md w-full shadow-lg"> <div class="px-7 py-6 border-b border-gray-200 flex items-center justify-between"> <h2 class="font-semibold text-xl text-gray-900">Edit Family Name</h2> <button id="closeEditFamilyNameBtn" class="text-gray-400 hover:text-gray-700 transition"> <i data-lucide="x" class="w-6 h-6"></i> </button> </div> <div class="px-7 py-6"> <p class="text-sm text-gray-500 mb-4">This shows in the corner of your schedule</p> <input id="editFamilyNameInput" type="text" maxlength="40" placeholder="The Smith Family" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0069FF] focus:border-transparent"> <button id="saveFamilyNameBtn" class="w-full mt-5 bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-4 px-5 rounded-xl transition">Save</button> <button id="cancelEditFamilyNameBtn" class="w-full mt-3 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 font-medium py-3 px-5 rounded-xl transition">Cancel</button> </div> </div> </div><!-- Tabs --> <nav class="flex border-b border-gray-200 bg-white flex-shrink-0"><button class="screen-tab tab-active flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="weekly">📅 This Week</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="control">➕ Add Event</button> <button class="screen-tab tab-inactive flex-1 py-4 text-xs font-semibold tracking-wider uppercase text-center transition" data-screen="season">📋 All Games</button> </nav><!-- Content Area --> <div class="flex-1 overflow-y-auto" style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--footer-h) + 84px);"><!-- SCREEN 1: Weekly Schedule --> <section id="screen-weekly" class="px-5 py-6">
 <!-- Owner Welcome Card (new schedules only) -->
 <div id="ownerWelcomeCard" class="setup-card-accent hidden bg-[#FFF7ED] border border-orange-100 rounded-2xl p-6 pl-7 mb-6 shadow-lg">
 <div class="mb-5">
@@ -937,7 +949,7 @@ Week
   <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Weekly Tools</span>
   <div class="flex-1 h-px bg-gray-200"></div>
 </div>
-<!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="file-text" class="w-4 h-4 text-[#0069FF]"></i> WEEKLY NOTES</h2><p class="text-xs text-gray-500 -mt-2 mb-3">Everyone with the share link can see these notes. Use Pack List below for anything private.</p><div id="weeklyNotes" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div id="weeklyNoteAddRow" class="mt-3 flex gap-2"><input id="newWeeklyNote" type="text" placeholder="Add a note for this week..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addNoteBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="check-square" class="w-4 h-4 text-[#0069FF]"></i> PACK LIST</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Only you can see this. Friends and family with the share link will not see your pack list.</p> <div id="packList" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="e.g., Cleats, Water Bottle, Snacks..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addPackBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="quote" class="w-4 h-4 text-[#0069FF]"></i> ATHLETE INSIGHT</h2> <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"> <p class="text-gray-900 text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-gray-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-[#0069FF] text-xs mt-4 flex items-center gap-1 hover:text-[#0052CC] transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-gray-200"> <p class="text-gray-500 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-gray-400 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="plus-circle" class="w-4 h-4 text-[#0069FF]"></i> HERE'S HOW TO ADD AN EVENT:</h2> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">USE A PHOTO (FASTEST)</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Snap your team schedule, AI loads every event for you.</p> <button id="importScheduleBtnTop" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2 mb-4"> <i data-lucide="upload" class="w-4 h-4"></i> Import </button> <div style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> <span style="color: #6b7280; font-size: 14px; font-weight: 500;">OR</span> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> </div> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">SET A RECURRING PRACTICE</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Set practice times once, they fill the whole season for you.</p> <button id="recurringPracticeBtnTop" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2 mb-4"> <i data-lucide="repeat" class="w-4 h-4"></i> Recurring Practice </button> <div style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> <span style="color: #6b7280; font-size: 14px; font-weight: 500;">OR</span> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> </div> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">ADD ONE MANUALLY BELOW</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Fill out the form below for a single event.</p> <div class="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-sm"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <div id="addAthleteColorPicker" class="hidden mt-3"></div></div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="inputType" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="inputDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="inputTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
+<!-- Weekly Notes --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="file-text" class="w-4 h-4 text-[#0069FF]"></i> WEEKLY NOTES</h2><p class="text-xs text-gray-500 -mt-2 mb-3">Everyone with the share link can see these notes. Use Pack List below for anything private.</p><div id="weeklyNotes" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div id="weeklyNoteAddRow" class="mt-3 flex gap-2"><input id="newWeeklyNote" type="text" placeholder="Add a note for this week..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addNoteBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Packing List --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="check-square" class="w-4 h-4 text-[#0069FF]"></i> PACK LIST</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Only you can see this. Friends and family with the share link will not see your pack list.</p> <div id="packList" class="bg-white rounded-2xl p-5 border border-gray-200 space-y-3 shadow-sm"></div> <div class="mt-3 flex gap-2"><input id="newPackItem" type="text" placeholder="e.g., Cleats, Water Bottle, Snacks..." class="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <button id="addPackBtn" class="bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold text-sm px-4 py-3 rounded-xl transition flex items-center gap-1"> <i data-lucide="plus" class="w-4 h-4"></i> </button> </div> </div><!-- Athlete Quote --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="quote" class="w-4 h-4 text-[#0069FF]"></i> ATHLETE INSIGHT</h2> <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"> <p class="text-gray-900 text-base leading-relaxed">"I've failed over and over and over again in my life. And that is why I succeed."</p> <p class="text-gray-500 text-xs mt-3">— Michael Jordan</p><button id="storyToggle" class="text-[#0069FF] text-xs mt-4 flex items-center gap-1 hover:text-[#0052CC] transition font-medium"> <i data-lucide="book-open" class="w-3 h-3"></i> Read Story </button><div id="storyContent" class="hidden mt-3 pt-3 border-t border-gray-200"> <p class="text-gray-500 text-xs leading-relaxed">Jordan was cut from his high school varsity basketball team as a sophomore. He used that rejection as fuel, practicing relentlessly before and after school. That setback became the foundation of his legendary work ethic.</p> <p class="text-gray-400 text-xs mt-2 italic">Source: "Driven from Within" by Michael Jordan</p> </div> </div> </div> </section><!-- SCREEN 2: Control --> <section id="screen-control" class="px-5 py-6 hidden"><!-- Add Event --> <div class="mb-8"> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider"><i data-lucide="plus-circle" class="w-4 h-4 text-[#0069FF]"></i> HERE'S HOW TO ADD AN EVENT:</h2> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">USE A PHOTO (FASTEST)</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Snap your team schedule, AI loads every event for you.</p> <button id="importScheduleBtnTop" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2 mb-4"> <i data-lucide="upload" class="w-4 h-4"></i> Import </button> <div style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> <span style="color: #6b7280; font-size: 14px; font-weight: 500;">OR</span> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> </div> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">SET A RECURRING PRACTICE</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Set practice times once, they fill the whole season for you.</p> <button id="recurringPracticeBtnTop" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold text-base h-12 rounded-xl transition flex items-center justify-center gap-2 mb-4"> <i data-lucide="repeat" class="w-4 h-4"></i> Recurring Practice </button> <div style="display: flex; align-items: center; gap: 12px; margin: 24px 0;"> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> <span style="color: #6b7280; font-size: 14px; font-weight: 500;">OR</span> <div style="flex: 1; height: 1px; background: #e5e7eb;"></div> </div> <h2 class="font-semibold text-sm tracking-tight mb-4 flex items-center gap-2 text-gray-500 uppercase tracking-wider">ADD ONE MANUALLY BELOW</h2> <p class="text-xs text-gray-500 -mt-2 mb-3">Fill out the form below for a single event.</p> <div class="bg-white rounded-2xl p-6 space-y-4 border border-gray-200 shadow-sm"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Athlete</label> <input id="inputChild" type="text" placeholder="Name" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <div id="addAthleteColorPicker" class="hidden mt-3"></div></div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Sport</label> <input id="inputSport" type="text" placeholder="Baseball, Soccer..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Team or League (Optional)</label> <input id="inputTeam" type="text" placeholder="e.g., Titans, Skills Center..." class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div><div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Event Type</label> <select id="inputType" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> <option>Practice</option> <option>Game</option> <option>Tournament</option> <option>Other</option> </select> </div> <div class="grid grid-cols-2 gap-3"> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Date</label> <input id="inputDate" type="date" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time</label> <input id="inputTime" type="time" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div> </div> <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Location</label> <input id="inputLocation" type="text" placeholder="Field or venue" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Field / Court</label> <input id="inputFieldCourt" type="text" placeholder="e.g. Field 3, Court B" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Time to Arrive</label> <input id="inputTimeToArrive" type="text" placeholder="e.g. 30 min before game" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
 <div><label class="text-sm text-gray-500 block mb-1.5 font-medium uppercase tracking-wide">Game 1 Time</label> <input id="inputGame1Time" type="text" placeholder="e.g. 9:00 AM" class="w-full bg-white border border-gray-200 rounded-xl px-4 h-12 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 transition"> </div>
@@ -1362,15 +1374,77 @@ function hashAthleteName(name) {
 
 // Overrides are empty unless a user explicitly selects a preset color.
 let athleteColorOverrides = {};
-const ATHLETE_COLOR_PRESETS = [
-  { name: 'Navy', hex: '#1E3A8A' }, { name: 'Royal Blue', hex: '#2563EB' },
-  { name: 'Red', hex: '#DC2626' }, { name: 'Kelly Green', hex: '#16A34A' },
-  { name: 'Gold', hex: '#EAB308' }, { name: 'Orange', hex: '#EA580C' },
-  { name: 'Purple', hex: '#9333EA' }, { name: 'Black', hex: '#171717' }
+// Soft kid palette. hex = darker shade for the left stripe and name pill (white text), tint = tile background.
+const KID_PALETTE = [
+  { name: 'Blue', hex: '#1D4ED8', tint: '#E3EEFF' },
+  { name: 'Green', hex: '#15803D', tint: '#DFF5E6' },
+  { name: 'Rose', hex: '#BE123C', tint: '#FDE4EA' },
+  { name: 'Peach', hex: '#C2410C', tint: '#FFE8D9' },
+  { name: 'Purple', hex: '#7E22CE', tint: '#F0E6FF' },
+  { name: 'Teal', hex: '#0F766E', tint: '#D9F4F1' }
 ];
+// Extra soft colors, offered in Manage Athletes when a schedule has more than 6 athletes or all 6 are taken.
+const KID_EXTRA_COLORS = [
+  { name: 'Yellow', hex: '#A16207', tint: '#FEF5CC' },
+  { name: 'Pink', hex: '#BE185D', tint: '#FCE7F3' },
+  { name: 'Slate', hex: '#475569', tint: '#E6EBF2' },
+  { name: 'Lime', hex: '#4D7C0F', tint: '#EDF8D6' }
+];
+const ALL_KID_COLORS = KID_PALETTE.concat(KID_EXTRA_COLORS);
+const ATHLETE_COLOR_PRESETS = ALL_KID_COLORS;
+// Saved overrides from the earlier 8 bold presets map to the nearest soft palette color at render. Data is not rewritten.
+const LEGACY_ATHLETE_COLOR_MAP = {
+  '#1E3A8A': '#1D4ED8', '#2563EB': '#1D4ED8', '#DC2626': '#BE123C', '#16A34A': '#15803D',
+  '#EAB308': '#C2410C', '#EA580C': '#C2410C', '#9333EA': '#7E22CE', '#171717': '#0F766E'
+};
+
+function kidColorIndexFromHex(hex) {
+  const up = (hex || '').toUpperCase();
+  const direct = ALL_KID_COLORS.findIndex(c => c.hex === up);
+  if (direct >= 0) return direct;
+  if (LEGACY_ATHLETE_COLOR_MAP[up]) return ALL_KID_COLORS.findIndex(c => c.hex === LEGACY_ATHLETE_COLOR_MAP[up]);
+  const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) || 0);
+  if (!/^#[0-9A-F]{6}$/.test(up)) return 0;
+  const target = rgb(up);
+  let best = 0, bestDist = Infinity;
+  KID_PALETTE.forEach((c, i) => { const v = rgb(c.hex); const dist = v.reduce((s, x, k) => s + (x - target[k]) * (x - target[k]), 0); if (dist < bestDist) { bestDist = dist; best = i; } });
+  return best;
+}
+
+// One color per athlete (case-insensitive name) per schedule. Explicit overrides are placed first, then
+// automatic athletes by name order. A collision moves the later athlete to the next unused palette color.
+let kidColorCache = { events: null, overrides: null, count: -1, map: {} };
+function resolveKidColors() {
+  if (kidColorCache.events === allEvents && kidColorCache.overrides === athleteColorOverrides && kidColorCache.count === allEvents.length) return kidColorCache.map;
+  const kids = [...new Set(athleteNames().map(normalizedAthleteName).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const used = new Set();
+  const map = {};
+  const place = (kid, start) => {
+    const order = start < KID_PALETTE.length
+      ? [...KID_PALETTE.map((_, i) => (start + i) % KID_PALETTE.length), ...KID_EXTRA_COLORS.map((_, i) => KID_PALETTE.length + i)]
+      : [start, ...ALL_KID_COLORS.map((_, i) => i).filter(i => i !== start)];
+    const pick = order.find(i => !used.has(i));
+    const index = pick === undefined ? start : pick;
+    used.add(index);
+    map[kid] = ALL_KID_COLORS[index];
+  };
+  kids.filter(kid => athleteOverrideFor(kid)).forEach(kid => place(kid, kidColorIndexFromHex(athleteOverrideFor(kid))));
+  kids.filter(kid => !athleteOverrideFor(kid)).forEach(kid => place(kid, hashAthleteName(kid) % KID_PALETTE.length));
+  kidColorCache = { events: allEvents, overrides: athleteColorOverrides, count: allEvents.length, map };
+  return map;
+}
+
+function kidColorFor(name) {
+  const key = normalizedAthleteName(name);
+  return resolveKidColors()[key] || KID_PALETTE[hashAthleteName(key) % KID_PALETTE.length];
+}
+
+function getAthleteTint(name) {
+  return kidColorFor(name).tint;
+}
 
 function getAutomaticAthleteColor(name) {
-  return ATHLETE_COLORS[hashAthleteName(name) % ATHLETE_COLORS.length];
+  return kidColorFor(name).hex;
 }
 
 function athleteOverrideFor(name) {
@@ -1379,7 +1453,7 @@ function athleteOverrideFor(name) {
 }
 
 function getAthleteColor(name) {
-  return athleteOverrideFor(name) || getAutomaticAthleteColor(name);
+  return kidColorFor(name).hex;
 }
 
 function athleteTextColor(hex) {
@@ -1397,9 +1471,9 @@ function athleteNames() {
   return [...new Set([...allEvents.map(event => (event.child_name || '').trim()).filter(Boolean), ...Object.keys(athleteColorOverrides)])];
 }
 
-function athleteNameButton(name, baseClass, fallback) {
+function athleteNameButton(name, baseClass, fallback, alwaysPill) {
   const displayName = (name || fallback).toUpperCase();
-  const override = athleteOverrideFor(name);
+  const override = (athleteOverrideFor(name) || (alwaysPill && name)) ? getAthleteColor(name) : null;
   const style = override ? ` style="background:${override};color:${athleteTextColor(override)}"` : '';
   const className = override ? `${baseClass} px-2 py-0.5 rounded-full` : baseClass;
   return `<button type="button" class="athlete-name-pill ${className}"${style} data-athlete="${name || fallback}">${displayName}</button>`;
@@ -1414,18 +1488,30 @@ function findDuplicateColor(name, hex) {
   return athleteNames().find(other => normalizedAthleteName(other) !== target && getAthleteColor(other).toUpperCase() === hex.toUpperCase());
 }
 
+// Extra colors show only in Manage Athletes when the schedule has more than 6 athletes,
+// or anywhere once all 6 palette colors are used by other athletes.
+function showExtraKidColors(name, context) {
+  const target = normalizedAthleteName(name);
+  const kids = [...new Set(athleteNames().map(normalizedAthleteName).filter(Boolean))];
+  const others = kids.filter(kid => kid !== target);
+  const takenByOthers = new Set(others.map(kid => getAthleteColor(kid).toUpperCase()));
+  const allSixTaken = KID_PALETTE.every(c => takenByOthers.has(c.hex));
+  return allSixTaken || (context === 'manage' && kids.length > KID_PALETTE.length);
+}
+
 function colorChipMarkup(name, selectedHex, context) {
   const disabled = isViewOnly ? 'disabled aria-disabled="true"' : '';
-  return ATHLETE_COLOR_PRESETS.map(preset => {
+  const presets = showExtraKidColors(name, context) ? ALL_KID_COLORS : KID_PALETTE;
+  return presets.map(preset => {
     const selected = selectedHex && preset.hex.toUpperCase() === selectedHex.toUpperCase();
-    return `<button type="button" class="athlete-color-chip w-8 h-8 rounded-full border-2 transition ${selected ? 'ring-2 ring-offset-2 ring-gray-700 border-white' : 'border-white hover:scale-105'}" style="background:${preset.hex}" data-athlete="${name}" data-color="${preset.hex}" data-context="${context}" title="${preset.name}" aria-label="${preset.name}" ${disabled}></button>`;
+    return `<button type="button" class="athlete-color-chip w-8 h-8 rounded-full border-4 transition ${selected ? 'ring-2 ring-offset-2 ring-gray-700' : 'hover:scale-105'}" style="background:${preset.hex};border-color:${preset.tint}" data-athlete="${name}" data-color="${preset.hex}" data-context="${context}" title="${preset.name}" aria-label="${preset.name}" ${disabled}></button>`;
   }).join('');
 }
 
 function colorPickerMarkup(name, context) {
-  const current = athleteOverrideFor(name);
+  const current = athleteOverrideFor(name) ? getAthleteColor(name) : null;
   const automatic = getAutomaticAthleteColor(name);
-  const currentSwatch = current ? '' : `<span class="w-8 h-8 rounded-full ring-2 ring-offset-2 ring-gray-700 border-2 border-white" style="background:${automatic}" title="Current automatic color" aria-label="Current automatic color"></span>`;
+  const currentSwatch = current ? '' : `<span class="w-8 h-8 rounded-full ring-2 ring-offset-2 ring-gray-700 border-4" style="background:${automatic};border-color:${getAthleteTint(name)}" title="Current automatic color" aria-label="Current automatic color"></span>`;
   return `<div class="athlete-color-picker" data-picker-for="${name}"><p class="text-xs text-gray-600 mb-2">Pick a color for ${name}</p><div class="flex flex-wrap gap-2">${currentSwatch}${colorChipMarkup(name, current, context)}</div>${current ? '' : `<p class="text-[11px] text-gray-400 mt-2">Current automatic color is selected. Pick a preset to change it.</p>`}<p class="athlete-color-warning text-xs text-red-600 mt-2 hidden" aria-live="polite"></p></div>`;
 }
 
@@ -1438,7 +1524,7 @@ function bindColorPicker(container) {
       const warning = button.closest('.athlete-color-picker')?.querySelector('.athlete-color-warning');
       const duplicate = findDuplicateColor(name, hex);
       if (duplicate) {
-        if (warning) { warning.textContent = `${duplicate} already uses ${ATHLETE_COLOR_PRESETS.find(p => p.hex === hex).name}. Pick a different color.`; warning.classList.remove('hidden'); }
+        if (warning) { warning.textContent = `${duplicate} already uses ${(ALL_KID_COLORS.find(p => p.hex === hex) || { name: 'that color' }).name}. Pick a different color.`; warning.classList.remove('hidden'); }
         return;
       }
       if (warning) warning.classList.add('hidden');
@@ -1458,13 +1544,135 @@ async function hydrateAthleteColorOverrides() {
     athleteColorOverrides = (rows[0] && rows[0].athlete_color_overrides && typeof rows[0].athlete_color_overrides === 'object') ? rows[0].athlete_color_overrides : {};
     renderAllAthleteColorUi();
   } catch (error) { console.error('hydrate athlete colors failed:', error); }
+  try { await hydrateCustomSportEmojis(); } catch (error) { console.error('hydrate custom sports failed:', error); }
 }
+
+// Sport emoji: custom per schedule entries first, then built-ins (basketball before baseball).
+let customSportEmojis = {};
+const SPORT_EMOJI_RULES = [
+  ['basketball', '🏀'], ['baseball', '⚾'], ['football', '🏈'], ['lacrosse', '🥍'],
+  ['golf', '⛳'], ['soccer', '⚽'], ['tennis', '🎾'], ['volleyball', '🏐']
+];
+const SPORT_EMOJI_CHOICES = ['🏀', '⚾', '🥎', '🏈', '🏉', '⚽', '🎾', '🏐', '🥍', '🏒', '🏓', '🏸', '⛳', '🥊', '🤸', '🏊', '🏃', '🚴', '⛸️', '🩰'];
+
+function sportEmojiFor(sport) {
+  const s = (sport || '').trim().toLowerCase();
+  if (!s) return '🏅';
+  const custom = Object.keys(customSportEmojis || {}).map(key => [key.trim().toLowerCase(), customSportEmojis[key]]).filter(([key, emoji]) => key && emoji).sort((a, b) => b[0].length - a[0].length);
+  const customHit = custom.find(([key]) => s.includes(key));
+  if (customHit) return customHit[1];
+  const builtIn = SPORT_EMOJI_RULES.find(([key]) => s.includes(key));
+  return builtIn ? builtIn[1] : '🏅';
+}
+
+async function hydrateCustomSportEmojis() {
+  const owner = currentUserId || localStorage.getItem('commandCenterUserId');
+  if (!owner || !window.dataSdk) return;
+  const response = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${owner}&select=custom_sport_emojis`, { headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}` } });
+  if (!response.ok) return;
+  const rows = await response.json();
+  customSportEmojis = (rows[0] && rows[0].custom_sport_emojis && typeof rows[0].custom_sport_emojis === 'object') ? rows[0].custom_sport_emojis : {};
+  renderWeekly();
+  renderMySports();
+}
+
+async function saveCustomSportEmojis(next) {
+  if (isViewOnly) return;
+  const owner = currentUserId || localStorage.getItem('commandCenterUserId');
+  if (!owner || !window.dataSdk) return;
+  const value = Object.keys(next).length ? next : null;
+  const response = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${owner}`, { method: 'PATCH', headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ custom_sport_emojis: value }) });
+  if (!response.ok) throw new Error('Could not save sport');
+  customSportEmojis = next;
+}
+
+let mySportSelectedEmoji = '';
+function renderMySports() {
+  const list = document.getElementById('mySportsList');
+  const grid = document.getElementById('mySportEmojiGrid');
+  const form = document.getElementById('mySportsForm');
+  if (!list || !grid || !form) return;
+  const keys = Object.keys(customSportEmojis || {}).sort((a, b) => a.localeCompare(b));
+  list.innerHTML = keys.length ? keys.map(key => `<div class="flex items-center justify-between gap-3 border border-gray-200 rounded-xl px-3 py-2"><div class="flex items-center gap-2 min-w-0"><span class="text-xl">${customSportEmojis[key]}</span><span class="font-semibold text-sm text-gray-900 truncate">${escapeTeamText(key)}</span></div>${isViewOnly ? '' : `<button type="button" class="my-sport-remove text-gray-400 hover:text-red-500 text-sm font-semibold" data-sport="${escapeTeamText(key)}">Remove</button>`}</div>`).join('') : '<p class="text-sm text-gray-500">No custom sports yet.</p>';
+  form.classList.toggle('hidden', isViewOnly);
+  grid.innerHTML = SPORT_EMOJI_CHOICES.map(emoji => `<button type="button" class="my-sport-emoji w-9 h-9 rounded-lg text-xl flex items-center justify-center border ${emoji === mySportSelectedEmoji ? 'border-[#0069FF] bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}" data-emoji="${emoji}" aria-label="${emoji}">${emoji}</button>`).join('');
+  grid.querySelectorAll('.my-sport-emoji').forEach(button => button.addEventListener('click', () => { mySportSelectedEmoji = button.dataset.emoji; renderMySports(); }));
+  list.querySelectorAll('.my-sport-remove').forEach(button => button.addEventListener('click', async () => {
+    const next = Object.assign({}, customSportEmojis);
+    Object.keys(next).forEach(key => { if (key === button.dataset.sport) delete next[key]; });
+    try { await saveCustomSportEmojis(next); } catch (error) { console.error(error); }
+    renderMySports();
+    renderWeekly();
+  }));
+}
+
+async function addMySport() {
+  const input = document.getElementById('mySportName');
+  const status = document.getElementById('mySportStatus');
+  const name = (input.value || '').trim().toLowerCase();
+  if (!name || !mySportSelectedEmoji) {
+    status.textContent = 'Type a sport name and pick an emoji.';
+    status.className = 'text-xs text-red-600 mt-2';
+    return;
+  }
+  const next = Object.assign({}, customSportEmojis, { [name]: mySportSelectedEmoji });
+  try {
+    await saveCustomSportEmojis(next);
+    input.value = '';
+    mySportSelectedEmoji = '';
+    status.textContent = 'Sport saved ✓';
+    status.className = 'text-xs text-green-600 mt-2';
+  } catch (error) {
+    status.textContent = 'Could not save sport. Try again.';
+    status.className = 'text-xs text-red-600 mt-2';
+  }
+  renderMySports();
+  renderWeekly();
+}
+
+function escapeTeamText(value) {
+  return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Bold uppercase event type word with sport emoji, plus team name when present.
+function eventTypeWordMarkup(ev) {
+  const type = (ev.event_type || '').trim();
+  const lower = type.toLowerCase();
+  const color = lower === 'practice' ? '#6B7280' : lower === 'game' ? '#1D4ED8' : lower === 'tournament' ? '#C2410C' : '#374151';
+  const team = (ev.team_name || '').trim();
+  const word = type ? `<span class="font-extrabold tracking-wide flex-shrink-0" style="color:${color}">${escapeTeamText(type.toUpperCase())}</span>` : '';
+  const teamPart = team ? `<span class="font-semibold text-gray-700 truncate">· ${escapeTeamText(team)}</span>` : '';
+  return `<span class="event-type-word inline-flex items-center gap-1 min-w-0 max-w-full ml-auto px-2 py-1 rounded-full bg-white/70 text-xs whitespace-nowrap"><span class="flex-shrink-0">${sportEmojiFor(ev.sport)}</span>${word}${teamPart}</span>`;
+}
+
+// Past events: start time has passed (local device time). TBD or no time: after the end of that day.
+function eventIsPast(ev, now) {
+  if (!ev || !ev.event_date || !/^\d{4}-\d{2}-\d{2}$/.test(ev.event_date)) return false;
+  const when = parseDate(ev.event_date);
+  if (isNaN(when.getTime())) return false;
+  const minutes = timeSortMinutes(ev.event_time);
+  if (minutes === null) when.setDate(when.getDate() + 1);
+  else when.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
+  return (now || new Date()) >= when;
+}
+
+// Keep cross out current without re-rendering, so open details stay open.
+function refreshPastEventTiles() {
+  const now = new Date();
+  document.querySelectorAll('[data-past-event-id]').forEach(el => {
+    const ev = allEvents.find(e => e.backend_id === el.dataset.pastEventId);
+    if (ev) el.classList.toggle('event-past', eventIsPast(ev, now));
+  });
+}
+setInterval(refreshPastEventTiles, 60000);
 
 async function saveAthleteColorOverride(name, hex) {
   if (isViewOnly) return;
   const owner = currentUserId || localStorage.getItem('commandCenterUserId');
   if (!owner || !window.dataSdk) return;
   const next = Object.assign({}, athleteColorOverrides, { [name]: hex });
+  // Case variants of the same athlete name share one color, so keep them in step on a new pick.
+  Object.keys(next).forEach(key => { if (normalizedAthleteName(key) === normalizedAthleteName(name)) next[key] = hex; });
   const response = await fetch(`${window.dataSdk.supabaseUrl}/rest/v1/schedules?owner_code=eq.${owner}`, { method: 'PATCH', headers: { 'apikey': window.dataSdk.supabaseKey, 'Authorization': `Bearer ${window.dataSdk.supabaseKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, body: JSON.stringify({ athlete_color_overrides: next }) });
   if (!response.ok) throw new Error('Could not save athlete color');
   athleteColorOverrides = next;
@@ -1694,6 +1902,7 @@ if (!event) return;
 currentEditingEventId = eventId;
 document.getElementById('editChild').value = event.child_name || '';
 document.getElementById('editSport').value = event.sport || '';
+document.getElementById('editTeam').value = event.team_name || '';
 document.getElementById('editType').value = event.event_type || 'Practice';
 document.getElementById('editChaperone').value = event.chaperone || '';
 document.getElementById('editDate').value = event.event_date || '';
@@ -1723,6 +1932,7 @@ if (!event) return;
 
 document.getElementById('inputChild').value = event.child_name || '';
 document.getElementById('inputSport').value = event.sport || '';
+document.getElementById('inputTeam').value = event.team_name || '';
 document.getElementById('inputType').value = event.event_type || 'Practice';
 document.getElementById('inputChaperone').value = event.chaperone || '';
 document.getElementById('inputDate').value = '';
@@ -1782,23 +1992,24 @@ const isToday = ds === formatDate(new Date());
 let eventsHtml = dayEvents.map(ev => {
 const sportColor = getAthleteColor(ev.child_name);
 const pillClass = ev.event_type === 'Game' ? 'bg-[#DBEAFE] text-[#1D4ED8]' : ev.event_type === 'Tournament' ? 'bg-[#FFF7ED] text-[#C2410C]' : ev.event_type === 'Tryout' ? 'bg-[#DCFCE7] text-[#15803D]' : ev.event_type === 'Meeting' ? 'bg-[#EDE9FE] text-[#6D28D9]' : 'bg-[#F3F4F6] text-[#6B7280]';
-const pillLabel = [ev.sport, ev.event_type].filter(Boolean).join(' ');
-const moreDetailsRows = `${ev.field_court ? `<div class="text-xs text-gray-600"><span class="font-semibold">FIELD/COURT #:</span> ${ev.field_court}</div>` : ''}${ev.time_to_arrive ? `<div class="text-xs text-gray-600"><span class="font-semibold">TIME TO ARRIVE:</span> ${ev.time_to_arrive}</div>` : ''}${ev.game_1_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 1 TIME:</span> ${ev.game_1_time}</div>` : ''}${ev.game_2_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 2 TIME:</span> ${ev.game_2_time}</div>` : ''}${ev.game_3_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 3 TIME:</span> ${ev.game_3_time}</div>` : ''}${ev.uniform ? `<div class="text-xs text-gray-600"><span class="font-semibold">UNIFORM:</span> ${ev.uniform}</div>` : ''}${ev.chaperone ? `<div class="text-xs text-gray-600"><span class="font-semibold">WHO IS TAKING:</span> ${ev.chaperone}</div>` : ''}${ev.game_details ? `<div class="text-xs text-gray-600"><span class="font-semibold">NOTES:</span> ${ev.game_details}</div>` : ''}${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">HOTEL LINK:</span> <a href="${ensureUrl(ev.hotel_link)}" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">View Hotel</a></div>` : ''}${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">EVENT LINK:</span> <a href="${ensureUrl(ev.event_link)}" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">View Event</a></div>` : ''}${ev.location ? `<div class="text-xs text-gray-500">${renderLocation(ev.location)}</div>` : ''}`;
+const pillLabel = eventTypeWordMarkup(ev);
+const tileTint = getAthleteTint(ev.child_name);
+const moreDetailsRows = `${ev.field_court ? `<div class="text-xs text-gray-600"><span class="font-semibold">FIELD/COURT #:</span> ${ev.field_court}</div>` : ''}${ev.time_to_arrive ? `<div class="text-xs text-gray-600"><span class="font-semibold">TIME TO ARRIVE:</span> ${ev.time_to_arrive}</div>` : ''}${ev.game_1_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 1 TIME:</span> ${ev.game_1_time}</div>` : ''}${ev.game_2_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 2 TIME:</span> ${ev.game_2_time}</div>` : ''}${ev.game_3_time ? `<div class="text-xs text-gray-600"><span class="font-semibold">GAME 3 TIME:</span> ${ev.game_3_time}</div>` : ''}${ev.uniform ? `<div class="text-xs text-gray-600"><span class="font-semibold">UNIFORM:</span> ${ev.uniform}</div>` : ''}${ev.chaperone ? `<div class="text-xs text-gray-600"><span class="font-semibold">WHO IS TAKING:</span> ${ev.chaperone}</div>` : ''}${ev.game_details ? `<div class="text-xs text-gray-600"><span class="font-semibold">NOTES:</span> ${ev.game_details}</div>` : ''}${ev.hotel_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">HOTEL LINK:</span> <a href="${ensureUrl(ev.hotel_link)}" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">View Hotel</a></div>` : ''}${ev.event_link ? `<div class="text-xs text-gray-600"><span class="font-semibold">EVENT LINK:</span> <a href="${ensureUrl(ev.event_link)}" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">View Event</a></div>` : ''}${ev.location ? `<div class="text-xs text-gray-600">${renderLocation(ev.location)}</div>` : ''}`;
 const hasMoreDetails = !!(ev.field_court || ev.time_to_arrive || ev.game_1_time || ev.game_2_time || ev.game_3_time || ev.uniform || ev.chaperone || ev.game_details || ev.hotel_link || ev.event_link);
 const hasExpandable = hasMoreDetails || !!ev.location;
-return `<div class="py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'border-b border-gray-100' : ''}">
+return `<div class="rounded-xl px-2 py-2.5 ${dayEvents.indexOf(ev) < dayEvents.length - 1 ? 'mb-2' : ''}${eventIsPast(ev) ? ' event-past' : ''}" style="background:${tileTint}" data-past-event-id="${ev.backend_id}">
 <div class="flex items-center gap-2">
 <div class="w-1 h-10 rounded-full flex-shrink-0" style="background:${sportColor}"></div>
-${athleteNameButton(ev.child_name, 'text-lg font-semibold text-gray-900 flex-shrink-0', 'Unknown')}
+${athleteNameButton(ev.child_name, 'text-lg font-semibold text-gray-900 flex-shrink-0', 'Unknown', true)}
 <span class="text-lg font-bold text-gray-900 ml-auto">${formatTime12(ev.event_time) || 'TBD'}</span>
 ${isViewOnly ? '' : `<div class="flex items-center gap-0.5 flex-shrink-0">
 <button class="dup-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-id="${ev.backend_id}" type="button" title="Duplicate event"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button class="edit-event-btn p-1.5 rounded-lg hover:bg-gray-100 transition text-gray-400 hover:text-[#0069FF]" data-event-id="${ev.backend_id}" type="button" title="Edit event"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
 <button class="del-event-btn p-1.5 rounded-lg hover:bg-red-50 transition text-gray-400 hover:text-red-500" data-event-id="${ev.backend_id}" type="button" title="Delete event"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
 </div>`}
 </div>
-${(pillLabel || hasExpandable) ? `<div class="flex items-center justify-between gap-2 mt-1.5 pl-3 pr-1.5">
-${hasExpandable ? `<button class="location-details-toggle text-xs text-gray-500 font-semibold whitespace-nowrap flex-shrink-0" onclick="const c=this.parentElement.nextElementSibling;c.classList.toggle('hidden');this.textContent = c.classList.contains('hidden') ? 'LOCATION & DETAILS ▼' : 'LOCATION & DETAILS ▲'">LOCATION & DETAILS ${detailsOpen ? '▲' : '▼'}</button>` : '<span></span>'}
-${pillLabel ? `<span class="inline-block px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 ${pillClass}">${pillLabel}</span>` : ''}
+${(pillLabel || hasExpandable) ? `<div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 mt-1.5 pl-3 pr-1.5">
+${hasExpandable ? `<button class="location-details-toggle text-xs text-gray-600 font-semibold whitespace-nowrap flex-shrink-0" onclick="const c=this.parentElement.nextElementSibling;c.classList.toggle('hidden');this.textContent = c.classList.contains('hidden') ? 'LOCATION & DETAILS ▼' : 'LOCATION & DETAILS ▲'">LOCATION & DETAILS ${detailsOpen ? '▲' : '▼'}</button>` : '<span></span>'}
+${pillLabel}
 </div>
 ${hasExpandable ? `<div class="${detailsOpen ? '' : 'hidden'} mt-2 pl-3 space-y-1">${moreDetailsRows}</div>` : ''}` : ''}
 </div>`;
@@ -1890,7 +2101,8 @@ empty.classList.add('hidden');
 sorted.forEach(ev => {
 const d = ev.event_date ? parseDate(ev.event_date) : null;
 const row = document.createElement('tr');
-row.className = 'border-b border-gray-100 hover:bg-gray-50 transition';
+row.className = 'border-b border-gray-100 hover:bg-gray-50 transition' + (eventIsPast(ev) ? ' event-past' : '');
+row.dataset.pastEventId = ev.backend_id || '';
 const seasonMoreDetails = (ev.event_link || ev.game_details || ev.hotel_link) ? `
 <div class="mt-1">
   <button class="more-details-toggle text-xs text-blue-500 font-semibold" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent = this.nextElementSibling.classList.contains('hidden') ? '▸ More Details' : '▾ More Details'">▸ More Details</button>
@@ -2454,6 +2666,7 @@ location: loc || '',
 event_type: type || 'Practice',
 chaperone: chaperone || '',
 sport: document.getElementById('inputSport').value.trim() || '',
+team_name: document.getElementById('inputTeam').value.trim() || null,
 field_court: document.getElementById('inputFieldCourt').value.trim() || null,
 event_link: document.getElementById('inputEventLink').value.trim() || null,
 game_details: document.getElementById('inputGameDetails').value.trim() || null,
@@ -2521,6 +2734,7 @@ const updatedEvent = {
 ...event,
 child_name: document.getElementById('editChild').value.trim().toUpperCase(),
 sport: document.getElementById('editSport').value.trim(),
+team_name: document.getElementById('editTeam').value.trim() || null,
 event_type: document.getElementById('editType').value,
 chaperone: document.getElementById('editChaperone').value.trim(),
 event_date: document.getElementById('editDate').value,
@@ -3095,6 +3309,7 @@ btn.innerHTML = '<span class="animate-pulse">Importing...</span>';
 
 let successCount = 0;
 let errorCount = 0;
+const importTeamName = document.getElementById('teamNamePrefill').value.trim() || null;
 
 try {
 for (const event of parsedEvents) {
@@ -3111,7 +3326,8 @@ event_time: convertTimeTo24Hour(event.event_time),
 location: event.location,
 event_type: event.event_type,
 chaperone: event.chaperone,
-sport: event.sport
+sport: event.sport,
+team_name: importTeamName
 });
 
 if (result.isOk) {
@@ -3191,6 +3407,7 @@ parsedEvents = [];
 // Clear the athlete and sport prefill inputs so the next import starts blank.
 document.getElementById('athleteNamePrefill').value = '';
 document.getElementById('sportNamePrefill').value = '';
+document.getElementById('teamNamePrefill').value = '';
 // Restore the import button to its default label, icon, and color.
 btn.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Import All Events';
 btn.className = btn.className.replace('bg-green-700', 'bg-green-600 hover:bg-green-500');
@@ -3513,6 +3730,7 @@ for (const event of recurringEvents) {
 const result = await window.dataSdk.create({
 child_name: event.child_name,
 sport: event.sport,
+team_name: event.team_name || null,
 event_type: event.event_type,
 chaperone: event.chaperone || '',
 event_date: event.event_date,
@@ -3774,6 +3992,12 @@ closeToolsBottomSheet();
 setTimeout(() => { renderManageAthletes(); document.getElementById('manageAthletesModal').classList.remove('hidden'); lucide.createIcons(); }, 300);
 });
 document.getElementById('closeManageAthletesBtn').addEventListener('click', () => document.getElementById('manageAthletesModal').classList.add('hidden'));
+document.getElementById('toolsMySportsBtn').addEventListener('click', () => {
+closeToolsBottomSheet();
+setTimeout(() => { document.getElementById('mySportStatus').textContent = ''; renderMySports(); document.getElementById('mySportsModal').classList.remove('hidden'); lucide.createIcons(); }, 300);
+});
+document.getElementById('closeMySportsBtn').addEventListener('click', () => document.getElementById('mySportsModal').classList.add('hidden'));
+document.getElementById('mySportSaveBtn').addEventListener('click', addMySport);
 document.addEventListener('click', event => { const popover = document.getElementById('athleteColorPopover'); if (popover && !popover.contains(event.target) && !event.target.closest('.athlete-name-pill')) popover.classList.add('hidden'); });
 
 document.getElementById('toolsHelpBtn').addEventListener('click', () => {
@@ -3972,6 +4196,8 @@ function applyViewOnlyMode() {
 
     // Hide Family Name editor for viewers (owner-only)
     if (familyNameBtn) familyNameBtn.style.display = 'none';
+    const mySportsToolsBtn = document.getElementById('toolsMySportsBtn');
+    if (mySportsToolsBtn) mySportsToolsBtn.style.display = 'none';
     
     // Keep Weekly Notes visible so the viewer can read the week's notes; hide the add controls.
     // Edit/delete buttons are already withheld in renderWeeklyNotes() when isViewOnly is true.
@@ -4001,6 +4227,8 @@ function applyViewOnlyMode() {
     // Ensure everything is visible for owner
     if (addEventTab) addEventTab.style.display = '';
     if (familyNameBtn) familyNameBtn.style.display = '';
+    const mySportsToolsBtnOwner = document.getElementById('toolsMySportsBtn');
+    if (mySportsToolsBtnOwner) mySportsToolsBtnOwner.style.display = '';
     const banner = document.getElementById('viewOnlyBanner');
     if (banner) banner.remove();
   }
