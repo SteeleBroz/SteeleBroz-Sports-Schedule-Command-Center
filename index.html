@@ -2547,6 +2547,110 @@ weekendView = false;
 updateWeekDisplay();
 });
 
+// Auto scroll: open This Week at the next upcoming event.
+// Runs only on first load, a user tap on the This Week tab, or a tap on Today.
+let weeklyAutoScrollLoadDone = false;
+
+function weeklyScrollContainer() {
+  const section = document.getElementById('screen-weekly');
+  let el = section ? section.parentElement : null;
+  while (el && el !== document.body) {
+    const oy = getComputedStyle(el).overflowY;
+    if (oy === 'auto' || oy === 'scroll') return el;
+    el = el.parentElement;
+  }
+  return null;
+}
+
+// Top of an element in the scroll content, ignoring the card entry animation offset.
+function weeklyScrollContentTop(el, container, useBottom) {
+  const rect = el.getBoundingClientRect();
+  let shift = 0;
+  const card = el.closest('.card-enter');
+  if (card) {
+    try { shift = new DOMMatrixReadOnly(getComputedStyle(card).transform).m42 || 0; } catch (e) { shift = 0; }
+  }
+  const edge = (useBottom ? rect.bottom : rect.top) - shift;
+  if (container) return edge - container.getBoundingClientRect().top + container.scrollTop;
+  return edge + window.scrollY;
+}
+
+// Visible area of the scroll box, minus any fixed or sticky bars that cover it.
+function weeklyVisibleBounds(container) {
+  let top = container ? container.getBoundingClientRect().top : 0;
+  let bottom = container ? container.getBoundingClientRect().bottom : window.innerHeight;
+  document.querySelectorAll('#app > header, #app > nav, #shopGearBar, #toolsButton').forEach(bar => {
+    const pos = getComputedStyle(bar).position;
+    if (bar.classList.contains('hidden') || (pos !== 'fixed' && pos !== 'sticky')) return;
+    const r = bar.getBoundingClientRect();
+    if (r.height === 0) return;
+    if (r.top <= top + 1 && r.bottom > top) top = r.bottom;
+    else if (r.top < bottom && r.top > (top + bottom) / 2) bottom = Math.min(bottom, r.top);
+  });
+  return { top, bottom };
+}
+
+function scrollWeeklyToNextEvent(instant) {
+  if (activeScreen !== 'weekly') return;
+  const section = document.getElementById('screen-weekly');
+  const cards = document.getElementById('weeklyCards');
+  if (!section || section.classList.contains('hidden') || !cards) return;
+  // Local calendar dates, so late evening still counts as today.
+  const localYmd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const todayStr = localYmd(new Date());
+  const weekEnd = new Date(currentWeekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+  if (todayStr < localYmd(currentWeekStart) || todayStr > localYmd(weekEnd)) return;
+  const tiles = Array.from(cards.querySelectorAll('[data-past-event-id]'));
+  if (!tiles.length) return;
+  const now = new Date();
+  const next = tiles.find(tile => {
+    const ev = allEvents.find(e => e.backend_id === tile.dataset.pastEventId);
+    return ev && !eventIsPast(ev, now);
+  });
+  const container = weeklyScrollContainer();
+  const bounds = weeklyVisibleBounds(container);
+  const viewTopOffset = bounds.top - (container ? container.getBoundingClientRect().top : 0);
+  const margin = 12;
+  let target;
+  if (next) {
+    const dayCard = next.closest('.card-enter');
+    const firstOfDay = dayCard && dayCard.querySelector('[data-past-event-id]') === next;
+    const anchor = firstOfDay ? dayCard : next;
+    target = weeklyScrollContentTop(anchor, container, false) - viewTopOffset - margin;
+  } else {
+    const lastCard = cards.lastElementChild;
+    if (!lastCard) return;
+    const visible = bounds.bottom - bounds.top;
+    target = weeklyScrollContentTop(lastCard, container, true) - viewTopOffset - visible + margin;
+  }
+  target = Math.max(0, Math.round(target));
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const behavior = (instant || reduce) ? 'auto' : 'smooth';
+  if (container) container.scrollTo({ top: target, behavior });
+  else window.scrollTo({ top: target, behavior });
+}
+
+function scheduleWeeklyAutoScroll(instant) {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    try { scrollWeeklyToNextEvent(instant); } catch (e) { console.error('Auto scroll error:', e); }
+  }));
+}
+
+function maybeAutoScrollWeeklyOnLoad() {
+  if (weeklyAutoScrollLoadDone || !currentUserId) return;
+  weeklyAutoScrollLoadDone = true;
+  scheduleWeeklyAutoScroll(true);
+}
+
+// User taps only (the tour and calendar View click the tab in code, which is not a user tap).
+document.querySelector('.screen-tab[data-screen="weekly"]').addEventListener('click', (e) => {
+  if (e.isTrusted) scheduleWeeklyAutoScroll(false);
+});
+document.getElementById('todayBtn').addEventListener('click', () => {
+  scheduleWeeklyAutoScroll(false);
+});
+
 // 🆕 Back to Week View button
 document.getElementById('backToWeekBtn').addEventListener('click', () => {
 console.log('📅 [WEEK VIEW] Back to week view clicked');
@@ -2775,6 +2879,7 @@ renderWeekly();
 renderDayChips();
 if (activeScreen === 'season') renderSeason();
 try { refreshSetupCard(); } catch(e) {}
+try { maybeAutoScrollWeeklyOnLoad(); } catch(e) {}
 console.log('✅ [DIAGNOSIS] All render functions completed');
 }
 };
