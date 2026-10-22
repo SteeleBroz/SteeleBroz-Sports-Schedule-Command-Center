@@ -10,7 +10,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const AGENT_URL = 'https://api.perplexity.ai/v1/agent';
 // Vision capable fallback chain. If the first model fails, the API tries the next.
-const MODELS = ['openai/gpt-5.6-terra', 'anthropic/claude-sonnet-5-5', 'google/gemini-3.8-flash'];
+// Picked by testing real sideways coach calendar photos: these three put every
+// event on the right date, and gpt-6.1-sol was the most accurate per dollar.
+const MODELS = ['openai/gpt-6.1-sol', 'google/gemini-4-argon', 'openai/gpt-5.6-sol'];
 
 const CSV_HEADER = 'child_name,sport,event_type,chaperone,event_date,event_time,location,day_of_week';
 const MAX_IMAGES = 10;
@@ -155,19 +157,14 @@ OUTPUT ONLY THE CSV. Start with the header line, then one line per event. Do not
 
   const kind = pdf ? 'pdf' : images.length ? `photo x${images.length}` : 'text';
   const started = Date.now();
-  const req2 = {
+  const agentRequest = {
     models: MODELS,
     input: [{ type: 'message', role: 'user', content }],
     max_output_tokens: 8000,
+    reasoning: { effort: 'medium' },
     store: false
   };
-  // TEMP EXPERIMENT (TESTD1 only, removed after model selection)
-  const EXP_MODELS = ['openai/gpt-5.6-terra', 'openai/gpt-5.6-sol', 'anthropic/claude-sonnet-5-5', 'google/gemini-3.8-flash', 'google/gemini-4-argon', 'openai/gpt-6.1-sol'];
-  if (ownerCode === 'TESTD1' && body._exp && typeof body._exp === 'object') {
-    if (EXP_MODELS.includes(body._exp.model)) { delete req2.models; req2.model = body._exp.model; }
-    if (['low', 'medium', 'high'].includes(body._exp.effort)) req2.reasoning = { effort: body._exp.effort };
-  }
-  const payload = JSON.stringify(req2);
+  const payload = JSON.stringify(agentRequest);
 
   try {
     let r = null;
