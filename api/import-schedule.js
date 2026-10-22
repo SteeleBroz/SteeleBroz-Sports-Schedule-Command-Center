@@ -144,6 +144,8 @@ module.exports = async function handler(req, res) {
 
 TODAY: Today is ${today.long} (America/New_York). The current year is ${today.year}. Use this to work out the year when the schedule does not print one.
 
+READING A CALENDAR GRID: First find which way is up by the month name and the day headers. Each box has one date number printed in it. An event belongs to the date number printed inside the same box as the event text, never the box next to it. Before you answer, look at each event again and confirm the date number in its box and the day header above that column.
+
 OUTPUT ONLY THE CSV. Start with the header line, then one line per event. Do not add notes, explanations, a list of left out events, or code fences.`;
 
   const content = [{ type: 'input_text', text: prompt }];
@@ -152,31 +154,49 @@ OUTPUT ONLY THE CSV. Start with the header line, then one line per event. Do not
   if (text) content.push({ type: 'input_text', text: `SCHEDULE TEXT:\n${text}` });
 
   const kind = pdf ? 'pdf' : images.length ? `photo x${images.length}` : 'text';
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 55000);
   const started = Date.now();
+  const payload = JSON.stringify({
+    models: MODELS,
+    input: [{ type: 'message', role: 'user', content }],
+    max_output_tokens: 8000
+  });
 
   try {
-    const r = await fetch(AGENT_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.PERPLEXITY_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        models: MODELS,
-        input: [{ type: 'message', role: 'user', content }],
-        max_output_tokens: 8000
-      }),
-      signal: controller.signal
-    });
-    const data = await r.json().catch(() => null);
+    let r = null;
+    let data = null;
+    // Retry a busy (429) or flaky (5xx) answer a couple of times while we still have time.
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const remaining = 56000 - (Date.now() - started);
+      if (remaining < 8000) break;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), remaining);
+      try {
+        r = await fetch(AGENT_URL, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: payload,
+          signal: controller.signal
+        });
+        data = await r.json().catch(() => null);
+      } finally {
+        clearTimeout(timer);
+      }
+      const cost = data && data.usage && data.usage.cost ? data.usage.cost.total_cost : null;
+      console.log(`[import-schedule] owner=${ownerCode} kind=${kind} attempt=${attempt} status=${r.status} model=${data && data.model} total_cost=${cost} ms=${Date.now() - started}`);
+      if (r.ok || !(r.status === 429 || r.status >= 500)) break;
+      if (attempt < 3) await new Promise(resolve => setTimeout(resolve, attempt * 2000 + Math.floor(Math.random() * 1000)));
+    }
     const cost = data && data.usage && data.usage.cost ? data.usage.cost.total_cost : null;
-    console.log(`[import-schedule] owner=${ownerCode} kind=${kind} status=${r.status} model=${data && data.model} total_cost=${cost} ms=${Date.now() - started}`);
 
-    if (!r.ok || !data) {
-      const msg = data && data.error ? (data.error.message || JSON.stringify(data.error)) : `status ${r.status}`;
+    if (!r || !r.ok || !data) {
+      const msg = data && data.error ? (data.error.message || JSON.stringify(data.error)) : `status ${r && r.status}`;
       console.error('[import-schedule] agent error:', String(msg).slice(0, 500));
+      if (r && r.status === 429) {
+        return sendJson(res, 429, { error: 'Our schedule reader is busy right now. Please wait a minute and tap Try Again.' });
+      }
       return sendJson(res, 502, { error: 'We could not read your schedule this time. Please try again.' });
     }
 
@@ -194,7 +214,5 @@ OUTPUT ONLY THE CSV. Start with the header line, then one line per event. Do not
         ? 'That took too long. Please try again, or try fewer photos at a time.'
         : 'We could not read your schedule this time. Please try again.'
     });
-  } finally {
-    clearTimeout(timer);
   }
 };
