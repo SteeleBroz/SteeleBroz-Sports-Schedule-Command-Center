@@ -298,7 +298,7 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">📸</div>
 <div>
 <p class="text-gray-900 font-semibold text-sm">Take a Photo</p>
-<p class="text-gray-500 text-xs mt-0.5">Snap a photo of your schedule, then upload it into ChatGPT or Gemini with the copied prompt below.</p>
+<p class="text-gray-500 text-xs mt-0.5">Snap a photo of your schedule, then add it below and we will read it for you.</p>
 <p class="text-gray-700 text-xs mt-2 font-medium">Before you snap the photo:</p>
 <ul class="text-gray-500 text-xs mt-1 space-y-1 list-disc pl-4">
 <li>Turn the calendar right side up so the month name is at the top</li>
@@ -339,6 +339,54 @@ input, textarea, select { font-family: 'Inter', system-ui, -apple-system, sans-s
 </div>
 </div>
 
+<!-- Step 3: In-app import (reads photos, PDFs, or pasted text for you) -->
+<div id="aiInappBlock" class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">🤖</div>
+<div class="w-full">
+<p class="text-gray-900 font-semibold text-sm mb-1">Add Your Schedule</p>
+<p class="text-gray-500 text-xs mb-3">Add photos, a PDF, or paste the schedule text. We read it for you.</p>
+<div class="space-y-2">
+<button id="aiInappCameraBtn" type="button" class="w-full bg-[#0069FF] hover:bg-[#0052CC] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold px-4 py-3 rounded-lg transition flex items-center justify-center gap-2">
+<i data-lucide="camera" class="w-4 h-4"></i> Take a Photo
+</button>
+<button id="aiInappUploadBtn" type="button" class="w-full bg-[#0069FF] hover:bg-[#0052CC] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold px-4 py-3 rounded-lg transition flex items-center justify-center gap-2">
+<i data-lucide="image-plus" class="w-4 h-4"></i> Upload Photos or PDF
+</button>
+<button id="aiInappPasteBtn" type="button" class="w-full bg-[#0069FF] hover:bg-[#0052CC] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold px-4 py-3 rounded-lg transition flex items-center justify-center gap-2">
+<i data-lucide="clipboard" class="w-4 h-4"></i> Paste Text
+</button>
+</div>
+<input id="aiInappCameraInput" type="file" accept="image/*" capture="environment" class="hidden">
+<input id="aiInappFileInput" type="file" accept="image/*,application/pdf" multiple class="hidden">
+<p class="text-gray-400 text-xs mt-2">Up to 10 photos at a time.</p>
+<div id="aiInappTextWrap" class="hidden mt-3">
+<textarea id="aiInappText" rows="5" placeholder="Paste your schedule here, like a coach email or a team website list..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none text-xs"></textarea>
+</div>
+<div id="aiInappSelected" class="hidden mt-3">
+<p id="aiInappCount" class="text-xs text-gray-700 font-medium mb-2"></p>
+<div id="aiInappThumbs" class="flex flex-wrap gap-2"></div>
+</div>
+<div id="aiInappNotice" role="status" aria-live="polite" class="hidden mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 leading-relaxed"></div>
+<button id="aiInappReadBtn" type="button" disabled class="w-full bg-green-600 hover:bg-green-500 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition mt-3 flex items-center justify-center gap-2">
+<i data-lucide="sparkles" class="w-4 h-4"></i> Read My Schedule
+</button>
+<div id="aiInappProgress" role="status" aria-live="polite" class="hidden mt-3 bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+<div class="flex items-center justify-center gap-2 text-sm font-semibold text-[#0069FF]">
+<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Reading your schedule...
+</div>
+<p id="aiInappProgressText" class="text-xs text-gray-600 mt-1"></p>
+<p class="text-xs text-gray-400 mt-1">This can take up to a minute. Please keep this screen open.</p>
+</div>
+<div id="aiInappError" role="alert" class="hidden mt-3 bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-red-800 leading-relaxed">
+<p id="aiInappErrorText"></p>
+<button id="aiInappTryAgainBtn" type="button" class="mt-2 bg-white border border-red-200 hover:bg-red-100 text-red-700 font-semibold text-xs px-3 py-1.5 rounded-lg transition">Try Again</button>
+</div>
+<button id="aiOtherWaysBtn" type="button" class="text-xs text-gray-400 hover:text-gray-600 underline mt-4 block">Other ways to import</button>
+</div>
+</div>
+
+<!-- Other ways to import: the original ChatGPT and Gemini steps, hidden until asked for -->
+<div id="aiFallbackBlock" class="hidden space-y-5">
 <!-- Step 3 -->
 <div class="flex gap-4 items-start border-l-[3px] border-[#0069FF] pl-4 py-1">
 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-base">🤖</div>
@@ -415,9 +463,10 @@ CRITICAL: The day name and the date have to match. If they do not match, leave t
 <p class="text-gray-900 font-semibold text-sm">Paste Results</p>
 <textarea id="chatgptResults" rows="5" placeholder="Paste what ChatGPT gave you here..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0069FF] focus:ring-2 focus:ring-blue-500/20 resize-none text-xs mt-2"></textarea>
 <button id="parseResultsBtn" class="w-full bg-[#0069FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition mt-2">Create My Schedule</button>
+</div>
+</div>
+</div>
 <div id="importSkippedMsg" class="hidden mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 leading-relaxed"></div>
-</div>
-</div>
 
 <!-- Parsed Data Grid -->
 <div id="parsedDataSection" class="hidden mt-6">
@@ -3391,6 +3440,302 @@ btn.className = btn.className.replace('bg-red-600', 'bg-blue-600 hover:bg-blue-5
 console.error('Parse error:', error);
 }
 });
+
+// In-app schedule import.
+// Reads photos, a PDF, or pasted text through our own /api/import-schedule function,
+// then hands the CSV to the exact same paste box and Create My Schedule flow the
+// ChatGPT and Gemini path uses, so the review screen and every check stay the same.
+const AI_INAPP_MAX_PHOTOS = 10;
+const AI_INAPP_MAX_PDF_BYTES = 3.5 * 1024 * 1024;
+const AI_INAPP_CONCURRENCY = 2;
+let aiInappPhotos = []; // { file, url }
+let aiInappPdf = null; // File
+let aiInappBusy = false;
+
+function aiInappEl(id) { return document.getElementById(id); }
+
+function aiInappShowNotice(msg) {
+const box = aiInappEl('aiInappNotice');
+if (!msg) { box.classList.add('hidden'); box.textContent = ''; return; }
+box.textContent = msg;
+box.classList.remove('hidden');
+}
+
+function aiInappShowError(msg) {
+const box = aiInappEl('aiInappError');
+if (!msg) { box.classList.add('hidden'); return; }
+aiInappEl('aiInappErrorText').textContent = msg;
+box.classList.remove('hidden');
+}
+
+function aiInappHasText() {
+const wrap = aiInappEl('aiInappTextWrap');
+return !wrap.classList.contains('hidden') && aiInappEl('aiInappText').value.trim().length > 0;
+}
+
+function aiInappRender() {
+const thumbs = aiInappEl('aiInappThumbs');
+thumbs.innerHTML = '';
+aiInappPhotos.forEach((photo, index) => {
+const item = document.createElement('div');
+item.className = 'relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-50';
+item.innerHTML = `<img src="${photo.url}" alt="Schedule photo ${index + 1}" class="w-full h-full object-cover">
+<button type="button" data-remove-photo="${index}" aria-label="Remove photo ${index + 1}" class="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white text-xs leading-5 text-center">x</button>`;
+thumbs.appendChild(item);
+});
+if (aiInappPdf) {
+const item = document.createElement('div');
+item.className = 'relative h-16 px-3 pr-7 rounded-lg border border-gray-200 bg-gray-50 flex items-center gap-2 text-xs text-gray-700 max-w-full';
+item.innerHTML = `<i data-lucide="file-text" class="w-4 h-4 text-[#0069FF] flex-shrink-0"></i><span class="truncate max-w-[10rem]"></span>
+<button type="button" data-remove-pdf="1" aria-label="Remove PDF" class="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white text-xs leading-5 text-center">x</button>`;
+item.querySelector('span').textContent = aiInappPdf.name || 'schedule.pdf';
+thumbs.appendChild(item);
+}
+const parts = [];
+if (aiInappPhotos.length) parts.push(`${aiInappPhotos.length} of ${AI_INAPP_MAX_PHOTOS} photos added`);
+if (aiInappPdf) parts.push('1 PDF added');
+aiInappEl('aiInappCount').textContent = parts.join(', ');
+aiInappEl('aiInappSelected').classList.toggle('hidden', parts.length === 0);
+const full = aiInappPhotos.length >= AI_INAPP_MAX_PHOTOS;
+aiInappEl('aiInappCameraBtn').disabled = full || aiInappBusy;
+aiInappEl('aiInappUploadBtn').disabled = aiInappBusy;
+aiInappEl('aiInappPasteBtn').disabled = aiInappBusy;
+aiInappEl('aiInappReadBtn').disabled = aiInappBusy || !(aiInappPhotos.length || aiInappPdf || aiInappHasText());
+lucide.createIcons();
+}
+
+function aiInappAddFiles(fileList) {
+aiInappShowError('');
+const notes = [];
+let skippedPhotos = 0;
+for (const file of Array.from(fileList || [])) {
+const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+if (isPdf) {
+if (file.size > AI_INAPP_MAX_PDF_BYTES) {
+notes.push('That PDF is too big for us to read. Please use a PDF under 3.5 MB, or take photos of the pages instead.');
+} else {
+aiInappPdf = file;
+}
+continue;
+}
+if (!(file.type || '').startsWith('image/') && !/\.(jpe?g|png|heic|heif|webp|gif)$/i.test(file.name || '')) {
+notes.push('We can only read photos and PDF files.');
+continue;
+}
+if (aiInappPhotos.length >= AI_INAPP_MAX_PHOTOS) { skippedPhotos++; continue; }
+aiInappPhotos.push({ file, url: URL.createObjectURL(file) });
+}
+if (skippedPhotos) notes.push(`You can add up to ${AI_INAPP_MAX_PHOTOS} photos at a time. We left out ${skippedPhotos}. Import these first, then add the rest.`);
+aiInappShowNotice([...new Set(notes)].join(' '));
+aiInappRender();
+}
+
+// Shrink a photo so the longest side is about 1600px and save it as a JPEG.
+// The browser turns the photo the way the camera saved it before we draw it.
+function aiInappShrinkPhoto(file) {
+return new Promise((resolve, reject) => {
+const url = URL.createObjectURL(file);
+const img = new Image();
+img.onload = () => {
+try {
+const maxSide = 1600;
+const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+const canvas = document.createElement('canvas');
+canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+const ctx = canvas.getContext('2d');
+ctx.fillStyle = '#ffffff';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+resolve(canvas.toDataURL('image/jpeg', 0.8));
+} catch (err) {
+reject(err);
+} finally {
+URL.revokeObjectURL(url);
+}
+};
+img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not open photo')); };
+img.src = url;
+});
+}
+
+function aiInappReadAsDataUrl(file) {
+return new Promise((resolve, reject) => {
+const reader = new FileReader();
+reader.onload = () => resolve(reader.result);
+reader.onerror = () => reject(new Error('Could not read file'));
+reader.readAsDataURL(file);
+});
+}
+
+async function aiInappCallApi(payload) {
+let res;
+try {
+res = await fetch('/api/import-schedule', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(payload)
+});
+} catch (err) {
+throw new Error('We could not reach our schedule reader. Check your internet and try again.');
+}
+let data = null;
+try { data = await res.json(); } catch (err) { data = null; }
+if (res.status === 413) throw new Error('That file is too big for us to read. Try a smaller file or a photo instead.');
+if (!res.ok) throw new Error((data && data.error) || 'We could not read your schedule this time. Please try again.');
+if (data && typeof data.cost === 'number') console.log('[import] read cost', data.cost, data.model);
+return data || {};
+}
+
+// Join the CSV from every photo into one CSV with a single header and no repeated rows.
+function aiInappMergeCsv(csvList) {
+const header = 'child_name,sport,event_type,chaperone,event_date,event_time,location,day_of_week';
+const seen = new Set();
+const rows = [];
+for (const csv of csvList) {
+for (const raw of String(csv || '').split('\n')) {
+const line = raw.trim();
+if (!line) continue;
+const lower = line.toLowerCase();
+if (lower.includes('child_name') || lower.includes('event_date')) continue;
+if (seen.has(line)) continue;
+seen.add(line);
+rows.push(line);
+}
+}
+return rows.length ? [header, ...rows].join('\n') : '';
+}
+
+async function aiInappRead() {
+if (aiInappBusy) return;
+aiInappShowError('');
+aiInappShowNotice('');
+const ownerCode = (!isViewOnly && currentUserId) ? String(currentUserId) : '';
+if (!ownerCode) {
+aiInappShowError('Only the schedule owner can import. Open your schedule with your owner code and try again.');
+return;
+}
+const text = aiInappHasText() ? aiInappEl('aiInappText').value.trim() : '';
+const jobs = [];
+aiInappPhotos.forEach((photo, index) => jobs.push({ kind: 'photo', index, photo }));
+if (aiInappPdf) jobs.push({ kind: 'pdf' });
+if (text) jobs.push({ kind: 'text' });
+if (!jobs.length) {
+aiInappShowError('Please add a photo, a PDF, or paste your schedule first.');
+return;
+}
+
+aiInappBusy = true;
+aiInappRender();
+aiInappEl('aiInappReadBtn').classList.add('hidden');
+aiInappEl('aiInappProgress').classList.remove('hidden');
+const promptContext = getAiPrompt();
+const photoCount = aiInappPhotos.length;
+let photosDone = 0;
+const setProgress = () => {
+const parts = [];
+if (photoCount) parts.push(photosDone < photoCount ? `Reading photo ${photosDone + 1} of ${photoCount}` : `Read ${photoCount} of ${photoCount} photos`);
+if (aiInappPdf) parts.push('Reading your PDF');
+if (text) parts.push('Reading your text');
+aiInappEl('aiInappProgressText').textContent = parts.join('. ');
+};
+setProgress();
+
+const results = new Array(jobs.length);
+let next = 0;
+const worker = async () => {
+while (next < jobs.length) {
+const i = next++;
+const job = jobs[i];
+try {
+const payload = { owner_code: ownerCode, prompt_context: promptContext };
+if (job.kind === 'photo') payload.images = [await aiInappShrinkPhoto(job.photo.file)];
+if (job.kind === 'pdf') payload.pdf = await aiInappReadAsDataUrl(aiInappPdf);
+if (job.kind === 'text') payload.text = text;
+const data = await aiInappCallApi(payload);
+results[i] = { ok: true, csv: data.csv || '', note: data.error || '' };
+} catch (err) {
+results[i] = { ok: false, error: err.message || 'We could not read your schedule this time. Please try again.' };
+} finally {
+if (job.kind === 'photo') { photosDone++; setProgress(); }
+}
+}
+};
+await Promise.all(Array.from({ length: Math.min(AI_INAPP_CONCURRENCY, jobs.length) }, worker));
+
+aiInappBusy = false;
+aiInappEl('aiInappProgress').classList.add('hidden');
+aiInappEl('aiInappReadBtn').classList.remove('hidden');
+
+const label = (job) => job.kind === 'photo' ? `photo ${job.index + 1}` : job.kind === 'pdf' ? 'your PDF' : 'your text';
+const failed = jobs.filter((job, i) => !results[i].ok);
+const empty = jobs.filter((job, i) => results[i].ok && !results[i].csv);
+const merged = aiInappMergeCsv(results.filter(r => r.ok).map(r => r.csv));
+
+if (!merged) {
+aiInappRender();
+const firstError = results.find(r => !r.ok);
+aiInappShowError(firstError ? firstError.error : 'We could not find any events in that. Try a clearer photo that shows the whole calendar, right side up.');
+return;
+}
+
+// Same path as pasting AI results: fill the paste box and run Create My Schedule.
+aiInappEl('chatgptResults').value = merged;
+aiInappEl('parseResultsBtn').click();
+
+if (!parsedEvents.length || aiInappEl('parsedDataSection').classList.contains('hidden')) {
+aiInappRender();
+aiInappShowError('We read your schedule but could not find events we could use. Try a clearer photo, right side up, then tap Try Again.');
+return;
+}
+
+const notes = [];
+if (failed.length) notes.push(`We could not read ${failed.map(label).join(', ')}. Tap Read My Schedule with just that one to try again, or add those events by hand.`);
+if (empty.length) notes.push(`We did not find any events in ${empty.map(label).join(', ')}.`);
+// Clear what was added so the next import starts fresh.
+aiInappPhotos.forEach(p => URL.revokeObjectURL(p.url));
+aiInappPhotos = [];
+aiInappPdf = null;
+aiInappEl('aiInappText').value = '';
+aiInappRender();
+aiInappShowNotice(notes.join(' '));
+aiInappEl('parsedDataSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+aiInappEl('aiInappCameraBtn').addEventListener('click', () => aiInappEl('aiInappCameraInput').click());
+aiInappEl('aiInappUploadBtn').addEventListener('click', () => aiInappEl('aiInappFileInput').click());
+aiInappEl('aiInappCameraInput').addEventListener('change', (e) => { aiInappAddFiles(e.target.files); e.target.value = ''; });
+aiInappEl('aiInappFileInput').addEventListener('change', (e) => { aiInappAddFiles(e.target.files); e.target.value = ''; });
+aiInappEl('aiInappPasteBtn').addEventListener('click', () => {
+const wrap = aiInappEl('aiInappTextWrap');
+wrap.classList.toggle('hidden');
+if (!wrap.classList.contains('hidden')) aiInappEl('aiInappText').focus();
+aiInappRender();
+});
+aiInappEl('aiInappText').addEventListener('input', aiInappRender);
+aiInappEl('aiInappThumbs').addEventListener('click', (e) => {
+const photoBtn = e.target.closest('[data-remove-photo]');
+const pdfBtn = e.target.closest('[data-remove-pdf]');
+if (photoBtn) {
+const index = parseInt(photoBtn.dataset.removePhoto, 10);
+const removed = aiInappPhotos.splice(index, 1)[0];
+if (removed) URL.revokeObjectURL(removed.url);
+}
+if (pdfBtn) aiInappPdf = null;
+aiInappShowNotice('');
+aiInappRender();
+});
+aiInappEl('aiInappReadBtn').addEventListener('click', aiInappRead);
+aiInappEl('aiInappTryAgainBtn').addEventListener('click', () => {
+aiInappShowError('');
+if (aiInappPhotos.length || aiInappPdf || aiInappHasText()) aiInappRead();
+});
+aiInappEl('aiOtherWaysBtn').addEventListener('click', () => {
+const block = aiInappEl('aiFallbackBlock');
+block.classList.toggle('hidden');
+aiInappEl('aiOtherWaysBtn').textContent = block.classList.contains('hidden') ? 'Other ways to import' : 'Hide other ways to import';
+});
+aiInappRender();
 
 // Clear Parsed Data
 document.getElementById('clearParsedBtn').addEventListener('click', () => {
