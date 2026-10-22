@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/import-schedule.js": {
+      "maxDuration": 60
+    }
+  }
+}
