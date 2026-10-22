@@ -155,11 +155,19 @@ OUTPUT ONLY THE CSV. Start with the header line, then one line per event. Do not
 
   const kind = pdf ? 'pdf' : images.length ? `photo x${images.length}` : 'text';
   const started = Date.now();
-  const payload = JSON.stringify({
+  const req2 = {
     models: MODELS,
     input: [{ type: 'message', role: 'user', content }],
-    max_output_tokens: 8000
-  });
+    max_output_tokens: 8000,
+    store: false
+  };
+  // TEMP EXPERIMENT (TESTD1 only, removed after model selection)
+  const EXP_MODELS = ['openai/gpt-5.6-terra', 'openai/gpt-5.6-sol', 'anthropic/claude-sonnet-5-5', 'google/gemini-3.8-flash', 'google/gemini-4-argon', 'openai/gpt-6.1-sol'];
+  if (ownerCode === 'TESTD1' && body._exp && typeof body._exp === 'object') {
+    if (EXP_MODELS.includes(body._exp.model)) { delete req2.models; req2.model = body._exp.model; }
+    if (['low', 'medium', 'high'].includes(body._exp.effort)) req2.reasoning = { effort: body._exp.effort };
+  }
+  const payload = JSON.stringify(req2);
 
   try {
     let r = null;
